@@ -17,6 +17,8 @@ public class StudentProfile {
 //    special fields for students
     private String schoolPeriod;
 
+    private String department;
+
     @Column(nullable = false)
     private Integer maxHours; //    weekly, monthly or total?
 
@@ -27,9 +29,10 @@ public class StudentProfile {
 
     public StudentProfile() {}
 
-    public StudentProfile(User user, String schoolPeriod, Integer maxHours, Boolean onlyParents) {
+    public StudentProfile(User user, String schoolPeriod, String department, Integer maxHours, Boolean onlyParents) {
         this.user = user;
         this.schoolPeriod = schoolPeriod;
+//        this.department = department; getter + setter
         this.maxHours = maxHours;
         this.onlyParents = onlyParents;
     }
