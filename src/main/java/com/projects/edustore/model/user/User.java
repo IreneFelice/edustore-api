@@ -1,5 +1,6 @@
-package com.projects.edustore.model;
+package com.projects.edustore.model.user;
 
+import com.projects.edustore.model.Role;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,6 +10,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String userName;
     private String firstName;
     private String lastName;
     private String password;
@@ -29,11 +31,13 @@ public class User {
     private StudentProfile studentProfile;
 
 
+
     //    constructors
     public User() {
     }
 
-    public User(String firstName, String lastName, String password, String email, Role role, String profile) {
+    public User(String userName, String firstName, String lastName, String password, String email, Role role, String profile) {
+        this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
@@ -45,6 +49,14 @@ public class User {
     //    getters and setters
     public Long getId() {
         return id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getFirstName() {
@@ -99,20 +111,17 @@ public class User {
         return studentProfile;
     }
 
-    public CustomerProfile getCustomerProfile(){
+    public CustomerProfile getCustomerProfile() {
         return customerProfile;
     }
 
     public void setStudentProfile(StudentProfile studentProfile) {
-        this.studentProfile = studentProfile; // reference to StudentProfile
-        if (studentProfile != null) {
-            studentProfile.setUser(this); // StudentProfile gets reference to user
-        }
+        this.studentProfile = studentProfile;
+        studentProfile.setUser(this);
     }
+
     public void setCustomerProfile(CustomerProfile customerProfile) {
         this.customerProfile = customerProfile;
-        if (customerProfile != null) {
-            customerProfile.setUser(this);
-        }
+        customerProfile.setUser(this);
     }
 }
