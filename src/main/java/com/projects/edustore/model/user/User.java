@@ -22,7 +22,7 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    private String profile;
+    private String profileLabel;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private CustomerProfile customerProfile;
@@ -36,14 +36,14 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String firstName, String lastName, String password, String email, Role role, String profile) {
+    public User(String userName, String firstName, String lastName, String password, String email, Role role, String profileLabel) {
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.profile = profile;
+        this.profileLabel = profileLabel;
     }
 
     //    getters and setters
@@ -99,12 +99,12 @@ public class User {
         this.role = role;
     }
 
-    public String getProfile() {
-        return profile;
+    public String getProfileLabel() {
+        return profileLabel;
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public void setProfileLabel(String profile) {
+        this.profileLabel = profile;
     }
 
     public StudentProfile getStudentProfile() {

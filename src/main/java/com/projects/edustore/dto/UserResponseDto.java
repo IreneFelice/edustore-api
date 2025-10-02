@@ -13,7 +13,7 @@ public class UserResponseDto {
     public String profile;
     public Role role;
 
-    // extra: links (self, allUsers, update, delete)
+    // extra: links (self, allUsers)
     public Map<String, String> links;
 
     public Long getId() {
@@ -79,4 +79,5 @@ public class UserResponseDto {
     public void setLinks(Map<String, String> links) {
         this.links = links;
     }
+
 }

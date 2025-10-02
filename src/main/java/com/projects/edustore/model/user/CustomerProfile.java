@@ -40,7 +40,7 @@ public class CustomerProfile {
         return user;
     }
 
-    void setUser(User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

@@ -1,4 +1,4 @@
-INSERT INTO users (user_name, first_name, last_name, password, email, role, profile)
+INSERT INTO users (user_name, first_name, last_name, password, email, role, profile_label)
 VALUES
     ('Yoyo', 'Jane', 'Doe', 'wachtwoord123', 'jane@student.com', 'ROLE_STUDENT', 'StudentProfile'),
     ('willSmith', 'Will', 'Smith', 'wachtwoord456', 'will@customer.com', 'ROLE_CUSTOMER', 'CustomerProfile'),
