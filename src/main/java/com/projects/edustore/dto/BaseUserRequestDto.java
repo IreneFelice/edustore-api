@@ -1,15 +1,20 @@
 package com.projects.edustore.dto;
 
-import com.projects.edustore.model.Role;
 
-public class UserRequestDto {
-    public String userName;
-    public String firstName;
-    public String lastName;
-    public String email;
-    public String password;
-    public Role role;
-    public String profile;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+//TODO: add validations
+public class BaseUserRequestDto {
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username should be between 3 and 50 characters.")
+    private String userName;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+
+//    Getters & Setters
 
     public String getUserName() {
         return userName;
@@ -49,21 +54,5 @@ public class UserRequestDto {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public String getProfile() {
-        return profile;
-    }
-
-    public void setProfile(String profile) {
-        this.profile = profile;
     }
 }

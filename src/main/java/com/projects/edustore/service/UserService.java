@@ -1,15 +1,13 @@
 package com.projects.edustore.service;
 
-import com.projects.edustore.dto.UserResponseDto;
-import com.projects.edustore.dto.UserRequestDto;
-import com.projects.edustore.dto.profileDto.CustomerUserRequestDto;
-import com.projects.edustore.dto.profileDto.CustomerUserResponseDto;
-import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
-import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
+import com.projects.edustore.dto.adminDto.AdminBaseResponseDto;
+import com.projects.edustore.dto.adminDto.AdminRequestDto;
+
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.UserMapper;
-import com.projects.edustore.model.user.User;
+import com.projects.edustore.model.User;
 import com.projects.edustore.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,123 +17,140 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository repos;
+    private final StudentService studentService;
+    private final CustomerService customerService;
 
-    public UserService(UserRepository repos) {
+    public UserService(UserRepository repos, StudentService studentService, CustomerService customerService) {
         this.repos = repos;
+        this.studentService = studentService;
+        this.customerService = customerService;
     }
 
     //////////// Base User
 
-    public List<UserResponseDto> getAllUsersDto() {
+    public List<AdminBaseResponseDto> getAllUsers() {
         List<User> users = repos.findAll();
-        List<UserResponseDto> dtos = new ArrayList<>();
+        List<AdminBaseResponseDto> dtos = new ArrayList<>();
         for (User user : users) {
-            dtos.add(UserMapper.toUserResponseDto(user));
+            dtos.add(UserMapper.toAdminBaseDto(user));
         }
         return dtos;
     }
 
-    //   util
-    public User findUser(Long id) {
-        return repos.findById(id).orElseThrow(() -> new ResourceNotFoundException("User" + id + "not found."));
-    }
-
-    public UserResponseDto getUserById(Long id) {
+    public AdminBaseResponseDto getUserById(Long id) {
         User existing = findUser(id);
-        return UserMapper.toUserResponseDto(existing);
+        return UserMapper.toAdminBaseDto(existing);
     }
 
-    public UserResponseDto updateUser(Long id, UserRequestDto dto) {
+    public AdminBaseResponseDto getProfileDetailsById(Long id) {
+        User existing = findUser(id);
+        return switch (existing.getRole()) {
+            case ROLE_STUDENT -> UserMapper.toAdminStudentDto(existing);
+            case ROLE_CUSTOMER -> UserMapper.toAdminCustomerDto(existing);
+            default -> UserMapper.toAdminBaseDto(existing);
+        };
+    }
+
+    public AdminBaseResponseDto updateUser(Long id, AdminRequestDto dto) {
         User existing = findUser(id);
         UserMapper.updateUserEntity(existing, dto);
         repos.save(existing);
-        return UserMapper.toUserResponseDto(existing);
+
+        switch (existing.getRole()) {
+            case ROLE_CUSTOMER -> customerService.attachProfile(existing, dto);
+            case ROLE_STUDENT -> studentService.attachProfile(existing, dto);
+            case ROLE_ADMIN -> {
+            }
+            default -> throw new IllegalArgumentException("Unsupported role: " + existing.getRole() + ". Role must be STUDENT, CUSTOMER or ADMIN");
+        }
+
+        return switch (existing.getRole()) {
+            case ROLE_STUDENT -> UserMapper.toAdminStudentDto(existing);
+            case ROLE_CUSTOMER -> UserMapper.toAdminCustomerDto(existing);
+            default -> UserMapper.toAdminBaseDto(existing);
+        };
     }
 
-    public UserResponseDto getByEmail(String email) {
-        User user = repos.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found."));
-        return UserMapper.toUserResponseDto(user);
+    public AdminBaseResponseDto getByEmail(String email) {
+        User existing = repos.findByPerson_Email(email).orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        return switch (existing.getRole()) {
+            case ROLE_STUDENT -> UserMapper.toAdminStudentDto(existing);
+            case ROLE_CUSTOMER -> UserMapper.toAdminCustomerDto(existing);
+            default -> UserMapper.toAdminBaseDto(existing);
+        };
     }
 
-    public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        User newUser = UserMapper.toUserEntity(userRequestDto);
-        repos.save(newUser);
-        return UserMapper.toUserResponseDto(newUser);
-    }
-
-     public void deleteUser(Long id) {
+    public void deleteUser(Long id) {
         User existing = repos.findById(id).orElseThrow(() -> new ResourceNotFoundException("User" + id + "not found."));
         repos.delete(existing);
     }
 
-//    /////////// Customers
+    @Transactional
+    public AdminBaseResponseDto createUser(AdminRequestDto dto) {
+        User NewUser = createUserEntity(dto);
 
-    public List<CustomerUserResponseDto> getAllCustomers() {
-        List<User> customers = repos.findByProfileLabel("CustomerProfile");
-        List<CustomerUserResponseDto> dtos = new ArrayList<>();
-        for (User user : customers) {
-            dtos.add(UserMapper.toCustomerResponseDto(user));
+        //Attach profile based on Role
+        switch (NewUser.getRole()) {
+            case ROLE_CUSTOMER -> customerService.attachProfile(NewUser, dto);
+            case ROLE_STUDENT -> studentService.attachProfile(NewUser, dto);
+            case ROLE_ADMIN -> {
+            }
+            default ->
+                    throw new IllegalArgumentException("Unsupported role: " + NewUser.getRole() + ". Role must be STUDENT, CUSTOMER or ADMIN");
         }
-         return dtos;
+
+        repos.save(NewUser);
+
+        return switch (NewUser.getRole()) {
+            case ROLE_STUDENT -> UserMapper.toAdminStudentDto(NewUser);
+            case ROLE_CUSTOMER -> UserMapper.toAdminCustomerDto(NewUser);
+            default -> UserMapper.toAdminBaseDto(NewUser);
+        };
     }
 
-    public CustomerUserResponseDto getCustomerById(Long id) {
-       User user = findUser(id);
-       return  UserMapper.toCustomerResponseDto(user);
-    }
-
-    public CustomerUserResponseDto createCustomerUser(CustomerUserRequestDto customerUserRequestDto) {
-        User newCustomer = UserMapper.toCustomerEntity(customerUserRequestDto);
-        repos.save(newCustomer);
-        return UserMapper.toCustomerResponseDto(newCustomer);
-    }
-
-    public CustomerUserResponseDto updateCustomer(Long id, CustomerUserRequestDto dto) {
-        User existingCustomer = findUser(id);
-        if (existingCustomer.getCustomerProfile() != null) {
-            UserMapper.updateCustomerEntity(existingCustomer, dto);
-        }
-        repos.save(existingCustomer);
-        return UserMapper.toCustomerResponseDto(existingCustomer);
-    }
 
 //    //////////// Students
 
-    public List<StudentUserResponseDto> getAllStudents() {
-        List<User> students = repos.findByProfileLabel("StudentProfile");
-        List<StudentUserResponseDto> dtos = new ArrayList<>();
-        for(User user : students) {
-            dtos.add(UserMapper.toStudentResponseDto(user));
+    public List<AdminBaseResponseDto> getAllStudents() {
+        List<User> students = repos.findByPerson_ProfileLabel("StudentProfile");
+        List<AdminBaseResponseDto> dtos = new ArrayList<>();
+        for (User user : students) {
+            dtos.add(UserMapper.toAdminStudentDto(user));
         }
         return dtos;
     }
 
-    public StudentUserResponseDto getStudentProfileById(Long id) {
-        User user = findUser(id);
-        return  UserMapper.toStudentResponseDto(user);
+    public List<AdminBaseResponseDto> getStudentsByPeriods(List<String> periods) {
+        List<User> students = repos.findByPerson_StudentProfile_SchoolPeriodIn(periods);
+        List<AdminBaseResponseDto> dtos = new ArrayList<>();
+
+        for (User user : students) {
+            dtos.add(UserMapper.toAdminStudentDto(user));
+        }
+
+        return dtos;
     }
 
-    public List<StudentUserResponseDto> getStudentBySchoolPeriod(String schoolPeriod) {
-        List<User> students = repos.findByStudentProfile_schoolPeriodIgnoreCase(schoolPeriod);
-        List<StudentUserResponseDto> dtos = new ArrayList<>();
-        for(User user : students){
-            dtos.add(UserMapper.toStudentResponseDto(user));
+    //    /////////// Customers
+    public List<AdminBaseResponseDto> getAllCustomers() {
+        List<User> customers = repos.findByPerson_ProfileLabel("CustomerProfile");
+        List<AdminBaseResponseDto> dtos = new ArrayList<>();
+        for (User user : customers) {
+            dtos.add(UserMapper.toAdminCustomerDto(user));
         }
         return dtos;
     }
 
-    public StudentUserResponseDto createStudentUser(StudentUserRequestDto dto) {
-        User newStudent = UserMapper.toStudentEntity(dto);
-        repos.save(newStudent);
-        return UserMapper.toStudentResponseDto(newStudent);
+
+    //   utils
+    public User findUser(Long id) {
+        return repos.findById(id).orElseThrow(() -> new ResourceNotFoundException("User" + id + "not found."));
     }
 
-    public StudentUserResponseDto updateStudentEntity(Long id, StudentUserRequestDto dto) {
-        User existingStudent = findUser(id);
-        UserMapper.updateStudentEntity(existingStudent, dto);
-        repos.save(existingStudent);
-
-        return UserMapper.toStudentResponseDto(existingStudent);
+    public User createUserEntity(AdminRequestDto adminRequestDto) {
+        User newUser = UserMapper.toUserEntity(adminRequestDto);
+        repos.save(newUser);
+        return newUser;
     }
 
 }

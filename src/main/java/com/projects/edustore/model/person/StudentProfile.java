@@ -1,5 +1,6 @@
-package com.projects.edustore.model.user;
+package com.projects.edustore.model.person;
 
+import com.projects.edustore.model.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,12 +8,12 @@ import jakarta.persistence.*;
 public class StudentProfile {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @MapsId
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "id")
+    private Person person;
 
     //    special fields for students
     private String schoolPeriod;
@@ -22,24 +23,13 @@ public class StudentProfile {
 
     public StudentProfile() {}
 
-    public StudentProfile(User user, String schoolPeriod) {
-        this.user = user;
-        user.setStudentProfile(this);
+    public StudentProfile(Person person, String schoolPeriod) {
+        this.person = person;
         this.schoolPeriod = schoolPeriod;
     }
 
-//    getters and setters
-
     public Long getId() {
         return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public String getSchoolPeriod() {
@@ -49,5 +39,12 @@ public class StudentProfile {
     public void setSchoolPeriod(String schoolPeriod) {
         this.schoolPeriod = schoolPeriod;
     }
+    public Person getPerson() {
+        return person; }
+
+    protected void setPerson(Person person) {
+        this.person = person;
+    }
+
 
 }

@@ -1,11 +1,11 @@
-package com.projects.edustore.dto.profileDto;
+package com.projects.edustore.dto.adminDto;
 
-import com.projects.edustore.dto.BaseUserResponseDto;
 
-public class StudentUserResponseDto extends BaseUserResponseDto {
+public class AdminStudentResponseDto extends AdminBaseResponseDto {
     private String schoolPeriod;
 
-    //    Getters & Setters
+    // getters & setters
+
     public String getSchoolPeriod() {
         return schoolPeriod;
     }
@@ -13,5 +13,4 @@ public class StudentUserResponseDto extends BaseUserResponseDto {
     public void setSchoolPeriod(String schoolPeriod) {
         this.schoolPeriod = schoolPeriod;
     }
-
 }

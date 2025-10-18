@@ -1,130 +1,79 @@
 package com.projects.edustore.mapper;
 
-import com.projects.edustore.dto.profileDto.CustomerUserRequestDto;
-import com.projects.edustore.dto.profileDto.CustomerUserResponseDto;
-import com.projects.edustore.dto.UserRequestDto;
-import com.projects.edustore.dto.UserResponseDto;
-import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
-import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
+import com.projects.edustore.dto.adminDto.AdminCustomerResponseDto;
+import com.projects.edustore.dto.adminDto.AdminRequestDto;
+import com.projects.edustore.dto.adminDto.AdminBaseResponseDto;
+import com.projects.edustore.dto.adminDto.AdminStudentResponseDto;
 import com.projects.edustore.model.Role;
-import com.projects.edustore.model.user.CustomerProfile;
-import com.projects.edustore.model.user.StudentProfile;
-import com.projects.edustore.model.user.User;
-
+import com.projects.edustore.model.User;
+import com.projects.edustore.model.person.Person;
 
 
 //    TODO make link builder utility
 
 public class UserMapper {
 
-    //  Base User
-    public static User toUserEntity(UserRequestDto dto) {
+
+    public static User toUserEntity(AdminRequestDto dto) {
         User user = new User();
-        updateUserEntity(user, dto);
-        return user;
-    }
+        Person person = new Person();
 
-    public static void updateUserEntity(User existing, UserRequestDto dto) {
-        if (dto.userName != null) existing.setUserName(dto.userName);
-        if (dto.firstName != null) existing.setFirstName(dto.firstName);
-        if (dto.lastName != null) existing.setLastName(dto.lastName);
-        if (dto.email != null) existing.setEmail(dto.email);
-//        if (dto.password != null) existing.setPassword(dto.password);
-        if (dto.role != null) existing.setRole(dto.role);
-        if (dto.profile != null) existing.setProfileLabel(dto.profile);
-    }
+        user.setUserName(dto.getUserName());
+        user.setPassword(dto.getPassword());
+        user.setRole(dto.getRole() != null ? dto.getRole() : Role.ROLE_CUSTOMER); // default is customer
+        user.setPerson(person);
 
-    public static UserResponseDto toUserResponseDto(User user) {
-        UserResponseDto dto = new UserResponseDto();
-        fillBaseResponse(user, dto);
-        return dto;
-    }
-
-    //   Helper Base User
-    private static void fillBaseResponse(User user, UserResponseDto dto) {
-        dto.id = user.getId();
-        dto.email = user.getEmail();
-        dto.userName = user.getUserName();
-        dto.firstName = user.getFirstName();
-        dto.lastName = user.getLastName();
-        dto.role = user.getRole();
-        dto.profile = user.getProfileLabel();
-    }
-
-
-    //////////////////////////  Customer mapping
-    public static User toCustomerEntity(CustomerUserRequestDto dto) {
-        User user = toUserEntity(dto); //new base user
-
-        user.setProfileLabel("CustomerProfile");
-        user.setRole(Role.ROLE_CUSTOMER);
-
-        CustomerProfile profile = new CustomerProfile();
-        profile.setPhoneNumber(dto.phoneNumber);
-
-        profile.setUser(user);
-        user.setCustomerProfile(profile);
+        person.setFirstName(dto.getFirstName());
+        person.setLastName(dto.getLastName());
+        person.setEmail(dto.getEmail());
 
         return user;
     }
 
-    public static User updateCustomerEntity(User existingCustomer, CustomerUserRequestDto dto) {
+    public static void updateUserEntity(User existing, AdminRequestDto dto) {
+        Person person = existing.getPerson();
 
-        existingCustomer.setUserName(dto.userName);
-        existingCustomer.setFirstName(dto.firstName);
-        existingCustomer.setLastName(dto.lastName);
-        existingCustomer.setEmail(dto.email);
-        existingCustomer.setPassword(dto.password);
-        existingCustomer.getCustomerProfile().setPhoneNumber(dto.phoneNumber);
-
-        return existingCustomer;
+        if (dto.getRole() != null) existing.setRole(dto.getRole());
+        if (dto.getUserName() != null) existing.setUserName(dto.getUserName());
+        if (dto.getFirstName() != null) person.setFirstName(dto.getFirstName());
+        if (dto.getLastName() != null) person.setLastName(dto.getLastName());
+        if (dto.getEmail() != null) person.setEmail(dto.getEmail());
+        if (dto.getSchoolPeriod() != null) person.getStudentProfile().setSchoolPeriod(dto.getSchoolPeriod());
+        if (dto.getPhoneNumber() != null) person.getCustomerProfile().setPhoneNumber(dto.getPhoneNumber());
     }
 
+    private static void fillBaseResponse (AdminBaseResponseDto dto, User user) {
+        dto.setId(user.getId());
+        dto.setUserName(user.getUserName());
+        dto.setFirstName(user.getPerson().getFirstName());
+        dto.setLastName(user.getPerson().getLastName());
+        dto.setEmail(user.getPerson().getEmail());
+        dto.setProfileLabel(user.getPerson().getProfileLabel());
+        dto.setRole(user.getRole());
+    }
 
-    public static CustomerUserResponseDto toCustomerResponseDto(User user) {
-        CustomerUserResponseDto dto = new CustomerUserResponseDto();
-        fillBaseResponse(user, dto);
-        dto.phoneNumber = user.getCustomerProfile().getPhoneNumber();
-
+    public static AdminBaseResponseDto toAdminBaseDto(User user) {
+        AdminBaseResponseDto dto = new AdminBaseResponseDto();
+        fillBaseResponse(dto, user);
         return dto;
     }
 
-//////////////////////    Student mapping
-
-    public static User toStudentEntity(StudentUserRequestDto dto) {
-        User user = toUserEntity(dto);
-        user.setProfileLabel("StudentProfile");
-        user.setRole(Role.ROLE_STUDENT);
-
-        StudentProfile profile = new StudentProfile();
-        profile.setSchoolPeriod(dto.schoolPeriod);
-
-        profile.setUser(user);
-        user.setStudentProfile(profile);
-
-        return user;
-    }
-
-    public static User updateStudentEntity(User existingStudent, StudentUserRequestDto dto){
-        existingStudent.setUserName(dto.userName);
-        existingStudent.setFirstName(dto.firstName);
-        existingStudent.setLastName(dto.lastName);
-        existingStudent.setEmail(dto.email);
-        existingStudent.setPassword(dto.password);
-        existingStudent.getStudentProfile().setSchoolPeriod(dto.schoolPeriod);
-
-        return existingStudent;
-    }
-
-
-    public static StudentUserResponseDto toStudentResponseDto(User user) {
-        StudentUserResponseDto dto = new StudentUserResponseDto();
-        fillBaseResponse(user, dto);
-
-            dto.schoolPeriod = user.getStudentProfile().getSchoolPeriod();
-
+    public static AdminStudentResponseDto toAdminStudentDto(User user) {
+        AdminStudentResponseDto dto = new AdminStudentResponseDto();
+        fillBaseResponse(dto, user);
+        if (user.getPerson().getStudentProfile() != null) {
+            dto.setSchoolPeriod(user.getPerson().getStudentProfile().getSchoolPeriod());
+        }
         return dto;
     }
 
+    public static AdminCustomerResponseDto toAdminCustomerDto(User user) {
+        AdminCustomerResponseDto dto = new AdminCustomerResponseDto();
+        fillBaseResponse(dto, user);
+        if (user.getPerson().getCustomerProfile() != null) {
+            dto.setPhoneNumber(user.getPerson().getCustomerProfile().getPhoneNumber());
+        }
+        return dto;
+    }
 
 }

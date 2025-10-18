@@ -1,12 +1,10 @@
-package com.projects.edustore.dto.profileDto;
+package com.projects.edustore.dto.adminDto;
 
-
-import com.projects.edustore.dto.BaseUserResponseDto;
-
-public class CustomerUserResponseDto extends BaseUserResponseDto {
+public class AdminCustomerResponseDto extends AdminBaseResponseDto {
     private String phoneNumber;
 
-    //    Getters & Setters
+    // getters & setters
+
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -15,5 +13,4 @@ public class CustomerUserResponseDto extends BaseUserResponseDto {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
 }
