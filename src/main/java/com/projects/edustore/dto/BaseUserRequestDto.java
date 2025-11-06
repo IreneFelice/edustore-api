@@ -12,6 +12,7 @@ public class BaseUserRequestDto {
     private String firstName;
     private String lastName;
     private String email;
+    @NotBlank(message = "Password is required")
     private String password;
 
 //    Getters & Setters

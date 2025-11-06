@@ -7,14 +7,15 @@ import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.CustomerProfile;
 import com.projects.edustore.model.person.Person;
 import com.projects.edustore.model.Role;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CustomerMapper {
 
     public static User toEntity(CustomerUserRequestDto dto) {
         User user = new User();
         user.setRole(Role.ROLE_CUSTOMER);
         user.setUserName(dto.getUserName());
-        user.setPassword(dto.getPassword());
 
         Person person = new Person();
         person.setFirstName(dto.getFirstName());
@@ -67,7 +68,7 @@ public class CustomerMapper {
     }
 
     /////// used by Admin through UserService -> CustomerService
-    public static void applyCustomerData(Person person, AdminRequestDto dto) {
+    public void applyCustomerData(Person person, AdminRequestDto dto) {
         CustomerProfile profile = person.getCustomerProfile();
         if (profile == null) {
             profile = new CustomerProfile();

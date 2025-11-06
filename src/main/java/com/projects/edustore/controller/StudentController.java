@@ -5,6 +5,8 @@ import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
 import com.projects.edustore.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -28,7 +30,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getBySchoolPeriod(id));
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<StudentUserResponseDto> createStudentUser(
             @RequestBody StudentUserRequestDto studentUserRequestDto) {
         return ResponseEntity.ok(studentService.createUser(studentUserRequestDto));

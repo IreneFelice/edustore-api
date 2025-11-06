@@ -1,14 +1,19 @@
 -- Users
 INSERT INTO users (user_name, password, role)
 VALUES
-    ('LucasBaas', 'adminpass', 'ROLE_ADMIN'),
+-- adminpass
+    ('LucasBaas', '$2a$10$CgaROrGRRZe.20Q/sZ4jeugUNxe123.z9gLS67p1k1Id0WLLRVrzG', 'ROLE_ADMIN'),
+-- wachtwoord123
+    ('Yoyo', '$2a$10$y/ateyDnB0fXOUCqdIGQIe0heYCwkwyobrm2AXJgINS0u3FnuXwBS', 'ROLE_STUDENT'),
+    ('Tim', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_STUDENT'),
 
-    ('Yoyo', 'wachtwoord123', 'ROLE_STUDENT'),
-    ('Tim', 'wachtwoord123', 'ROLE_STUDENT'),
+    ('Alice', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_CUSTOMER'),
+    ('Bob', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_CUSTOMER'),
+    ('Charlie', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_CUSTOMER'),
 
-    ('Alice', 'wachtwoord123', 'ROLE_CUSTOMER'),
-    ('Bob', 'wachtwoord123', 'ROLE_CUSTOMER'),
-    ('Charlie', 'wachtwoord123', 'ROLE_CUSTOMER');
+    ('Loesje', '$2a$10$y/ateyDnB0fXOUCqdIGQIe0heYCwkwyobrm2AXJgINS0u3FnuXwBS', 'ROLE_STUDENT'),
+    ('jack', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_STUDENT');
+
 
 -- Persons
 INSERT INTO persons (id, first_name, last_name, email, profile_label)
@@ -17,6 +22,8 @@ VALUES
 
     (2, 'Jane', 'Doe', 'jane@student.com', 'StudentProfile'),
     (3, 'Tim', 'Vriend', 'tim@student.com', 'StudentProfile'),
+    (7, 'Loes', 'Bergsma', 'loes@student.com', 'StudentProfile'),
+    (8, 'Jack', 'Visser', 'jack@student.com', 'StudentProfile'),
 
     (4, 'Alice', 'Malice', 'alice@customer.com', 'CustomerProfile'),
     (5, 'Bob', 'Job', 'bob@customer.com', 'CustomerProfile'),
@@ -26,7 +33,9 @@ VALUES
 INSERT INTO student_profiles (id, school_period)
 VALUES
     (2, 'Middenbouw'),
-    (3, 'Bovenbouw');
+    (3, 'Bovenbouw'),
+    (7, 'Bovenbouw'),
+    (8, 'Middenbouw');
 
 -- Customer Profiles
 INSERT INTO customer_profiles (id, phone_number)

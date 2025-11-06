@@ -1,8 +1,11 @@
 package com.projects.edustore.dto;
 
+import com.projects.edustore.model.Role;
+
 public class BaseUserResponseDto {
     private Long id;
     private String userName;
+    private Role role;
     private String firstName;
     private String lastName;
     private String email;
@@ -16,6 +19,14 @@ public class BaseUserResponseDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getUserName() {

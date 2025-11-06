@@ -23,7 +23,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<CustomerUserResponseDto> createCustomerUser(
             @RequestBody CustomerUserRequestDto customerUserRequestDto) {
         return ResponseEntity.ok(customerService.createUser(customerUserRequestDto));

@@ -1,6 +1,5 @@
 package com.projects.edustore.service;
 
-import com.projects.edustore.dto.adminDto.AdminRequestDto;
 import com.projects.edustore.dto.profileDto.CustomerUserRequestDto;
 import com.projects.edustore.dto.profileDto.CustomerUserResponseDto;
 
@@ -8,15 +7,19 @@ import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.CustomerMapper;
 import com.projects.edustore.model.User;
 import com.projects.edustore.repository.CustomerRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class CustomerService {
     private final CustomerRepository repos;
+    private final PasswordEncoder passwordEncoder;
 
-    public CustomerService(CustomerRepository repos) {
+    public CustomerService(CustomerRepository repos, PasswordEncoder passwordEncoder) {
         this.repos = repos;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User findUser(Long id) {
@@ -28,12 +31,17 @@ public class CustomerService {
         return CustomerMapper.toResponseDto(user);
     }
 
-    public CustomerUserResponseDto createUser(CustomerUserRequestDto customerUserRequestDto) {
-        User newCustomer = CustomerMapper.toEntity(customerUserRequestDto);
+    @Transactional
+    public CustomerUserResponseDto createUser(CustomerUserRequestDto dto) {
+        User newCustomer = CustomerMapper.toEntity(dto);
+
+        newCustomer.setPassword(passwordEncoder.encode(dto.getPassword()));
+
         repos.save(newCustomer);
         return CustomerMapper.toResponseDto(newCustomer);
     }
 
+    @Transactional
     public CustomerUserResponseDto updateCustomer(Long id, CustomerUserRequestDto dto) {
         User existingCustomer = findUser(id);
         if (existingCustomer.getPerson().getCustomerProfile() != null) {
@@ -48,10 +56,6 @@ public class CustomerService {
         repos.delete(existing);
     }
 
-    /////// used by Admin from UserService
-    public void attachProfile(User user, AdminRequestDto dto) {
-        CustomerMapper.applyCustomerData(user.getPerson(), dto);
-    }
 
 }
 
