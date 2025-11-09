@@ -37,7 +37,7 @@ public class JwtUtil {
                 .verifyWith(KEY)         // (replaces deprecated setSigningKey())
                 .build()
                 .parseSignedClaims(token)// decode JWT, verify signature with key
-                .getPayload();           // only after successful verification (getPayload() replaces deprecated getBody())
+                .getPayload();           // only after successful verification. (getPayload() replaces deprecated getBody())
     }
 
 

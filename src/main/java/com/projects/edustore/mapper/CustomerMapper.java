@@ -37,7 +37,6 @@ public class CustomerMapper {
         Person person = existing.getPerson();
         //user
         if (dto.getUserName() != null) existing.setUserName(dto.getUserName());
-        if (dto.getPassword() != null) existing.setPassword(dto.getPassword());
         //person
         if (dto.getFirstName() != null) person.setFirstName(dto.getFirstName());
         if (dto.getLastName() != null) person.setLastName(dto.getLastName());

@@ -39,7 +39,7 @@ public class UserService {
     public User getUserByUsername(String username) {
 
         return repos.findByUserName(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException("User", username));
     }
 
     //////////// Base User
@@ -68,7 +68,7 @@ public class UserService {
     }
 
     public AdminBaseResponseDto getByEmail(String email) {
-        User existing = repos.findByPerson_Email(email).orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        User existing = repos.findByPerson_Email(email).orElseThrow(() -> new ResourceNotFoundException("User", email));
         return switch (existing.getRole()) {
             case ROLE_STUDENT -> UserMapper.toAdminStudentDto(existing);
             case ROLE_CUSTOMER -> UserMapper.toAdminCustomerDto(existing);
@@ -97,7 +97,7 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        User existing = repos.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found."));
+        User existing = repos.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", id));
         repos.delete(existing);
     }
 
@@ -135,7 +135,7 @@ public class UserService {
 
     //   helpers
     private User findUser(Long id) {
-        return repos.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found."));
+        return repos.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", id));
     }
 
 

@@ -2,12 +2,15 @@ package com.projects.edustore.service;
 
 import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
 import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
+import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.StudentMapper;
+import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
 import com.projects.edustore.repository.StudentRepository;
 
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,24 +28,40 @@ public class StudentService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User findStudent(Long id) {
-        return repos.findByIdAndPerson_ProfileLabel(id, "StudentProfile")
-                .orElseThrow(() -> new ResourceNotFoundException("Student " + id + " not found."));
+    public User getUserByUsername(String username) {
+        return repos.findByUserName(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User", username));
     }
+
+
+    public User findStudent(Long id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = getUserByUsername(username);
+        boolean isStudent = currentUser.getPerson().getProfileLabel().equals("StudentProfile");
+
+        // if role is not admin and id does not match: forbidden
+        if (currentUser.getRole() != Role.ROLE_ADMIN && !id.equals(currentUser.getId())) {
+            throw new ForbiddenActionException("You are not allowed to access this user's information");
+        }
+        // if role is admin and id belongs to student: return user from repos
+        if (currentUser.getRole() == Role.ROLE_ADMIN) {
+            return repos.findByIdAndPerson_ProfileLabel(id, "StudentProfile")
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer", id));
+        }
+        // if id does match and belongs to student: return currentUser
+        if (isStudent) {
+            return currentUser;
+        } else {
+            throw new ResourceNotFoundException("Student", id);
+        }
+    }
+
+
     public StudentUserResponseDto getStudentById(Long id) {
         User user = findStudent(id);
-
         return StudentMapper.toResponseDto(user);
     }
 
-//    public List<StudentUserResponseDto> getAllStudents() {
-//        List<User> students = repos.findByPerson_ProfileLabel("StudentProfile");
-//        List<StudentUserResponseDto> dtos = new ArrayList<>();
-//        for (User user : students) {
-//            dtos.add(StudentMapper.toResponseDto(user));
-//        }
-//        return dtos;
-//    }
 
 
     public List<StudentUserResponseDto> getBySchoolPeriod(Long id) {
@@ -70,7 +89,12 @@ public class StudentService {
     @Transactional
     public StudentUserResponseDto updateEntity(Long id, StudentUserRequestDto dto) {
         User existingStudent = findStudent(id);
+
         StudentMapper.updateEntity(existingStudent, dto);
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            existingStudent.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
         repos.save(existingStudent);
         return StudentMapper.toResponseDto(existingStudent);
     }

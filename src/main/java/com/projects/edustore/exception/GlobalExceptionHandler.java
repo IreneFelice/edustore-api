@@ -13,4 +13,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> resourceNotFoundException(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    @ExceptionHandler(value = ForbiddenActionException.class)
+    public ResponseEntity<Object> forbiddenActionException(ForbiddenActionException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
 }
