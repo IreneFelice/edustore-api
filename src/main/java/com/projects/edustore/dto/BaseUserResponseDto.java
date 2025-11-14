@@ -1,5 +1,6 @@
 package com.projects.edustore.dto;
 
+
 public class BaseUserResponseDto {
     private Long id;
     private String userName;

@@ -6,9 +6,7 @@ import com.projects.edustore.model.Role;
 public class AdminBaseResponseDto extends BaseUserResponseDto {
     private Role role;
 
-//    Getters & Setters
-
-    public Role getRole() {
+        public Role getRole() {
         return role;
     }
 

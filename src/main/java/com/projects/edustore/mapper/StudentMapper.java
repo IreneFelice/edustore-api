@@ -7,14 +7,15 @@ import com.projects.edustore.model.Role;
 import com.projects.edustore.model.person.Person;
 import com.projects.edustore.model.person.StudentProfile;
 import com.projects.edustore.model.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class StudentMapper {
 
     public static User toEntity(StudentUserRequestDto dto) {
         User user = new User();
         user.setRole(Role.ROLE_STUDENT);
         user.setUserName(dto.getUserName());
-        user.setPassword(dto.getPassword());
 
         Person person = new Person();
         person.setFirstName(dto.getFirstName());
@@ -36,7 +37,6 @@ public class StudentMapper {
         Person person = existing.getPerson();
         //user
         if (dto.getUserName() != null) existing.setUserName(dto.getUserName());
-        if (dto.getPassword() != null) existing.setPassword(dto.getPassword());
         //person
         if (dto.getFirstName() != null) person.setFirstName(dto.getFirstName());
         if (dto.getLastName() != null) person.setLastName(dto.getLastName());
@@ -67,7 +67,7 @@ public class StudentMapper {
     }
 
     /////// used by Admin through UserService -> StudentService
-    public static void applyStudentData(Person person, AdminRequestDto dto) {
+    public void applyStudentData(Person person, AdminRequestDto dto) {
         StudentProfile profile = person.getStudentProfile();
         if (profile == null) {
             profile = new StudentProfile();

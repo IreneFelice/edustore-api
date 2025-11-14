@@ -1,14 +1,17 @@
 package com.projects.edustore.controller;
 
+import com.projects.edustore.dto.BaseUserResponseDto;
 import com.projects.edustore.dto.adminDto.AdminRequestDto;
 import com.projects.edustore.dto.adminDto.AdminBaseResponseDto;
 import com.projects.edustore.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("admin/users")
 public class UserController {
 
@@ -59,15 +62,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getByEmail(email));
     }
 
-    @PostMapping
-    public ResponseEntity<AdminBaseResponseDto> createUser(
+    @PostMapping("/register")
+    public ResponseEntity<BaseUserResponseDto> createUser(
             @RequestBody AdminRequestDto adminRequestDto) {
-
         return ResponseEntity.ok(userService.createUser(adminRequestDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AdminBaseResponseDto> updateUser(
+    public ResponseEntity<BaseUserResponseDto> updateUser(
             @PathVariable Long id,
             @RequestBody AdminRequestDto AdminRequestDto) {
         return ResponseEntity.ok(userService.updateUser(id, AdminRequestDto));

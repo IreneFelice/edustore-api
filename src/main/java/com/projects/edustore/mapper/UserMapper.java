@@ -19,7 +19,6 @@ public class UserMapper {
         Person person = new Person();
 
         user.setUserName(dto.getUserName());
-        user.setPassword(dto.getPassword());
         user.setRole(dto.getRole() != null ? dto.getRole() : Role.ROLE_CUSTOMER); // default is customer
         user.setPerson(person);
 
