@@ -1,6 +1,6 @@
 package com.projects.edustore.model.person;
 
-import com.projects.edustore.model.User;
+
 import jakarta.persistence.*;
 
 @Entity

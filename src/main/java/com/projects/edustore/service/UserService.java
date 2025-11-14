@@ -3,7 +3,6 @@ package com.projects.edustore.service;
 import com.projects.edustore.dto.BaseUserResponseDto;
 import com.projects.edustore.dto.adminDto.AdminBaseResponseDto;
 import com.projects.edustore.dto.adminDto.AdminRequestDto;
-
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.CustomerMapper;
 import com.projects.edustore.mapper.StudentMapper;
@@ -14,7 +13,6 @@ import com.projects.edustore.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,15 +29,6 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
         this.studentMapper = studentMapper;
         this.customerMapper = customerMapper;
-    }
-
-
-    //////////// Security getUserDetails
-
-    public User getUserByUsername(String username) {
-
-        return repos.findByUserName(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User", username));
     }
 
     //////////// Base User
@@ -80,7 +69,10 @@ public class UserService {
     public BaseUserResponseDto updateUser(Long id, AdminRequestDto dto) {
         User existing = findUser(id);
         UserMapper.updateUserEntity(existing, dto);
-        existing.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            existing.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
 
         //attach profile based on role (helper)
         return attachProfileForRole(existing, dto);
@@ -150,7 +142,6 @@ public class UserService {
             default ->
                     throw new IllegalArgumentException("Unsupported role: " + user.getRole() + ". Role must be STUDENT, CUSTOMER or ADMIN");
         }
-
 
         repos.save(user);
 

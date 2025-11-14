@@ -1,5 +1,7 @@
 package com.projects.edustore.security;
+import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.model.User;
+import com.projects.edustore.repository.UserRepository;
 import com.projects.edustore.service.UserService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,17 +14,17 @@ import java.util.List;
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
-    private final UserService userService;
+    private final UserRepository repos;
 
-    public CustomUserDetailService(UserService userService) {
-        this.userService = userService;
+    public CustomUserDetailService(UserRepository repos) {
+        this.repos = repos;
     }
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = userService.getUserByUsername(username);
-
+    public UserDetails loadUserByUsername(String userName) {
+        User user = repos.findByUserName(userName)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userName));
 
         List<GrantedAuthority> authorities = List.of(
                 new SimpleGrantedAuthority(user.getRole().name())

@@ -4,6 +4,7 @@ import com.projects.edustore.dto.profileDto.CustomerUserRequestDto;
 import com.projects.edustore.dto.profileDto.CustomerUserResponseDto;
 import com.projects.edustore.service.CustomerService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 

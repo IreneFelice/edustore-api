@@ -2,7 +2,6 @@ package com.projects.edustore.service;
 
 import com.projects.edustore.dto.profileDto.CustomerUserRequestDto;
 import com.projects.edustore.dto.profileDto.CustomerUserResponseDto;
-
 import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.CustomerMapper;
@@ -25,27 +24,33 @@ public class CustomerService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User getUserByUsername(String username) {
-        return repos.findByUserName(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User", username));
+    public User getUserByUserName(String userName) {
+        return repos.findByUserName(userName)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userName));
     }
 
     public User findCustomer(Long id) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User currentUser = getUserByUsername(username);
-        boolean isCustomer = currentUser.getPerson().getProfileLabel().equals("CustomerProfile");
+        // get logged-in userName from SecurityContext
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        // if role is not admin and id does not match: forbidden
+        // get full (current) user
+        User currentUser = getUserByUserName(userName);
+        boolean isCustomer = currentUser.getPerson() != null &&
+                "CustomerProfile".equals(currentUser.getPerson().getProfileLabel());
+
+        // forbidden: if not admin and requests other user id
         if (currentUser.getRole() != Role.ROLE_ADMIN && !id.equals(currentUser.getId())) {
             throw new ForbiddenActionException("You are not allowed to access this user's information");
         }
-        // if role is admin and id belongs to customer: return user from repos
+
+        // Admin request by customer id
         if (currentUser.getRole() == Role.ROLE_ADMIN) {
 
             return repos.findByIdAndPerson_ProfileLabel(id, "CustomerProfile")
                     .orElseThrow(() -> new ResourceNotFoundException("Customer", id));
         }
-        // if id does match and belongs to customer: return currentUser
+
+        // Customer request by own id
         if (isCustomer) {
             return currentUser;
         } else {
@@ -60,9 +65,10 @@ public class CustomerService {
 
     @Transactional
     public CustomerUserResponseDto createUser(CustomerUserRequestDto dto) {
-        User newCustomer = CustomerMapper.toEntity(dto);
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
 
-        newCustomer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        User newCustomer = CustomerMapper.toEntity(dto);
+        newCustomer.setPassword(encodedPassword);
 
         repos.save(newCustomer);
         return CustomerMapper.toResponseDto(newCustomer);

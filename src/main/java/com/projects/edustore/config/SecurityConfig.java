@@ -1,5 +1,7 @@
 package com.projects.edustore.config;
 
+import com.projects.edustore.exception.AuthenticationFailedException;
+import com.projects.edustore.exception.CustomAccessDeniedHandler;
 import com.projects.edustore.security.CustomUserDetailService;
 import com.projects.edustore.security.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
@@ -22,10 +24,14 @@ public class SecurityConfig {
 
     public final CustomUserDetailService customUserDetailService;
     private final JwtRequestFilter jwtRequestFilter;
+    private final AuthenticationFailedException.CustomJwtAuthEntryPoint jwtAuthEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    public SecurityConfig(CustomUserDetailService customUserDetailService, JwtRequestFilter jwtRequestFilter) {
+    public SecurityConfig(CustomUserDetailService customUserDetailService, JwtRequestFilter jwtRequestFilter, AuthenticationFailedException.CustomJwtAuthEntryPoint jwtAuthEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler) {
         this.customUserDetailService = customUserDetailService;
         this.jwtRequestFilter = jwtRequestFilter;
+        this.jwtAuthEntryPoint = jwtAuthEntryPoint;
+        this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
 
 
@@ -49,14 +55,16 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable) // do not use basic auth
                 .cors(Customizer.withDefaults()) // use CorsConfig
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthEntryPoint) // not allowed by personal rights
+                        .accessDeniedHandler(customAccessDeniedHandler)) // no valid token
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/authenticate").permitAll()
+                        .requestMatchers("/authenticate", "/customers/register","/students/register").permitAll()
                         .requestMatchers("/authenticated").hasAnyRole("STUDENT", "CUSTOMER", "ADMIN")
                         .requestMatchers("/students/**").hasAnyRole("STUDENT", "ADMIN")
-                        .requestMatchers("/customers").hasAnyRole("STUDENT", "ADMIN")
                         .requestMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
-                        .requestMatchers("/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().denyAll());
 
         return http.build();

@@ -22,9 +22,9 @@ public class JwtUtil {
     }
 
     // put data claims in payload of JWT String
-    public String generateToken(String username) {
+    public String generateToken(String userName) {
         return Jwts.builder()
-                .subject(username)
+                .subject(userName)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(KEY, ALGORITHM) //signature
@@ -34,10 +34,10 @@ public class JwtUtil {
     // Read and verify token
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(KEY)         // (replaces deprecated setSigningKey())
+                .verifyWith(KEY)
                 .build()
                 .parseSignedClaims(token)// decode JWT, verify signature with key
-                .getPayload();           // only after successful verification. (getPayload() replaces deprecated getBody())
+                .getPayload();           // only after successful verification
     }
 
 
@@ -50,10 +50,8 @@ public class JwtUtil {
     }
 
 
-
-
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token); //also key verification through extractAllClaims
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        final String userName = extractUsername(token); //also key verification through extractAllClaims
+        return userName.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 }

@@ -9,8 +9,8 @@ public class AuthRequestDto {
     @NotBlank(message = "Password is required")
     private String password;
 
-    public AuthRequestDto(String username,String password) {
-        this.userName = username;
+    public AuthRequestDto(String userName,String password) {
+        this.userName = userName;
         this.password = password;
     }
 

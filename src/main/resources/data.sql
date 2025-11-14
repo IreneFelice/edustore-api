@@ -2,17 +2,29 @@
 INSERT INTO users (user_name, password, role)
 VALUES
 -- adminpass
-    ('LucasBaas', '$2a$10$CgaROrGRRZe.20Q/sZ4jeugUNxe123.z9gLS67p1k1Id0WLLRVrzG', 'ROLE_ADMIN'),
+--     ('LucasBaas', '$2a$10$CgaROrGRRZe.20Q/sZ4jeugUNxe123.z9gLS67p1k1Id0WLLRVrzG', 'ROLE_ADMIN'),
+-- -- wachtwoord123
+--     ('Yoyo', '$2a$10$y/ateyDnB0fXOUCqdIGQIe0heYCwkwyobrm2AXJgINS0u3FnuXwBS', 'ROLE_STUDENT'),
+--     ('Tim', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_STUDENT'),
+--
+--     ('Alice', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_CUSTOMER'),
+--     ('Bob', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_CUSTOMER'),
+--     ('Charlie', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_CUSTOMER'),
+--
+--     ('Loesje', '$2a$10$y/ateyDnB0fXOUCqdIGQIe0heYCwkwyobrm2AXJgINS0u3FnuXwBS', 'ROLE_STUDENT'),
+--     ('jack', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_STUDENT');
+
+('LucasBaas', '$2y$10$2MKeX/xCH1l2JqScMvvPpecA0FTSuQ1h01ds07rOzoHz0bTAHjbfW', 'ROLE_ADMIN'),
 -- wachtwoord123
-    ('Yoyo', '$2a$10$y/ateyDnB0fXOUCqdIGQIe0heYCwkwyobrm2AXJgINS0u3FnuXwBS', 'ROLE_STUDENT'),
-    ('Tim', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_STUDENT'),
+('Yoyo', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT'),
+('Tim', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT'),
 
-    ('Alice', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_CUSTOMER'),
-    ('Bob', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_CUSTOMER'),
-    ('Charlie', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_CUSTOMER'),
+('Alice', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_CUSTOMER'),
+('Bob', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_CUSTOMER'),
+('Charlie', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_CUSTOMER'),
 
-    ('Loesje', '$2a$10$y/ateyDnB0fXOUCqdIGQIe0heYCwkwyobrm2AXJgINS0u3FnuXwBS', 'ROLE_STUDENT'),
-    ('jack', '$2a$10$lngvqDPV2LpYoYpVc7g2Gesum0czO1krMvqxTdgrk4Y/2sSGdfUwG', 'ROLE_STUDENT');
+('Loesje', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT'),
+('jack', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT');
 
 
 -- Persons

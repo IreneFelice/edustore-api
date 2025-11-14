@@ -5,11 +5,13 @@ import com.projects.edustore.dto.adminDto.AdminRequestDto;
 import com.projects.edustore.dto.adminDto.AdminBaseResponseDto;
 import com.projects.edustore.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("admin/users")
 public class UserController {
 
@@ -18,7 +20,6 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
 
     @GetMapping
     public ResponseEntity<List<AdminBaseResponseDto>> getAllUsers() {
