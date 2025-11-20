@@ -18,7 +18,6 @@ public class Person {
     private String firstName;
     private String lastName;
     private String email;
-    private String profileLabel;
 
 
     @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
@@ -32,14 +31,19 @@ public class Person {
 
     //    constructors
 
-    public Person() {
+    protected Person() {
     }
 
-    protected Person(String firstName, String lastName, String profileLabel, String email) {
+    protected Person(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.profileLabel = profileLabel;
         this.email = email;
+    }
+
+    public static Person create(User user, String firstName, String lastName, String email) {
+        Person person = new Person(firstName, lastName, email);
+        person.setUser(user);
+        return person;
     }
 
 
@@ -58,9 +62,9 @@ public class Person {
         return lastName;
     }
 
-    public String getProfileLabel() {
-        return profileLabel;
-    }
+//    public String getProfileLabel() {
+//        return profileLabel;
+//    }
 
     public String getEmail() {
         return email;
@@ -79,7 +83,6 @@ public class Person {
     }
 
 
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -92,9 +95,9 @@ public class Person {
         this.email = email;
     }
 
-    public void setProfileLabel(String profileLabel) {
-        this.profileLabel = profileLabel;
-    }
+//    public void setProfileLabel(String profileLabel) {
+//        this.profileLabel = profileLabel;
+//    }
 
 
     public void setUser(User user) {
@@ -104,7 +107,6 @@ public class Person {
         }
     }
 
-    //    Connect profile to person
     public void setStudentProfile(StudentProfile studentProfile) {
         this.studentProfile = studentProfile;
         if (studentProfile != null && studentProfile.getPerson() != this) {
@@ -117,6 +119,7 @@ public class Person {
         if (customerProfile != null && customerProfile.getPerson() != this)
             customerProfile.setPerson(this);
     }
+}
 
 //    public void setAdminProfile(AdminProfile adminProfile) {
 //        this.adminProfile = adminProfile;
@@ -124,4 +127,4 @@ public class Person {
 //            adminProfile.setPerson(this);
 //        }
 //    }
-}
+

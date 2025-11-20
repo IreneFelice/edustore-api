@@ -25,8 +25,6 @@ public class User {
     private Person person;
 
 
-
-
     public User() {
     }
 
@@ -34,6 +32,7 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.role = role;
+
     }
 
     //    getters and setters
@@ -50,7 +49,6 @@ public class User {
     }
 
 
-
     public String getPassword() {
         return password;
     }
@@ -58,8 +56,6 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-
 
     public Role getRole() {
         return role;
@@ -75,7 +71,7 @@ public class User {
 
     public void setPerson(Person person) {
         this.person = person;
-        if (person != null && person.getUser() != this) {
+        if (person != null) {
             person.setUser(this);
         }
     }

@@ -3,6 +3,7 @@ package com.projects.edustore.controller;
 import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
 import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
 import com.projects.edustore.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +32,14 @@ public class StudentController {
 
     @PostMapping("/register")
     public ResponseEntity<StudentUserResponseDto> createStudentUser(
-            @RequestBody StudentUserRequestDto studentUserRequestDto) {
+            @Valid @RequestBody StudentUserRequestDto studentUserRequestDto) {
         return ResponseEntity.ok(studentService.createUser(studentUserRequestDto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<StudentUserResponseDto> updateStudent(
             @PathVariable Long id,
-            @RequestBody StudentUserRequestDto dto) {
+            @Valid @RequestBody StudentUserRequestDto dto) {
         return ResponseEntity.ok(studentService.updateEntity(id, dto));
     }
 

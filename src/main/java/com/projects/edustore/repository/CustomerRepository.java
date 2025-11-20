@@ -10,5 +10,6 @@ public interface CustomerRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUserName(String username);
 
-    Optional<User> findByIdAndPerson_ProfileLabel(Long id, String profile_label);
-}
+    Optional<User> findById(Long id);
+
+    }

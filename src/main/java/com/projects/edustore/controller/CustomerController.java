@@ -3,8 +3,8 @@ package com.projects.edustore.controller;
 import com.projects.edustore.dto.profileDto.CustomerUserRequestDto;
 import com.projects.edustore.dto.profileDto.CustomerUserResponseDto;
 import com.projects.edustore.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -26,14 +26,14 @@ public class CustomerController {
 
     @PostMapping("/register")
     public ResponseEntity<CustomerUserResponseDto> createCustomerUser(
-            @RequestBody CustomerUserRequestDto customerUserRequestDto) {
+            @Valid @RequestBody CustomerUserRequestDto customerUserRequestDto) {
         return ResponseEntity.ok(customerService.createUser(customerUserRequestDto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CustomerUserResponseDto> updateCustomer(
             @PathVariable Long id,
-            @RequestBody CustomerUserRequestDto dto) {
+            @Valid @RequestBody CustomerUserRequestDto dto) {
         return ResponseEntity.ok(customerService.updateCustomer(id, dto));
     }
 
