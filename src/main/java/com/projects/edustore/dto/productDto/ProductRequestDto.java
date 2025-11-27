@@ -1,49 +1,18 @@
-package com.projects.edustore.model.products;
+package com.projects.edustore.dto.productDto;
 
+import com.projects.edustore.model.products.StockType;
 
-import com.projects.edustore.model.person.StudentProfile;
-import jakarta.persistence.*;
-
-import javax.naming.Name;
 import java.math.BigDecimal;
 
-
-@Entity
-@Table(name = "products")
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ProductRequestDto {
 
     private String name;
     private String description;
     private BigDecimal price;
-
     private int stockQuantity;
     private BigDecimal costPrice;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private StockType stockType;
 
-//    @ManyToOne
-//    @JoinColumn(name = "maker_id")
-//    private StudentProfile maker;
-
-//    @OneToMany(mappedBy = "product")
-//    private List<OrderItem> orderItems = new ArrayList<>();
-
-
-
-    public Product() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -92,20 +61,5 @@ public class Product {
     public void setStockType(StockType stockType) {
         this.stockType = stockType;
     }
-
-    //    public StudentProfile getMaker() {
-//        return maker;
-//    }
-//
-//    public void setMaker(StudentProfile maker) {
-//        this.maker = maker;
-//    }
-
-//    public List<OrderItem> getOrderItems() {
-//        return orderItems;
-//    }
-//
-//    public void setOrderItems(List<OrderItem> orderItems) {
-//        this.orderItems = orderItems;
-//    }
 }
+

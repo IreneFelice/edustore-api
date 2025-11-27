@@ -60,9 +60,9 @@ public class SecurityConfig {
                         .accessDeniedHandler(customAccessDeniedHandler)) // no valid token
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/authenticate", "/customers/register","/students/register").permitAll()
+                        .requestMatchers("/authenticate", "/customers/register","/students/register", "/shop").permitAll()
                         .requestMatchers("/authenticated").hasAnyRole("STUDENT", "CUSTOMER", "ADMIN")
-                        .requestMatchers("/students/**").hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers("/students/**", "/shop/students").hasAnyRole("STUDENT", "ADMIN")
                         .requestMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().denyAll());

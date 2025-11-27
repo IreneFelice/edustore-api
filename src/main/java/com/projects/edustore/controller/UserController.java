@@ -4,7 +4,6 @@ import com.projects.edustore.dto.BaseUserResponseDto;
 import com.projects.edustore.dto.profileDto.CustomerUserResponseDto;
 import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
 import com.projects.edustore.service.UserService;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
