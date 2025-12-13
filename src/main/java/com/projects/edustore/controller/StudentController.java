@@ -1,5 +1,6 @@
 package com.projects.edustore.controller;
 
+import com.projects.edustore.dto.productDto.ProductStudentResponseDto;
 import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
 import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
 import com.projects.edustore.service.StudentService;
@@ -28,6 +29,11 @@ public class StudentController {
     @GetMapping("/{id}/schoolperiod")
     public ResponseEntity<List<StudentUserResponseDto>> getStudentsBySharedSchoolPeriod(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.getBySchoolPeriod(id));
+    }
+
+    @GetMapping("/{id}/products")
+    public ResponseEntity<List<ProductStudentResponseDto>> getProductsByStudentId(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getProducts(id));
     }
 
     @PostMapping("/register")

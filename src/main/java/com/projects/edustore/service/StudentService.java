@@ -1,10 +1,13 @@
 package com.projects.edustore.service;
 
+import com.projects.edustore.dto.productDto.ProductStudentResponseDto;
 import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
 import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
+import com.projects.edustore.mapper.ProductMapper;
 import com.projects.edustore.mapper.StudentMapper;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
+import com.projects.edustore.model.products.Product;
 import com.projects.edustore.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,6 +50,17 @@ public class StudentService {
         }
         return dtos;
     }
+    public List<ProductStudentResponseDto> getProducts(Long id) {
+        User user = findStudent(id);
+        List<Product> products = user.getPerson().getStudentProfile().getProducts();
+
+        List<ProductStudentResponseDto> dtos = new ArrayList<>();
+        for (Product product : products) {
+            dtos.add(ProductMapper.toStudentResponseDto(product));
+        }  System.out.println(dtos);
+        return dtos;
+    }
+
 
     @Transactional
     public StudentUserResponseDto createUser(StudentUserRequestDto dto) {

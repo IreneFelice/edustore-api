@@ -1,7 +1,5 @@
 package com.projects.edustore.dto.productDto;
 
-import com.projects.edustore.model.products.StockType;
-
 import java.math.BigDecimal;
 
 public class ProductRequestDto {
@@ -11,7 +9,7 @@ public class ProductRequestDto {
     private BigDecimal price;
     private int stockQuantity;
     private BigDecimal costPrice;
-    private StockType stockType;
+    private Long makerId;
 
 
     public String getName() {
@@ -54,12 +52,12 @@ public class ProductRequestDto {
         this.costPrice = costPrice;
     }
 
-    public StockType getStockType() {
-        return stockType;
+    public Long getMakerId() {
+        return makerId;
     }
 
-    public void setStockType(StockType stockType) {
-        this.stockType = stockType;
+    public void setMakerId(Long makerId) {
+        this.makerId = makerId;
     }
 }
 

@@ -1,9 +1,9 @@
 package com.projects.edustore.model.person;
-//import com.projects.edustore.model.products.Order;
+import com.projects.edustore.model.products.Order;
 import jakarta.persistence.*;
 
-//import java.util.ArrayList;
-//import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "customer_profiles")
@@ -17,21 +17,19 @@ public class CustomerProfile {
     @JoinColumn(name = "id")
     private Person person;
 
-    //    special fields for customers
     private String phoneNumber;
 
-//    @OneToMany(mappedBy = "customer")
-//    private List<Order> orderList = new ArrayList<>();
+    @OneToMany(mappedBy = "customer")
+    private final List<Order> orders = new ArrayList<>();
 
 //    constructors
 
     protected CustomerProfile() {
     }
 
-    protected CustomerProfile(Person person, String phoneNumber) {  //, List<Order> orderList
+    protected CustomerProfile(Person person, String phoneNumber) {
         this.person = person;
         this.phoneNumber = phoneNumber;
-//        this.orderList = orderList;
     }
 
     public static CustomerProfile create(Person person, String phoneNumber) {
@@ -41,14 +39,6 @@ public class CustomerProfile {
     }
 
 //    getters and setters
-
-//    public List<Order> getOrderList() {
-//        return orderList;
-//    }
-//
-//    public void setOrders(List<Order> orderList) {
-//        this.orderList = orderList;
-//    }
 
     public Long getId() {
         return id;
@@ -61,6 +51,7 @@ public class CustomerProfile {
         return phoneNumber;
     }
 
+
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
@@ -68,6 +59,21 @@ public class CustomerProfile {
     protected void setPerson(Person person) {
         this.person = person;
     }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void addOrder(Order order) {
+        orders.add(order);
+        order.setCustomer(this);
+    }
+
+    public void removeOrder(Order order) {
+        orders.remove(order);
+        order.setCustomer(null);
+    }
+
 
 }
 

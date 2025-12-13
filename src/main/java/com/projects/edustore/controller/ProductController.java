@@ -2,44 +2,50 @@ package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.productDto.ProductRequestDto;
 import com.projects.edustore.dto.productDto.ProductCustomerResponseDto;
-import com.projects.edustore.mapper.ProductMapper;
-import com.projects.edustore.model.products.Product;
+import com.projects.edustore.dto.productDto.ProductStudentResponseDto;
 import com.projects.edustore.repository.ProductRepository;
+import com.projects.edustore.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/shop")
 public class ProductController {
     ProductRepository repos;
+    ProductService productService;
 
-    public ProductController(ProductRepository repos) {
+    public ProductController(ProductRepository repos, ProductService productService) {
         this.repos = repos;
+        this.productService = productService;
     }
 
     @GetMapping
     public ResponseEntity<List<ProductCustomerResponseDto>> getAllProducts() {
-         List<Product> products = repos.findAll();
-
-        List<ProductCustomerResponseDto> dtos = new ArrayList<>();
-        for (Product product : products) {
-            dtos.add(ProductMapper.toResponseDto(product));
-        }
-        return ResponseEntity.ok(dtos);
+        return ResponseEntity.ok(productService.getAllProducts());
     }
+
+    @GetMapping("/period/{schoolPeriod}")
+    public ResponseEntity<List<ProductCustomerResponseDto>> getProductsBySchoolPeriod(@PathVariable String schoolPeriod) {
+        return ResponseEntity.ok(productService.getProductsBySchoolPeriod(schoolPeriod));
+    }
+
 
     // Students only
 
+     @PostMapping("/students/{id}")
+        public ResponseEntity<ProductStudentResponseDto> createProduct(
+                @PathVariable Long id,
+                @RequestBody ProductRequestDto dto) {
+           return ResponseEntity.ok(productService.createNewProduct(dto, id));
+        }
 
-    @PostMapping("/students")
-    public ResponseEntity<ProductCustomerResponseDto> createProduct(@RequestBody ProductRequestDto dto) {
-       Product newProduct = ProductMapper.toEntity(dto);
-       repos.save(newProduct);
-       return ResponseEntity.ok(ProductMapper.toResponseDto(newProduct));
+    @GetMapping("/students/{id}")
+    public ResponseEntity<List<ProductStudentResponseDto>> getProductsByMaker(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductsByMaker(id));
     }
+
+
 }
 

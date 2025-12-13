@@ -9,17 +9,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
+// Search user with given id, is the current user allowed to get info and check if their role matches the expected role.
+// Example: Does user with id 52 exist, is this also the current user OR an admin and is it indeed a student?
+// Return appropriate message.
 public class WhoCanSeeWhoService {
 
     private final UserRepository repos;
-
 
     public WhoCanSeeWhoService(UserRepository repos) {
         this.repos = repos;
     }
 
     public User getSearchedUser(Long id, Role expectedRole, String roleName) {
-
         String userName = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
@@ -37,7 +38,7 @@ public class WhoCanSeeWhoService {
             );
         }
 
-        //user with this id could be found or not
+        //user with this id could be found (or not)
         User searchedUser = repos.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(roleName, id));
 
@@ -45,7 +46,7 @@ public class WhoCanSeeWhoService {
         if (expectedRole != null && searchedUser.getRole() != expectedRole) {
             throw new ResourceNotFoundException(roleName, id);
         }
-
+        //found user with expected role does exist
         return searchedUser;
     }
 }

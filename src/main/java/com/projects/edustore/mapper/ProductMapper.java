@@ -2,13 +2,16 @@ package com.projects.edustore.mapper;
 
 import com.projects.edustore.dto.productDto.ProductRequestDto;
 import com.projects.edustore.dto.productDto.ProductCustomerResponseDto;
+import com.projects.edustore.dto.productDto.ProductStudentResponseDto;
+import com.projects.edustore.model.User;
+import com.projects.edustore.model.person.StudentProfile;
 import com.projects.edustore.model.products.Product;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductMapper {
 
-    public static Product toEntity(ProductRequestDto dto){
+    public static Product toEntity(ProductRequestDto dto, StudentProfile student){
         Product product = new Product();
 
         product.setName(dto.getName());
@@ -16,11 +19,11 @@ public class ProductMapper {
         product.setPrice(dto.getPrice());
         product.setStockQuantity(dto.getStockQuantity());
         product.setCostPrice(dto.getCostPrice());
-        product.setStockType(dto.getStockType());
+        product.setMaker(student);
         return product;
     }
 
-    public static ProductCustomerResponseDto toResponseDto(Product product){
+    public static ProductCustomerResponseDto toCustomerResponseDto(Product product){
         ProductCustomerResponseDto dto = new ProductCustomerResponseDto();
 
         dto.setId(product.getId());
@@ -30,4 +33,19 @@ public class ProductMapper {
 
         return dto;
     }
+
+    public static ProductStudentResponseDto toStudentResponseDto(Product product){
+        ProductStudentResponseDto dto = new ProductStudentResponseDto();
+
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+
+        dto.setStockQuanity(product.getStockQuantity());
+        dto.setCostPrice(product.getCostPrice());
+        dto.setMakerId(product.getMaker().getId());
+        return dto;
+    }
+
 }

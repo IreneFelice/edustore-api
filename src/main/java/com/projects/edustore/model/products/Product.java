@@ -4,8 +4,9 @@ package com.projects.edustore.model.products;
 import com.projects.edustore.model.person.StudentProfile;
 import jakarta.persistence.*;
 
-import javax.naming.Name;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -21,19 +22,11 @@ public class Product {
 
     private int stockQuantity;
     private BigDecimal costPrice;
+    private Integer soldAmount;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private StockType stockType;
-
-//    @ManyToOne
-//    @JoinColumn(name = "maker_id")
-//    private StudentProfile maker;
-
-//    @OneToMany(mappedBy = "product")
-//    private List<OrderItem> orderItems = new ArrayList<>();
-
-
+    @ManyToOne
+    @JoinColumn(name = "maker_id")
+    private StudentProfile maker;
 
     public Product() {}
 
@@ -41,9 +34,6 @@ public class Product {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -85,27 +75,19 @@ public class Product {
         this.costPrice = costPrice;
     }
 
-    public StockType getStockType() {
-        return stockType;
+        public StudentProfile getMaker() {
+        return maker;
     }
 
-    public void setStockType(StockType stockType) {
-        this.stockType = stockType;
+    public void setMaker(StudentProfile maker) {
+        this.maker = maker;
     }
 
-    //    public StudentProfile getMaker() {
-//        return maker;
-//    }
-//
-//    public void setMaker(StudentProfile maker) {
-//        this.maker = maker;
-//    }
+    public Integer getSoldAmount() {
+        return soldAmount;
+    }
 
-//    public List<OrderItem> getOrderItems() {
-//        return orderItems;
-//    }
-//
-//    public void setOrderItems(List<OrderItem> orderItems) {
-//        this.orderItems = orderItems;
-//    }
+    public void setSoldAmount(Integer soldAmount) {
+        this.soldAmount = soldAmount;
+    }
 }
