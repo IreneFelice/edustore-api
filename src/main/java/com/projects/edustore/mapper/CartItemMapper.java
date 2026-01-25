@@ -19,7 +19,6 @@ public class CartItemMapper {
         response.setProductId(item.getProduct().getId());
         response.setProductName(item.getProduct().getName());
         response.setQuantity(item.getQuantity());
-
         return response;
     }
 

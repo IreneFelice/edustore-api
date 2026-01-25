@@ -19,12 +19,12 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
-    public ProductService productService;
+//    public ProductService productService;
     public CartItemService cartItemService;
 
     public CustomerController (CustomerService customerService, ProductService productService, CartItemService cartItemService){
         this.customerService = customerService;
-        this.productService = productService;
+//        this.productService = productService;
         this.cartItemService = cartItemService;
     }
 

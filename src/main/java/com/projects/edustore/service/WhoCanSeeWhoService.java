@@ -9,9 +9,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
-// Search user with given id, is the current user allowed to get info and check if their role matches the expected role.
-// Example: Does user with id 52 exist, is this also the current user OR an admin and is it indeed a student?
-// Return appropriate message.
+/*
+  This service verifies:
+  - who the currently authenticated user is
+  - if they are allowed to access requested user (self or admin)
+  - if the requested user exists
+  - if the requested user has the expected role
+*/
+
 public class WhoCanSeeWhoService {
 
     private final UserRepository repos;
@@ -20,7 +25,8 @@ public class WhoCanSeeWhoService {
         this.repos = repos;
     }
 
-    public User getSearchedUser(Long id, Role expectedRole, String roleName) {
+    public User authorizeUserAccess(Long id, Role expectedRole, String roleName) {
+
         String userName = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
@@ -28,25 +34,26 @@ public class WhoCanSeeWhoService {
         User currentUser = repos.findByUserName(userName)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userName));
 
+
         boolean isAdmin = currentUser.getRole() == Role.ROLE_ADMIN;
         boolean isSelf = currentUser.getId().equals(id);
 
-        // forbidden: is not admin and requests other user id
+        //  Not admin and trying to access another user
         if (!isAdmin && !isSelf) {
             throw new ForbiddenActionException(
-                    "You are not allowed to access this user's information"
+                    "You are not allowed to access or alter this user's information"
             );
         }
 
-        //user with this id could be found (or not)
-        User searchedUser = repos.findById(id)
+        //find requested user
+        User requestedUser = repos.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(roleName, id));
 
-        //found user does not have expected role
-        if (expectedRole != null && searchedUser.getRole() != expectedRole) {
+        //requested user does not have expected role
+        if (expectedRole != null && requestedUser.getRole() != expectedRole) {
             throw new ResourceNotFoundException(roleName, id);
         }
-        //found user with expected role does exist
-        return searchedUser;
+        //requested user with expected role does exist
+        return requestedUser;
     }
 }

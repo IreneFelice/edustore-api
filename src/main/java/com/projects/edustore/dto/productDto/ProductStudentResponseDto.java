@@ -7,10 +7,11 @@ public class ProductStudentResponseDto {
         private String name;
         private String description;
         private BigDecimal price;
+        private Long makerId;
         //students only:
         private Integer stockQuanity;
         private BigDecimal costPrice;
-        private Long makerId;
+
 
 
         public Long getId() {

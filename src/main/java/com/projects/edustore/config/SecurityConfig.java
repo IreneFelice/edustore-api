@@ -6,6 +6,7 @@ import com.projects.edustore.security.CustomUserDetailService;
 import com.projects.edustore.security.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -60,9 +61,11 @@ public class SecurityConfig {
                         .accessDeniedHandler(customAccessDeniedHandler)) // no valid token
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/authenticate", "/customers/register","/students/register", "/shop", "/shop/period/**").permitAll()
+                        .requestMatchers("/authenticate", "/customers/register","/students/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers("/authenticated").hasAnyRole("STUDENT", "CUSTOMER", "ADMIN")
-                        .requestMatchers("/students/**", "/shop/students/**").hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/products/*/image").hasRole("ADMIN")
+                        .requestMatchers("/students/**").hasAnyRole("STUDENT", "ADMIN")
                         .requestMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().denyAll());

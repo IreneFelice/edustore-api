@@ -5,8 +5,6 @@ import com.projects.edustore.model.person.StudentProfile;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Entity
@@ -28,7 +26,23 @@ public class Product {
     @JoinColumn(name = "maker_id")
     private StudentProfile maker;
 
+
+    @Lob
+    private byte[] bytes;
+    private String contentType;
+    private String originalFilename;
+
+
+//    Constructors
     public Product() {}
+
+    public void addImage(byte[] bytes, String contentType, String originalFilename) {
+        this.bytes = bytes;
+        this.contentType = contentType; //MIME type
+        this.originalFilename = originalFilename;
+    }
+
+//    Getters & setters
 
     public Long getId() {
         return id;
@@ -89,5 +103,29 @@ public class Product {
 
     public void setSoldAmount(Integer soldAmount) {
         this.soldAmount = soldAmount;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getOriginalFilename() {
+        return originalFilename;
+    }
+
+    public void setOriginalFilename(String originalFilename) {
+        this.originalFilename = originalFilename;
     }
 }

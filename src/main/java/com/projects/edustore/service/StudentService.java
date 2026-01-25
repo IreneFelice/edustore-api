@@ -31,7 +31,7 @@ public class StudentService {
     }
 
     public User findStudent(Long id) {
-        return whoCanSee.getSearchedUser(id, Role.ROLE_STUDENT, "Student");
+        return whoCanSee.authorizeUserAccess(id, Role.ROLE_STUDENT, "Student");
     }
 
     public StudentUserResponseDto getStudentById(Long id) {
