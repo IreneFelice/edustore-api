@@ -1,9 +1,9 @@
-package com.projects.edustore.controller;
+package com.projects.edustore.admin.controller;
 
 import com.projects.edustore.dto.BaseUserResponseDto;
 import com.projects.edustore.dto.profileDto.CustomerUserResponseDto;
 import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
-import com.projects.edustore.service.UserService;
+import com.projects.edustore.admin.service.UserService;
 import jakarta.validation.constraints.Email;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // all students total or per schoolPeriod
+    // all students total or per schoolPeriod (optional requestParam)
     @GetMapping("/students")
     public ResponseEntity<List<StudentUserResponseDto>> getAllStudents(
             @RequestParam(required = false) List<String> schoolPeriod) {

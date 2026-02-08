@@ -1,4 +1,4 @@
-package com.projects.edustore.service;
+package com.projects.edustore.admin.service;
 
 import com.projects.edustore.dto.BaseUserResponseDto;
 
@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @Service
-public class UserService {
+class UserService {
     private final UserRepository repos;
 
 
