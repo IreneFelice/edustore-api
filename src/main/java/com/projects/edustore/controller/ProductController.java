@@ -1,20 +1,16 @@
 package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.productDto.ProductCustomerResponseDto;
-import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.model.products.Product;
 import com.projects.edustore.repository.ProductRepository;
 import com.projects.edustore.service.ProductService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/products")
@@ -29,35 +25,23 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductCustomerResponseDto>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+        return ResponseEntity.ok(productService.getAllProductsForCustomer());
     }
 
-    @GetMapping("/{schoolPeriod}")
+    @GetMapping("/period/{schoolPeriod}")
     public ResponseEntity<List<ProductCustomerResponseDto>> getProductsBySchoolPeriod(@PathVariable String schoolPeriod) {
         return ResponseEntity.ok(productService.getProductsBySchoolPeriod(schoolPeriod));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{productId}/image")
-    public ResponseEntity<Void> uploadProductImage(
-            @PathVariable Long productId,
-            @RequestParam("file") MultipartFile file) throws IOException {
-
-        productService.uploadProductImage(productId, file);
-        return ResponseEntity.ok().build();
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductCustomerResponseDto> getProduct(@PathVariable Long productId) {
+        return ResponseEntity.ok(productService.getProductForCustomer(productId));
     }
 
-    /////////////////////////////////////////////////////////////////////////
-
-
+    ///////////////////////IMAGE//////////////////////////////////////////////////
     @GetMapping("/{productId}/image")
     public ResponseEntity<byte[]> getProductImage(@PathVariable Long productId) {
-        Product product = repos.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", productId));
-
-        if (product.getBytes() == null) {
-            throw new ResourceNotFoundException("Image for product", productId);
-        }
+        Product product = productService.getProductForImage(productId);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(product.getContentType()))
@@ -65,6 +49,7 @@ public class ProductController {
                         "inline; filename=\"" + product.getOriginalFilename() + "\"")
                 .body(product.getBytes());
     }
+
 
 
 }

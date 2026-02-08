@@ -3,7 +3,6 @@ package com.projects.edustore.mapper;
 import com.projects.edustore.dto.productDto.ProductRequestDto;
 import com.projects.edustore.dto.productDto.ProductCustomerResponseDto;
 import com.projects.edustore.dto.productDto.ProductStudentResponseDto;
-import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.StudentProfile;
 import com.projects.edustore.model.products.Product;
 import org.springframework.stereotype.Component;
@@ -22,6 +21,15 @@ public class ProductMapper {
         product.setMaker(student);
         return product;
     }
+
+    public static void updateProduct(Product existing, ProductRequestDto dto) {
+
+        if (dto.getName() != null) existing.setName(dto.getName());
+        if (dto.getDescription() != null) existing.setDescription(dto.getDescription());
+        if (dto.getPrice() != null) existing.setPrice(dto.getPrice());
+        if (dto.getStockQuantity() != null) existing.setStockQuantity(dto.getStockQuantity());
+
+        }
 
     public static ProductCustomerResponseDto toCustomerResponseDto(Product product){
         ProductCustomerResponseDto dto = new ProductCustomerResponseDto();

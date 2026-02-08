@@ -7,7 +7,7 @@ public class ProductRequestDto {
     private String name;
     private String description;
     private BigDecimal price;
-    private int stockQuantity;
+    private Integer stockQuantity;
     private BigDecimal costPrice;
     private Long makerId;
 
@@ -36,11 +36,11 @@ public class ProductRequestDto {
         this.price = price;
     }
 
-    public int getStockQuantity() {
+    public Integer getStockQuantity() {
         return stockQuantity;
     }
 
-    public void setStockQuantity(int stockQuantity) {
+    public void setStockQuantity(Integer stockQuantity) {
         this.stockQuantity = stockQuantity;
     }
 

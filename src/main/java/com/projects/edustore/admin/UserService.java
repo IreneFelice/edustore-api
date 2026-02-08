@@ -1,4 +1,4 @@
-package com.projects.edustore.admin.service;
+package com.projects.edustore.admin;
 
 import com.projects.edustore.dto.BaseUserResponseDto;
 

@@ -30,7 +30,7 @@ public class CartItemService {
     }
 
     public CartResponseDto addItemToCart(Long id, CartRequestDto dto) {
-        User customer = whoCanSee.authorizeUserAccess(id, Role.ROLE_CUSTOMER, "Customer");
+        User customer = whoCanSee.findUserAndCheckPermission(id, Role.ROLE_CUSTOMER, "Customer");
         Product product = repos.findById(dto.getProductId()).orElseThrow(ResourceNotFoundException::new);
 
         //is stock not empty
@@ -49,12 +49,12 @@ public class CartItemService {
 
             return CartItemMapper.toResponse(newCartItem);
         } else {
-            throw new RuntimeException(); //TODO: appropriate exception
+            throw new RuntimeException(); //TODO: appropriate exception (OutOfStockException)
         }
     }
 
     public List<CartResponseDto> getCartItems(Long id) {
-        whoCanSee.authorizeUserAccess(id, Role.ROLE_CUSTOMER, "Customer");
+        whoCanSee.checkUserPermission(id, Role.ROLE_CUSTOMER, "Customer");
 
         List<CartResponseDto> cartItems = new ArrayList<>();
         List<CartItem> items = cartRepos.findByCustomerId(id);

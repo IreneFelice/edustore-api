@@ -8,6 +8,8 @@ import com.projects.edustore.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.security.PublicKey;
+
 @Service
 /*
   This service verifies:
@@ -25,15 +27,21 @@ public class WhoCanSeeWhoService {
         this.repos = repos;
     }
 
-    public User authorizeUserAccess(Long id, Role expectedRole, String roleName) {
+
+    public User getCurrentUser() {
 
         String userName = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
 
-        User currentUser = repos.findByUserName(userName)
+        return repos.findByUserName(userName)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userName));
+    }
 
+
+    public void checkUserPermission(Long id, Role expectedRole, String roleName) { //authorizeUserAccess
+
+        User currentUser = getCurrentUser();
 
         boolean isAdmin = currentUser.getRole() == Role.ROLE_ADMIN;
         boolean isSelf = currentUser.getId().equals(id);
@@ -53,7 +61,15 @@ public class WhoCanSeeWhoService {
         if (expectedRole != null && requestedUser.getRole() != expectedRole) {
             throw new ResourceNotFoundException(roleName, id);
         }
-        //requested user with expected role does exist
-        return requestedUser;
     }
+
+    public User findUserAndCheckPermission(Long requestedUserId, Role expectedRole, String roleName) {
+        checkUserPermission(requestedUserId, expectedRole, roleName);
+
+        return repos.findById(requestedUserId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        expectedRole != null ? expectedRole.name() : "User",
+                        requestedUserId));
+    }
+
 }

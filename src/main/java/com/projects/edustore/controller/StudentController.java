@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/students")
 public class StudentController {
-
     private final StudentService studentService;
     private final ProductService productService;
 
@@ -32,12 +31,10 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentById(studentId));
     }
 
-    @GetMapping("/{studentId}/schoolperiod")
+    @GetMapping("/{studentId}/school-period")
     public ResponseEntity<List<StudentUserResponseDto>> getStudentsBySharedSchoolPeriod(@PathVariable Long studentId) {
         return ResponseEntity.ok(studentService.getBySchoolPeriod(studentId));
     }
-
-
 
     @PostMapping("/register")
     public ResponseEntity<StudentUserResponseDto> createStudentUser(
@@ -59,15 +56,24 @@ public class StudentController {
         return ResponseEntity.noContent().build();
     }
 
-//    @GetMapping("/{studentId}/products")
-//    public ResponseEntity<List<ProductStudentResponseDto>> getProductsByStudentId(@PathVariable Long studentId) {
-//        return ResponseEntity.ok(studentService.getProducts(studentId));
-//    }
+    ///////////////////////PRODUCT///////////////////////////
 
+    //1
     @GetMapping("/{studentId}/products")
-    public ResponseEntity<List<ProductStudentResponseDto>> getProductsByMaker(@PathVariable Long studentId) {
+    public ResponseEntity<List<ProductStudentResponseDto>> getProductsByMaker(
+            @PathVariable Long studentId) {
         return ResponseEntity.ok(productService.getAllProductsByMaker(studentId));
     }
+
+    //2
+    @GetMapping("/{studentId}/products/{productId}")
+    public ResponseEntity<ProductStudentResponseDto> getProductForStudent(
+            @PathVariable Long studentId,
+            @PathVariable Long productId) {
+        return ResponseEntity.ok(productService.getProductForStudent(studentId, productId));
+    }
+
+    //3
     @PostMapping("/{studentId}/products")
     public ResponseEntity<ProductStudentResponseDto> createProduct(
             @PathVariable Long studentId,
@@ -75,24 +81,26 @@ public class StudentController {
         return ResponseEntity.ok(productService.createNewProduct(dto, studentId));
     }
 
+    //4
+    @PutMapping("/{studentId}/products/{productId}")
+    public ResponseEntity<ProductStudentResponseDto> updateProduct(
+            @PathVariable Long studentId,
+            @PathVariable Long productId,
+            @RequestBody ProductRequestDto dto) {
+        return ResponseEntity.ok(productService.updateProduct(studentId, productId, dto));
+    }
+
+    //////// Product image //////////////
+
+    //5
     @PutMapping("/{studentId}/products/{productId}/image")
-    public ResponseEntity<Void> uploadProductImage(
+    public ResponseEntity<String> uploadProductImage(
             @PathVariable Long studentId,
             @PathVariable Long productId,
             @RequestParam("file") MultipartFile file) throws IOException {
 
         productService.uploadProductImageByMaker(studentId, productId, file);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Image successfully uploaded.");
     }
-
-//    @GetMapping("/{studentId}/products/{productId}/image")
-//    public ResponseEntity<byte[]> getProductImage(
-//            @PathVariable Long studentId,
-//            @PathVariable Long productId){
-//
-//
-//    }
-
-
 
 }

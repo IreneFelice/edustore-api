@@ -24,7 +24,7 @@ public class CustomerService {
     }
 
     public User findCustomer(Long id) {
-        return whoCanSee.authorizeUserAccess(id, Role.ROLE_CUSTOMER, "Customer");
+        return whoCanSee.findUserAndCheckPermission(id, Role.ROLE_CUSTOMER, "Customer");
     }
 
     public CustomerUserResponseDto getCustomerById(Long id) {

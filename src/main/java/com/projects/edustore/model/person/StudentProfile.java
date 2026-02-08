@@ -27,7 +27,8 @@ public class StudentProfile {
 
 //    constructors
 
-    public StudentProfile() {}
+    public StudentProfile() {
+    }
 
     protected StudentProfile(Person person, String schoolPeriod) {
         this.person = person;
@@ -45,14 +46,17 @@ public class StudentProfile {
     public List<Product> getProducts() { //TODO
         return products;
     }
+
     public void addProduct(Product product) { //TODO
         products.add(product);
         product.setMaker(this);
     }
+
     public void removeProduct(Product product) { //TODO
         products.remove(product);
         product.setMaker(null);
     }
+
     public Long getId() {
         return id;
     }
@@ -64,8 +68,10 @@ public class StudentProfile {
     public void setSchoolPeriod(String schoolPeriod) {
         this.schoolPeriod = schoolPeriod;
     }
+
     public Person getPerson() {
-        return person; }
+        return person;
+    }
 
     protected void setPerson(Person person) {
         this.person = person;

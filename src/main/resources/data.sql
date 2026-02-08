@@ -45,6 +45,7 @@ VALUES
     (5, '+31622222222'),
     (6, '+31633333333');
 
-INSERT INTO products (name, description, price, stock_quantity, cost_price, sold_amount, maker_id)
+INSERT INTO products (name, description, price, stock_quantity, cost_price, maker_id)
 VALUES
-    ('Asbak', 'Gemaakt van klei', 1.00, 2, 0.75, 0, 2);
+    ('Vogelhuisje', 'Gemaakt door Tim, voor koolmeesjes.', 1.00, 2, 0.75, 3),
+    ('Schilderij', 'Zonsondergang', 5.00, 1, 2.00, 3);

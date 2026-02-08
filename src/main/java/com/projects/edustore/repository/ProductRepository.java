@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    List<Product> findByMakerId(Long id);
-    List<Product> findByMaker_SchoolPeriod(String schoolPeriod);
+    List<Product> findByMaker_Id(Long id);
+    List<Product> findByMaker_SchoolPeriodIgnoreCase(String schoolPeriod);
 }

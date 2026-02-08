@@ -18,9 +18,9 @@ public class Product {
     private String description;
     private BigDecimal price;
 
-    private int stockQuantity;
+    private Integer stockQuantity;
     private BigDecimal costPrice;
-    private Integer soldAmount;
+//    private Integer soldAmount; // future plan
 
     @ManyToOne
     @JoinColumn(name = "maker_id")
@@ -73,11 +73,11 @@ public class Product {
         this.price = price;
     }
 
-    public int getStockQuantity() {
+    public Integer getStockQuantity() {
         return stockQuantity;
     }
 
-    public void setStockQuantity(int stockQuantity) {
+    public void setStockQuantity(Integer stockQuantity) {
         this.stockQuantity = stockQuantity;
     }
 
@@ -97,13 +97,13 @@ public class Product {
         this.maker = maker;
     }
 
-    public Integer getSoldAmount() {
-        return soldAmount;
-    }
-
-    public void setSoldAmount(Integer soldAmount) {
-        this.soldAmount = soldAmount;
-    }
+//    public Integer getSoldAmount() {
+//        return soldAmount;
+//    }
+//
+//    public void setSoldAmount(Integer soldAmount) {
+//        this.soldAmount = soldAmount;
+//    }
 
     public byte[] getBytes() {
         return bytes;

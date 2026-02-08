@@ -19,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
 public class SecurityConfig {
 
@@ -34,7 +33,6 @@ public class SecurityConfig {
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
         this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
-
 
     @Bean
     public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
@@ -64,9 +62,9 @@ public class SecurityConfig {
                         .requestMatchers("/authenticate", "/customers/register","/students/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers("/authenticated").hasAnyRole("STUDENT", "CUSTOMER", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/products/*/image").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
                         .requestMatchers("/students/**").hasAnyRole("STUDENT", "ADMIN")
-                        .requestMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
+                        .requestMatchers("/customers/**").hasAnyRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().denyAll());
 

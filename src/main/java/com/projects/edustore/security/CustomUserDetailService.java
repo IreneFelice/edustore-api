@@ -2,7 +2,6 @@ package com.projects.edustore.security;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.model.User;
 import com.projects.edustore.repository.UserRepository;
-import com.projects.edustore.service.UserService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
