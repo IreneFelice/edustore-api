@@ -28,16 +28,15 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // all students total or per schoolPeriod (optional requestParam)
+    // all students total or per team (optional requestParam)
     @GetMapping("/students")
     public ResponseEntity<List<StudentUserResponseDto>> getAllStudents(
-            @RequestParam(required = false) List<String> schoolPeriod) {
+            @RequestParam(required = false) List<String> teams) {
 
-        if (schoolPeriod == null || schoolPeriod.isEmpty()) {
+        if (teams == null || teams.isEmpty()) {
             return ResponseEntity.ok(userService.getAllStudents());
         }
-
-        return ResponseEntity.ok(userService.getStudentsByPeriods(schoolPeriod));
+        return ResponseEntity.ok(userService.getStudentsByTeams(teams));
     }
 
     @GetMapping("/customers")
@@ -57,27 +56,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getByEmail(email));
     }
 
-//    @PostMapping("/register") // newAdmin?
-//    public ResponseEntity<BaseUserResponseDto> createUser(
-//            @RequestBody AdminRequestDto adminRequestDto) {
-//        return ResponseEntity.ok(userService.createUser(adminRequestDto));
-//    }
 
-
-    //update Admin
-//    @PutMapping("/{id}")
-//    public ResponseEntity<BaseUserResponseDto> updateUser(
-//            @PathVariable Long id,
-//            @RequestBody AdminRequestDto AdminRequestDto) {
-//        return ResponseEntity.ok(userService.updateUser(id, AdminRequestDto));
-//    }
-
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteUser(
-//            @PathVariable Long id) {
-//        userService.deleteUser(id);
-//        return ResponseEntity.noContent().build();
-//    }
 }
 
 

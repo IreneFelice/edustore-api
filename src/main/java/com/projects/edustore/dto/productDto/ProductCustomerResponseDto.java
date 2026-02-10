@@ -8,7 +8,6 @@ public class ProductCustomerResponseDto {
     private String name;
     private String description;
     private BigDecimal price;
-    private Long makerId;
 
 
     public Long getId() {

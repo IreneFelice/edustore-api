@@ -20,7 +20,6 @@ public class Product {
 
     private Integer stockQuantity;
     private BigDecimal costPrice;
-//    private Integer soldAmount; // future plan
 
     @ManyToOne
     @JoinColumn(name = "maker_id")
@@ -33,8 +32,9 @@ public class Product {
     private String originalFilename;
 
 
-//    Constructors
-    public Product() {}
+    //    Constructors
+    public Product() {
+    }
 
     public void addImage(byte[] bytes, String contentType, String originalFilename) {
         this.bytes = bytes;
@@ -42,12 +42,17 @@ public class Product {
         this.originalFilename = originalFilename;
     }
 
+    public void removeImage() {
+        this.bytes = null;
+        this.contentType = null;
+        this.originalFilename = null;
+    }
+
 //    Getters & setters
 
     public Long getId() {
         return id;
     }
-
 
     public String getName() {
         return name;
@@ -89,21 +94,13 @@ public class Product {
         this.costPrice = costPrice;
     }
 
-        public StudentProfile getMaker() {
+    public StudentProfile getMaker() {
         return maker;
     }
 
     public void setMaker(StudentProfile maker) {
         this.maker = maker;
     }
-
-//    public Integer getSoldAmount() {
-//        return soldAmount;
-//    }
-//
-//    public void setSoldAmount(Integer soldAmount) {
-//        this.soldAmount = soldAmount;
-//    }
 
     public byte[] getBytes() {
         return bytes;

@@ -31,9 +31,9 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentById(studentId));
     }
 
-    @GetMapping("/{studentId}/school-period")
-    public ResponseEntity<List<StudentUserResponseDto>> getStudentsBySharedSchoolPeriod(@PathVariable Long studentId) {
-        return ResponseEntity.ok(studentService.getBySchoolPeriod(studentId));
+    @GetMapping("/{studentId}/team")
+    public ResponseEntity<List<StudentUserResponseDto>> getStudentsOwnTeam(@PathVariable Long studentId) {
+        return ResponseEntity.ok(studentService.getByTeam(studentId));
     }
 
     @PostMapping("/register")
@@ -60,9 +60,9 @@ public class StudentController {
 
     //1
     @GetMapping("/{studentId}/products")
-    public ResponseEntity<List<ProductStudentResponseDto>> getProductsByMaker(
+    public ResponseEntity<List<ProductStudentResponseDto>> getProductsForMaker(
             @PathVariable Long studentId) {
-        return ResponseEntity.ok(productService.getAllProductsByMaker(studentId));
+        return ResponseEntity.ok(productService.getAllProductsForMaker(studentId));
     }
 
     //2
@@ -87,12 +87,21 @@ public class StudentController {
             @PathVariable Long studentId,
             @PathVariable Long productId,
             @RequestBody ProductRequestDto dto) {
-        return ResponseEntity.ok(productService.updateProduct(studentId, productId, dto));
+        return ResponseEntity.ok(productService.updateProductByMaker(studentId, productId, dto));
+    }
+
+    //5
+    @DeleteMapping("/{studentId}/products/delete/{productId}")
+    public ResponseEntity<Void> deleteProduct(
+            @PathVariable Long studentId,
+            @PathVariable Long productId) {
+        productService.deleteProductByMaker(studentId, productId);
+        return ResponseEntity.noContent().build();
     }
 
     //////// Product image //////////////
 
-    //5
+
     @PutMapping("/{studentId}/products/{productId}/image")
     public ResponseEntity<String> uploadProductImage(
             @PathVariable Long studentId,
@@ -101,6 +110,14 @@ public class StudentController {
 
         productService.uploadProductImageByMaker(studentId, productId, file);
         return ResponseEntity.ok("Image successfully uploaded.");
+    }
+
+    @DeleteMapping("/{studentId}/products/delete-product-image/{productId}")
+    public ResponseEntity<String> deleteProductImage(
+            @PathVariable Long studentId,
+            @PathVariable Long productId) {
+        productService.deleteProductImageByMaker(studentId, productId);
+        return ResponseEntity.ok("Image deleted.");
     }
 
 }

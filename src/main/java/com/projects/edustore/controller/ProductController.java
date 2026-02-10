@@ -28,9 +28,9 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProductsForCustomer());
     }
 
-    @GetMapping("/period/{schoolPeriod}")
-    public ResponseEntity<List<ProductCustomerResponseDto>> getProductsBySchoolPeriod(@PathVariable String schoolPeriod) {
-        return ResponseEntity.ok(productService.getProductsBySchoolPeriod(schoolPeriod));
+    @GetMapping("/team/{team}")
+    public ResponseEntity<List<ProductCustomerResponseDto>> getProductsByTeam(@PathVariable String team) {
+        return ResponseEntity.ok(productService.getProductsByTeam(team));
     }
 
     @GetMapping("/{productId}")
@@ -49,7 +49,6 @@ public class ProductController {
                         "inline; filename=\"" + product.getOriginalFilename() + "\"")
                 .body(product.getBytes());
     }
-
 
 
 }

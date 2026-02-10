@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    List<User> findByPerson_StudentProfile_SchoolPeriodIn(List<String> schoolPeriods);
+    List<User> findByPerson_StudentProfile_TeamIn(List<String> teams);
     Optional<User> findByPerson_Email(String email);
     Optional<User> findByUserName(String username);
     List<User> findByRole(Role role);

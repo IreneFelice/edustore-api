@@ -1,18 +1,14 @@
 package com.projects.edustore.service;
 
-import com.projects.edustore.dto.productDto.ProductStudentResponseDto;
 import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
 import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
-import com.projects.edustore.mapper.ProductMapper;
 import com.projects.edustore.mapper.StudentMapper;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
-import com.projects.edustore.model.products.Product;
 import com.projects.edustore.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,37 +26,26 @@ public class StudentService {
         this.whoCanSee = whoCanSee;
     }
 
-    public User findStudent(Long id) {
+    public User findAndAuthorizeStudent(Long id) {
         return whoCanSee.findUserAndCheckPermission(id, Role.ROLE_STUDENT, "Student");
     }
 
     public StudentUserResponseDto getStudentById(Long id) {
-        User user = findStudent(id);
+        User user = findAndAuthorizeStudent(id);
         return StudentMapper.toResponseDto(user);
     }
 
-    public List<StudentUserResponseDto> getBySchoolPeriod(Long id) {
-        User user = findStudent(id);
-        String schoolPeriod = user.getPerson().getStudentProfile().getSchoolPeriod();
+    public List<StudentUserResponseDto> getByTeam(Long id) {
+        User user = findAndAuthorizeStudent(id);
+        String team = user.getPerson().getStudentProfile().getTeam();
 
-        List<User> students = repos.findByPerson_StudentProfile_schoolPeriod(schoolPeriod);
+        List<User> students = repos.findByPerson_StudentProfile_Team(team);
         List<StudentUserResponseDto> dtos = new ArrayList<>();
         for (User student : students) {
             dtos.add(StudentMapper.toResponseDto(student));
         }
         return dtos;
     }
-    public List<ProductStudentResponseDto> getProducts(Long id) {
-        User user = findStudent(id);
-        List<Product> products = user.getPerson().getStudentProfile().getProducts();
-
-        List<ProductStudentResponseDto> dtos = new ArrayList<>();
-        for (Product product : products) {
-            dtos.add(ProductMapper.toStudentResponseDto(product));
-        }  System.out.println(dtos);
-        return dtos;
-    }
-
 
     @Transactional
     public StudentUserResponseDto createUser(StudentUserRequestDto dto) {
@@ -76,7 +61,7 @@ public class StudentService {
 
     @Transactional
     public StudentUserResponseDto updateEntity(Long id, StudentUserRequestDto dto) {
-        User existingStudent = findStudent(id);
+        User existingStudent = findAndAuthorizeStudent(id);
 
         StudentMapper.updateEntity(existingStudent, dto);
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
@@ -88,7 +73,7 @@ public class StudentService {
     }
 
     public void deleteUser(Long id) {
-        User existingStudent = findStudent(id);
+        User existingStudent = findAndAuthorizeStudent(id);
         repos.delete(existingStudent);
     }
 

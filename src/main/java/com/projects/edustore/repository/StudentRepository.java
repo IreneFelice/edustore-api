@@ -8,6 +8,6 @@ import java.util.List;
 public interface StudentRepository extends JpaRepository<User, Long> {
 
 
-    List<User> findByPerson_StudentProfile_schoolPeriod(String schoolPeriod);
+    List<User> findByPerson_StudentProfile_Team(String team);
 
 }

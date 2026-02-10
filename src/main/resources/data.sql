@@ -18,34 +18,34 @@ VALUES
 
 -- Persons
 INSERT INTO persons (id, first_name, last_name, email)
-VALUES
-    (1, 'Lucas', 'Janssen', 'lucas@admin.com'),
+VALUES (1, 'Lucas', 'Janssen', 'lucas@admin.com'),
 
-    (2, 'Jane', 'Doe', 'jane@student.com'),
-    (3, 'Tim', 'Vriend', 'tim@student.com'),
-    (7, 'Loes', 'Bergsma', 'loes@student.com'),
-    (8, 'Jack', 'Visser', 'jack@student.com'),
+       (2, 'Jane', 'Doe', 'jane@student.com'),
+       (3, 'Tim', 'Vriend', 'tim@student.com'),
+       (7, 'Loes', 'Bergsma', 'loes@student.com'),
+       (8, 'Jack', 'Visser', 'jack@student.com'),
 
-    (4, 'Alice', 'Malice', 'alice@customer.com'),
-    (5, 'Bob', 'Job', 'bob@customer.com'),
-    (6, 'Charlie', 'Barlie', 'charlie@customer.com');
+       (4, 'Alice', 'Malice', 'alice@customer.com'),
+       (5, 'Bob', 'Job', 'bob@customer.com'),
+       (6, 'Charlie', 'Barlie', 'charlie@customer.com');
 
 -- Student Profiles
-INSERT INTO student_profiles (id, school_period)
-VALUES
-    (2, 'Middenbouw'),
-    (3, 'Bovenbouw'),
-    (7, 'Bovenbouw'),
-    (8, 'Middenbouw');
+INSERT INTO student_profiles (id, team)
+VALUES (2, 'middenbouw'),
+       (3, 'bovenbouw'),
+       (7, 'bovenbouw'),
+       (8, 'middenbouw');
 
 -- Customer Profiles
 INSERT INTO customer_profiles (id, phone_number)
-VALUES
-    (4, '+31611111111'),
-    (5, '+31622222222'),
-    (6, '+31633333333');
+VALUES (4, '+31611111111'),
+       (5, '+31622222222'),
+       (6, '+31633333333');
 
 INSERT INTO products (name, description, price, stock_quantity, cost_price, maker_id)
-VALUES
-    ('Vogelhuisje', 'Gemaakt door Tim, voor koolmeesjes.', 1.00, 2, 0.75, 3),
-    ('Schilderij', 'Zonsondergang', 5.00, 1, 2.00, 3);
+VALUES ('Vogelhuisje', 'Gemaakt door Tim, voor koolmeesjes.', 1.00, 2, 0.75, 3),
+       ('Schilderij', 'Zonsondergang', 5.00, 1, 2.00, 3),
+       ('Vogelhuisje', 'Gemaakt met liefde.', 1.00, 2, 0.75, 2),
+       ('Schilderij', 'Mijn lieverlingskleuren', 5.00, 1, 2.00, 2),
+       ('Vogelhuisje', 'All birds matter.', 1.00, 2, 0.75, 8),
+       ('Schilderij', '"Mama en ik" Alleen de mama van Loes mag dit kopen!', 5.00, 1, 2.00, 7);

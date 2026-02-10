@@ -3,15 +3,15 @@ package com.projects.edustore.dto.profileDto;
 import com.projects.edustore.dto.BaseUserResponseDto;
 
 public class StudentUserResponseDto extends BaseUserResponseDto {
-    private String schoolPeriod;
+    private String team;
 
     //    Getters & Setters
-    public String getSchoolPeriod() {
-        return schoolPeriod;
+    public String getTeam() {
+        return team;
     }
 
-    public void setSchoolPeriod(String schoolPeriod) {
-        this.schoolPeriod = schoolPeriod;
+    public void setTeam(String team) {
+        this.team = team;
     }
 
 }

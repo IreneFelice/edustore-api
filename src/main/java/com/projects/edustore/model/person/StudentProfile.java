@@ -20,7 +20,7 @@ public class StudentProfile {
     private Person person;
 
     //    special fields for students
-    private String schoolPeriod;
+    private String team;
 
     @OneToMany(mappedBy = "maker")
     private List<Product> products = new ArrayList<>();
@@ -30,13 +30,13 @@ public class StudentProfile {
     public StudentProfile() {
     }
 
-    protected StudentProfile(Person person, String schoolPeriod) {
+    protected StudentProfile(Person person, String team) {
         this.person = person;
-        this.schoolPeriod = schoolPeriod;
+        this.team = team;
     }
 
-    public static StudentProfile create(Person person, String schoolPeriod) {
-        StudentProfile profile = new StudentProfile(person, schoolPeriod);
+    public static StudentProfile create(Person person, String team) {
+        StudentProfile profile = new StudentProfile(person, team);
         person.setStudentProfile(profile);
         return profile;
     }
@@ -47,26 +47,16 @@ public class StudentProfile {
         return products;
     }
 
-    public void addProduct(Product product) { //TODO
-        products.add(product);
-        product.setMaker(this);
-    }
-
-    public void removeProduct(Product product) { //TODO
-        products.remove(product);
-        product.setMaker(null);
-    }
-
     public Long getId() {
         return id;
     }
 
-    public String getSchoolPeriod() {
-        return schoolPeriod;
+    public String getTeam() {
+        return team;
     }
 
-    public void setSchoolPeriod(String schoolPeriod) {
-        this.schoolPeriod = schoolPeriod;
+    public void setTeam(String team) {
+        this.team = team.toLowerCase();
     }
 
     public Person getPerson() {

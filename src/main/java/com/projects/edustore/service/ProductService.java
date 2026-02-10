@@ -39,8 +39,8 @@ public class ProductService {
         return dtos;
     }
 
-    public List<ProductCustomerResponseDto> getProductsBySchoolPeriod(String schoolPeriod) {
-        List<Product> products = repos.findByMaker_SchoolPeriodIgnoreCase(schoolPeriod);
+    public List<ProductCustomerResponseDto> getProductsByTeam(String team) {
+        List<Product> products = repos.findByMaker_TeamIgnoreCase(team);
 
         List<ProductCustomerResponseDto> dtos = new ArrayList<>();
         for (Product product : products) {
@@ -61,7 +61,8 @@ public class ProductService {
     /////////////////////////FOR STUDENTS/////////////////////////////////////////////////
 
 
-    public List<ProductStudentResponseDto> getAllProductsByMaker(Long studentId) {
+    //#1
+    public List<ProductStudentResponseDto> getAllProductsForMaker(Long studentId) {
         authorizeStudentAccess(studentId);
         List<Product> products = repos.findByMaker_Id(studentId);
         List<ProductStudentResponseDto> dtos = new ArrayList<>();
@@ -72,14 +73,21 @@ public class ProductService {
         return dtos;
     }
 
-
+    //#2
     public ProductStudentResponseDto getProductForStudent(Long studentId, Long productId) {
-        authorizeStudentAccess(studentId);
+        User user = whoCanSee.findUserAndCheckPermission(studentId, Role.ROLE_STUDENT, "Student");
         Product product = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
+
+        String userTeam = user.getPerson().getStudentProfile().getTeam();
+        String productMakerTeam = product.getMaker().getTeam();
+
+        if (!userTeam.equals(productMakerTeam)) {
+            throw new ForbiddenActionException("This products protected details can not be accessed, because it's not owned by of your team.");
+        }
         return ProductMapper.toStudentResponseDto(product);
     }
 
-
+    //#3
     public ProductStudentResponseDto createNewProduct(ProductRequestDto dto, Long studentId) {
         User user = whoCanSee.findUserAndCheckPermission(studentId, Role.ROLE_STUDENT, "Student");
         Product newProduct = ProductMapper.toEntity(dto, user.getPerson().getStudentProfile());
@@ -87,16 +95,25 @@ public class ProductService {
         return ProductMapper.toStudentResponseDto(newProduct);
     }
 
-
-    public ProductStudentResponseDto updateProduct(Long studentId, Long productId, ProductRequestDto dto) {
+    //#4
+    public ProductStudentResponseDto updateProductByMaker(Long studentId, Long productId, ProductRequestDto dto) {
         authorizeStudentAccess(studentId);
-        Product existingProduct = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
+        Product existingProduct = findProduct(productId);
+        checkStudentIsMaker(studentId, existingProduct);
+
         ProductMapper.updateProduct(existingProduct, dto);
         repos.save(existingProduct);
         return ProductMapper.toStudentResponseDto(existingProduct);
     }
 
-    //TODO delete product
+    //#5
+    public void deleteProductByMaker(Long studentId, Long productId) {
+        authorizeStudentAccess(studentId);
+        Product product = findProduct(productId);
+        checkStudentIsMaker(studentId, product);
+        repos.delete(product);
+    }
+
 
     ////// Product image
 
@@ -109,7 +126,7 @@ public class ProductService {
     private static final long MAX_IMAGE_SIZE = 1_000_000; // 1 MB
 
     public Product getProductForImage(Long productId) {
-        Product product = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
+        Product product = findProduct(productId);
         if (product.getBytes() == null) {
             throw new ResourceNotFoundException("Image for product ", productId);
         }
@@ -117,21 +134,46 @@ public class ProductService {
     }
 
 
-    public void uploadProductImage(Long productId, MultipartFile file) throws IOException {
-        Product product = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
+    public void uploadProductImageByMaker(Long studentId, Long productId, MultipartFile file) throws IOException {
+        authorizeStudentAccess(studentId);
+        Product product = findProduct(productId);
+
+        checkStudentIsMaker(studentId, product);
+        uploadProductImage(product, file);
+    }
+
+    public void deleteProductImageByMaker(Long studentId, Long productId) {
+        authorizeStudentAccess(studentId);
+        Product product = findProduct(productId);
+        checkStudentIsMaker(studentId, product);
+
+        product.removeImage();
+        repos.save(product);
+    }
+
+    private void uploadProductImage(Product product, MultipartFile file) throws IOException {
 
         if (!ALLOWED_IMAGE_TYPES.contains(file.getContentType()) || file.getSize() > MAX_IMAGE_SIZE) {
             throw new IllegalArgumentException("Max 1MB and only jpeg, png or webp image types allowed.");
         }
-        product.addImage(file.getBytes(), file.getContentType(), file.getOriginalFilename());
+        product.addImage(
+                file.getBytes(),
+                file.getContentType(),
+                file.getOriginalFilename()
+        );
         repos.save(product);
     }
 
 
-    public void uploadProductImageByMaker(Long studentId, Long productId, MultipartFile file) throws IOException {
-        Product product = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
-        authorizeStudentAccess(studentId);
+    public void authorizeStudentAccess(Long id) {
+        whoCanSee.checkUserPermission(id, Role.ROLE_STUDENT, "Student"); //current User is allowed and requested user (by admin) or current user is Student
+    }
 
+    public Product findProduct(Long productId) {
+        return repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
+    }
+
+    public void checkStudentIsMaker(Long studentId, Product product) {
         StudentProfile maker = product.getMaker();
         User currentUser = whoCanSee.getCurrentUser();
 
@@ -139,15 +181,8 @@ public class ProductService {
         boolean isAdmin = currentUser.getRole().equals(Role.ROLE_ADMIN);
 
         if (!isMaker && !isAdmin) {
-            throw new ForbiddenActionException("No permission to upload. This is not your item.");
+            throw new ForbiddenActionException("No permission for requested action. This is not your item.");
         }
-        uploadProductImage(productId, file);
-    }
-
-    //TODO delete image
-
-    public void authorizeStudentAccess(Long id) {
-        whoCanSee.checkUserPermission(id, Role.ROLE_STUDENT, "Student"); //current User is allowed and requested user (by admin) or current user is Student
     }
 
 }

@@ -12,6 +12,7 @@ import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
 import com.projects.edustore.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +43,7 @@ class UserService {
     }
 
     public BaseUserResponseDto getByEmail(String email) {
-
-        User existing = repos.findByPerson_Email(email).orElseThrow(() -> new ResourceNotFoundException("User", email));
+        User existing = repos.findByPerson_Email(email.toLowerCase()).orElseThrow(() -> new ResourceNotFoundException("User", email));
         return switch (existing.getRole()) {
             case ROLE_STUDENT -> StudentMapper.toResponseDto(existing);
             case ROLE_CUSTOMER -> CustomerMapper.toResponseDto(existing);
@@ -65,18 +65,20 @@ class UserService {
         for (User user : students) {
             dtos.add(StudentMapper.toResponseDto(user));
         }
-
         return dtos;
     }
 
-    public List<StudentUserResponseDto> getStudentsByPeriods(List<String> periods) {
-        List<User> students = repos.findByPerson_StudentProfile_SchoolPeriodIn(periods);
+    public List<StudentUserResponseDto> getStudentsByTeams(List<String> teams) {
+        List<String> lowerCaseTeams = new ArrayList<>();
+        for (String team : teams) {
+            lowerCaseTeams.add(team.toLowerCase());
+        }
+        List<User> students = repos.findByPerson_StudentProfile_TeamIn(lowerCaseTeams);
         List<StudentUserResponseDto> dtos = new ArrayList<>();
 
         for (User user : students) {
             dtos.add(StudentMapper.toResponseDto(user));
         }
-
         return dtos;
     }
 
@@ -92,11 +94,4 @@ class UserService {
         return dtos;
     }
 
-
-
 }
-
-
-
-
-

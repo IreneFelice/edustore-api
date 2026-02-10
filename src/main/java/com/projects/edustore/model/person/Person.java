@@ -15,10 +15,14 @@ public class Person {
     @JoinColumn(name = "id")
     private User user;
 
+    @Column(nullable = false)
     private String firstName;
-    private String lastName;
-    private String email;
 
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(unique = true, nullable = false)
+    private String email;
 
     @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
     private StudentProfile studentProfile;
@@ -26,8 +30,6 @@ public class Person {
     @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
     private CustomerProfile customerProfile;
 
-//    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
-//    private AdminProfile adminProfile;
 
     //    constructors
 
@@ -37,7 +39,7 @@ public class Person {
     protected Person(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     public static Person create(User user, String firstName, String lastName, String email) {
@@ -61,10 +63,6 @@ public class Person {
     public String getLastName() {
         return lastName;
     }
-
-//    public String getProfileLabel() {
-//        return profileLabel;
-//    }
 
     public String getEmail() {
         return email;
@@ -92,13 +90,8 @@ public class Person {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
-
-//    public void setProfileLabel(String profileLabel) {
-//        this.profileLabel = profileLabel;
-//    }
-
 
     public void setUser(User user) {
         this.user = user;
@@ -108,23 +101,25 @@ public class Person {
     }
 
     public void setStudentProfile(StudentProfile studentProfile) {
+        if (studentProfile != null && this.customerProfile != null) {
+            throw new IllegalStateException("Person cannot be both student and customer");
+        }
         this.studentProfile = studentProfile;
+
         if (studentProfile != null && studentProfile.getPerson() != this) {
             studentProfile.setPerson(this);
         }
     }
 
     public void setCustomerProfile(CustomerProfile customerProfile) {
+        if (customerProfile != null && this.studentProfile != null) {
+            throw new IllegalStateException("Person cannot be both student and customer");
+        }
         this.customerProfile = customerProfile;
+
         if (customerProfile != null && customerProfile.getPerson() != this)
             customerProfile.setPerson(this);
     }
 }
 
-//    public void setAdminProfile(AdminProfile adminProfile) {
-//        this.adminProfile = adminProfile;
-//        if (adminProfile != null && adminProfile.getPerson() != this) {
-//            adminProfile.setPerson(this);
-//        }
-//    }
 

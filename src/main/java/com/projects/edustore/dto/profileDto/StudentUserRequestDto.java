@@ -6,15 +6,15 @@ import jakarta.validation.constraints.Size;
 
 public class StudentUserRequestDto extends BaseUserRequestDto {
 
-    @Size(max = 50, message = "Name of SchoolPeriod should be less than 50 characters.")
-    private String schoolPeriod;
+    @Size(max = 50, message = "Name of team should be less than 50 characters.")
+    private String team;
 
-    public String getSchoolPeriod() {
-        return schoolPeriod;
+    public String getTeam() {
+        return team;
     }
 
-    public void setSchoolPeriod(String schoolPeriod) {
-        this.schoolPeriod = schoolPeriod;
+    public void setTeam(String team) {
+        this.team = team;
     }
 }
 

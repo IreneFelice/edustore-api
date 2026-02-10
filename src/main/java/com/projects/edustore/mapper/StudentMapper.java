@@ -17,7 +17,7 @@ public class StudentMapper {
         user.setUserName(dto.getUserName());
 
         Person person = Person.create(user, dto.getFirstName(), dto.getLastName(), dto.getEmail());
-        StudentProfile.create(person, dto.getSchoolPeriod());
+        StudentProfile.create(person, dto.getTeam());
 
         return user;
     }
@@ -31,8 +31,8 @@ public class StudentMapper {
         if (dto.getLastName() != null) person.setLastName(dto.getLastName());
         if (dto.getEmail() != null) person.setEmail(dto.getEmail());
         //profile
-        if (dto.getSchoolPeriod() != null && person.getStudentProfile() != null) {
-            person.getStudentProfile().setSchoolPeriod(dto.getSchoolPeriod());
+        if (dto.getTeam() != null && person.getStudentProfile() != null) {
+            person.getStudentProfile().setTeam(dto.getTeam());
         }
     }
 
@@ -49,7 +49,7 @@ public class StudentMapper {
         dto.setEmail(person.getEmail());
 
         if (person.getStudentProfile() != null) {
-            dto.setSchoolPeriod(person.getStudentProfile().getSchoolPeriod());
+            dto.setTeam(person.getStudentProfile().getTeam());
         }
         return dto;
     }
