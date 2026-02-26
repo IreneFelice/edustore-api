@@ -1,5 +1,9 @@
 package com.projects.edustore.model.person;
+import com.projects.edustore.model.products.Order;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "customer_profiles")
@@ -13,18 +17,25 @@ public class CustomerProfile {
     @JoinColumn(name = "id")
     private Person person;
 
-    //    special fields for customers
     private String phoneNumber;
 
+    @OneToMany(mappedBy = "customer")
+    private final List<Order> orders = new ArrayList<>();
 
 //    constructors
 
-    public CustomerProfile() {
+    protected CustomerProfile() {
     }
 
-    public CustomerProfile(Person person, String phoneNumber) {
+    protected CustomerProfile(Person person, String phoneNumber) {
         this.person = person;
         this.phoneNumber = phoneNumber;
+    }
+
+    public static CustomerProfile create(Person person, String phoneNumber) {
+        CustomerProfile profile = new CustomerProfile(person, phoneNumber);
+        person.setCustomerProfile(profile);
+        return profile;
     }
 
 //    getters and setters
@@ -40,6 +51,7 @@ public class CustomerProfile {
         return phoneNumber;
     }
 
+
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
@@ -47,6 +59,21 @@ public class CustomerProfile {
     protected void setPerson(Person person) {
         this.person = person;
     }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void addOrder(Order order) {
+        orders.add(order);
+        order.setCustomer(this);
+    }
+
+    public void removeOrder(Order order) {
+        orders.remove(order);
+        order.setCustomer(null);
+    }
+
 
 }
 

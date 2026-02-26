@@ -1,6 +1,5 @@
 package com.projects.edustore.mapper;
 
-import com.projects.edustore.dto.adminDto.AdminRequestDto;
 import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
 import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
 import com.projects.edustore.model.Role;
@@ -17,18 +16,8 @@ public class StudentMapper {
         user.setRole(Role.ROLE_STUDENT);
         user.setUserName(dto.getUserName());
 
-        Person person = new Person();
-        person.setFirstName(dto.getFirstName());
-        person.setLastName(dto.getLastName());
-        person.setEmail(dto.getEmail());
-        person.setProfileLabel("StudentProfile");
-
-        user.setPerson(person);
-
-        StudentProfile profile = new StudentProfile();
-        profile.setSchoolPeriod(dto.getSchoolPeriod());
-
-        person.setStudentProfile(profile);
+        Person person = Person.create(user, dto.getFirstName(), dto.getLastName(), dto.getEmail());
+        StudentProfile.create(person, dto.getTeam());
 
         return user;
     }
@@ -42,8 +31,8 @@ public class StudentMapper {
         if (dto.getLastName() != null) person.setLastName(dto.getLastName());
         if (dto.getEmail() != null) person.setEmail(dto.getEmail());
         //profile
-        if (dto.getSchoolPeriod() != null && person.getStudentProfile() != null) {
-            person.getStudentProfile().setSchoolPeriod(dto.getSchoolPeriod());
+        if (dto.getTeam() != null && person.getStudentProfile() != null) {
+            person.getStudentProfile().setTeam(dto.getTeam());
         }
     }
 
@@ -51,31 +40,17 @@ public class StudentMapper {
         StudentUserResponseDto dto = new StudentUserResponseDto();
 
         Person person = user.getPerson();
-
+        dto.setRole(person.getUser().getRole());
         dto.setId(user.getId());
         dto.setUserName(user.getUserName());
 
         dto.setFirstName(person.getFirstName());
         dto.setLastName(person.getLastName());
         dto.setEmail(person.getEmail());
-        dto.setProfileLabel(person.getProfileLabel());
 
         if (person.getStudentProfile() != null) {
-            dto.setSchoolPeriod(person.getStudentProfile().getSchoolPeriod());
+            dto.setTeam(person.getStudentProfile().getTeam());
         }
         return dto;
-    }
-
-    /////// used by Admin through UserService -> StudentService
-    public void applyStudentData(Person person, AdminRequestDto dto) {
-        StudentProfile profile = person.getStudentProfile();
-        if (profile == null) {
-            profile = new StudentProfile();
-            person.setStudentProfile(profile);
-        }
-        person.setProfileLabel("StudentProfile");
-        if (dto.getSchoolPeriod() != null) {
-            person.getStudentProfile().setSchoolPeriod(dto.getSchoolPeriod());
-        }
     }
 }

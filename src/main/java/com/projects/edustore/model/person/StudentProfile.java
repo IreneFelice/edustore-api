@@ -1,7 +1,11 @@
 package com.projects.edustore.model.person;
 
-
+import com.projects.edustore.model.products.Product;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "student_profiles")
@@ -16,31 +20,48 @@ public class StudentProfile {
     private Person person;
 
     //    special fields for students
-    private String schoolPeriod;
+    private String team;
 
+    @OneToMany(mappedBy = "maker")
+    private List<Product> products = new ArrayList<>();
 
 //    constructors
 
-    public StudentProfile() {}
+    public StudentProfile() {
+    }
 
-    public StudentProfile(Person person, String schoolPeriod) {
+    protected StudentProfile(Person person, String team) {
         this.person = person;
-        this.schoolPeriod = schoolPeriod;
+        this.team = team;
+    }
+
+    public static StudentProfile create(Person person, String team) {
+        StudentProfile profile = new StudentProfile(person, team);
+        person.setStudentProfile(profile);
+        return profile;
+    }
+
+    //    getters and setters
+
+    public List<Product> getProducts() { //TODO
+        return products;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getSchoolPeriod() {
-        return schoolPeriod;
+    public String getTeam() {
+        return team;
     }
 
-    public void setSchoolPeriod(String schoolPeriod) {
-        this.schoolPeriod = schoolPeriod;
+    public void setTeam(String team) {
+        this.team = team.toLowerCase();
     }
+
     public Person getPerson() {
-        return person; }
+        return person;
+    }
 
     protected void setPerson(Person person) {
         this.person = person;

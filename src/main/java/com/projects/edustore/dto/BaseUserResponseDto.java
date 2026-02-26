@@ -1,13 +1,15 @@
 package com.projects.edustore.dto;
 
 
+import com.projects.edustore.model.Role;
+
 public class BaseUserResponseDto {
     private Long id;
     private String userName;
     private String firstName;
     private String lastName;
     private String email;
-    private String profileLabel;
+    private Role role;
 
     //    Getters & Setters
 
@@ -51,12 +53,11 @@ public class BaseUserResponseDto {
         this.email = email;
     }
 
-    public String getProfileLabel() {
-        return profileLabel;
+    public Role getRole() {
+        return role;
     }
 
-    public void setProfileLabel(String profileLabel) {
-        this.profileLabel = profileLabel;
+    public void setRole(Role role) {
+        this.role = role;
     }
-
 }
