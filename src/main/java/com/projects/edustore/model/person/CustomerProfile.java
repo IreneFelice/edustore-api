@@ -1,5 +1,5 @@
 package com.projects.edustore.model.person;
-import com.projects.edustore.model.products.Order;
+import com.projects.edustore.model.product.Order;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

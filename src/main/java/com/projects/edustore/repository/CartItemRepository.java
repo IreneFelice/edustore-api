@@ -1,11 +1,10 @@
 package com.projects.edustore.repository;
 
-import com.projects.edustore.model.products.CartItem;
+import com.projects.edustore.model.product.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
+import java.util.Optional;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
-
-    List<CartItem> findByCustomerId(Long id);
+    Optional<CartItem> findByCartIdAndProductId(Long id, Long productId);
 }

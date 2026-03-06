@@ -1,9 +1,9 @@
 package com.projects.edustore.controller;
 
-import com.projects.edustore.dto.productDto.ProductRequestDto;
-import com.projects.edustore.dto.productDto.ProductStudentResponseDto;
-import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
-import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
+import com.projects.edustore.dto.product.ProductRequestDto;
+import com.projects.edustore.dto.product.ProductStudentResponseDto;
+import com.projects.edustore.dto.profile.StudentUserRequestDto;
+import com.projects.edustore.dto.profile.StudentUserResponseDto;
 import com.projects.edustore.service.ProductService;
 import com.projects.edustore.service.StudentService;
 import jakarta.validation.Valid;
@@ -112,7 +112,7 @@ public class StudentController {
         return ResponseEntity.ok("Image successfully uploaded.");
     }
 
-    @DeleteMapping("/{studentId}/products/delete-product-image/{productId}")
+    @DeleteMapping("/{studentId}/products/{productId}/image")
     public ResponseEntity<String> deleteProductImage(
             @PathVariable Long studentId,
             @PathVariable Long productId) {

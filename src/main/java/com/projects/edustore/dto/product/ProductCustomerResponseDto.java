@@ -1,4 +1,4 @@
-package com.projects.edustore.dto.productDto;
+package com.projects.edustore.dto.product;
 
 
 import java.math.BigDecimal;
@@ -8,6 +8,7 @@ public class ProductCustomerResponseDto {
     private String name;
     private String description;
     private BigDecimal price;
+    private boolean available;
 
 
     public Long getId() {
@@ -42,6 +43,11 @@ public class ProductCustomerResponseDto {
         this.price = price;
     }
 
+    public boolean isAvailable() {
+        return available;
+    }
 
-
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
 }

@@ -1,6 +1,5 @@
-package com.projects.edustore.model.products;
+package com.projects.edustore.model.product;
 
-import com.projects.edustore.model.person.CustomerProfile;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,15 +16,17 @@ public class CartItem {
     private int quantity;
 
     @ManyToOne
-    @JoinColumn(name="customer_id")
-    private CustomerProfile customer;
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
     public CartItem() {}
 
-    public CartItem(Product product, int quantity) {
+    public CartItem(Product product, Integer quantity) {
         this.product = product;
         this.quantity = quantity;
     }
+
+    //getters + setters
     public Long getId() {
         return id;
     }
@@ -50,11 +51,13 @@ public class CartItem {
         this.product = product;
     }
 
-    public CustomerProfile getCustomer() {
-        return customer;
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
-    public void setCustomer(CustomerProfile customer) {
-        this.customer = customer;
+    public Cart getCart() {
+        return cart;
     }
+
+
 }

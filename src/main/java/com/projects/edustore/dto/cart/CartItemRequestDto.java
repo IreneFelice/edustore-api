@@ -1,10 +1,14 @@
-package com.projects.edustore.dto.OrderDto;
+package com.projects.edustore.dto.cart;
 
-public class CartResponseDto {
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+
+public class CartItemRequestDto {
+
+    @NotNull(message = "Product Id is required")
     private Long productId;
 
-    private String productName;
-
+    @Min(value = 0, message = "Quantity must be at least 0")
     private int quantity;
 
 
@@ -16,14 +20,6 @@ public class CartResponseDto {
         this.productId = productId;
     }
 
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
     public int getQuantity() {
         return quantity;
     }
@@ -32,5 +28,6 @@ public class CartResponseDto {
         this.quantity = quantity;
     }
 
-}
 
+
+}

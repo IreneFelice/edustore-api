@@ -1,22 +1,28 @@
-package com.projects.edustore.dto.OrderDto;
+package com.projects.edustore.dto.cart;
 
-
-
-public class CartRequestDto {
-
+public class CartItemResponseDto {
     private Long productId;
+
+    private String productName;
 
     private int quantity;
 
-    //TODO: item update
-//    private Long cartItemId;
 
+    //getters + setters
     public Long getProductId() {
         return productId;
     }
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public int getQuantity() {
@@ -27,6 +33,5 @@ public class CartRequestDto {
         this.quantity = quantity;
     }
 
-
-
 }
+

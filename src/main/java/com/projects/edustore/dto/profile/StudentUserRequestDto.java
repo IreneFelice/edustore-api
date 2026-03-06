@@ -1,4 +1,4 @@
-package com.projects.edustore.dto.profileDto;
+package com.projects.edustore.dto.profile;
 
 import com.projects.edustore.dto.BaseUserRequestDto;
 import jakarta.validation.constraints.Size;

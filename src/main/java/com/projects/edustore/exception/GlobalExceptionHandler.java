@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Object> handleInvalidJson(HttpMessageNotReadableException ex, HttpServletRequest request) {
+    public ResponseEntity<Object> handleInvalidJson(HttpServletRequest request) {
 
         String path = request.getRequestURI();
 

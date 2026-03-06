@@ -1,17 +1,15 @@
 package com.projects.edustore.controller;
 
-import com.projects.edustore.dto.OrderDto.CartRequestDto;
-import com.projects.edustore.dto.OrderDto.CartResponseDto;
-import com.projects.edustore.dto.profileDto.CustomerUserRequestDto;
-import com.projects.edustore.dto.profileDto.CustomerUserResponseDto;
-import com.projects.edustore.service.CartItemService;
+import com.projects.edustore.dto.cart.CartItemRequestDto;
+import com.projects.edustore.dto.cart.CartItemResponseDto;
+import com.projects.edustore.dto.cart.CartResponseDto;
+import com.projects.edustore.dto.profile.CustomerUserRequestDto;
+import com.projects.edustore.dto.profile.CustomerUserResponseDto;
+import com.projects.edustore.service.CartService;
 import com.projects.edustore.service.CustomerService;
-import com.projects.edustore.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -19,13 +17,11 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
-//    public ProductService productService;
-    public CartItemService cartItemService;
+    public CartService cartService;
 
-    public CustomerController (CustomerService customerService, ProductService productService, CartItemService cartItemService){
+    public CustomerController (CustomerService customerService, CartService cartService){
         this.customerService = customerService;
-//        this.productService = productService;
-        this.cartItemService = cartItemService;
+        this.cartService = cartService;
     }
 
     @GetMapping("/{id}")
@@ -54,18 +50,20 @@ public class CustomerController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/cart")
-    public ResponseEntity<CartResponseDto> addItemToCart(@PathVariable Long id, @RequestBody CartRequestDto dto) {
-        return ResponseEntity.ok(cartItemService.addItemToCart(id, dto));
+
+    @PutMapping("/{id}/cart")
+    public ResponseEntity<CartItemResponseDto> addItemToCart(
+            @PathVariable Long id,
+            @Valid @RequestBody CartItemRequestDto dto) {
+        return ResponseEntity.ok(cartService.addItemToCart(id, dto));
     }
 
     @GetMapping("/{id}/cart")
-    public ResponseEntity<List<CartResponseDto>> getCartItems(@PathVariable Long id) {
-        return ResponseEntity.ok(cartItemService.getCartItems(id));
+    public ResponseEntity<CartResponseDto> getCart(@PathVariable Long id) {
+        return ResponseEntity.ok(cartService.getCart(id));
     }
 
 
-    //TODO: update cartItem
 
     //TODO: delete cartItem
 

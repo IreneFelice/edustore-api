@@ -1,13 +1,12 @@
 package com.projects.edustore.mapper;
 
-import com.projects.edustore.dto.productDto.ProductRequestDto;
-import com.projects.edustore.dto.productDto.ProductCustomerResponseDto;
-import com.projects.edustore.dto.productDto.ProductStudentResponseDto;
+import com.projects.edustore.dto.product.ProductRequestDto;
+import com.projects.edustore.dto.product.ProductCustomerResponseDto;
+import com.projects.edustore.dto.product.ProductStudentResponseDto;
 import com.projects.edustore.model.person.StudentProfile;
-import com.projects.edustore.model.products.Product;
-import org.springframework.stereotype.Component;
+import com.projects.edustore.model.product.Product;
 
-@Component
+
 public class ProductMapper {
 
     public static Product toEntity(ProductRequestDto dto, StudentProfile student){
@@ -38,6 +37,7 @@ public class ProductMapper {
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setPrice(product.getPrice());
+        dto.setAvailable(product.getStockQuantity() > 0);
 
         return dto;
     }

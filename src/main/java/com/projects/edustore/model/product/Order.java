@@ -1,4 +1,4 @@
-package com.projects.edustore.model.products;
+package com.projects.edustore.model.product;
 
 import com.projects.edustore.model.person.CustomerProfile;
 import jakarta.persistence.*;

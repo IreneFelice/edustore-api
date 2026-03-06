@@ -1,18 +1,20 @@
 package com.projects.edustore.service;
 
-import com.projects.edustore.dto.productDto.ProductCustomerResponseDto;
-import com.projects.edustore.dto.productDto.ProductRequestDto;
-import com.projects.edustore.dto.productDto.ProductStudentResponseDto;
+import com.projects.edustore.dto.product.ProductCustomerResponseDto;
+import com.projects.edustore.dto.product.ProductRequestDto;
+import com.projects.edustore.dto.product.ProductStudentResponseDto;
 import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.ProductMapper;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.StudentProfile;
-import com.projects.edustore.model.products.Product;
+import com.projects.edustore.model.product.Product;
 import com.projects.edustore.repository.ProductRepository;
+
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository repos;
     private final WhoCanSeeWhoService whoCanSee;
@@ -54,9 +57,6 @@ public class ProductService {
         return ProductMapper.toCustomerResponseDto(product);
     }
 
-    //
-//    public OrderCustomerResponseDto createOrderFromCart(OrderCustomerRequestDto orderCustomerRequestDto) {
-//return OrderCustomerResponseDto;
 
     /////////////////////////FOR STUDENTS/////////////////////////////////////////////////
 
@@ -82,12 +82,13 @@ public class ProductService {
         String productMakerTeam = product.getMaker().getTeam();
 
         if (!userTeam.equals(productMakerTeam)) {
-            throw new ForbiddenActionException("This products protected details can not be accessed, because it's not owned by of your team.");
+            throw new ForbiddenActionException("Protected details of this product can not be accessed, because it's not owned by your team.");
         }
         return ProductMapper.toStudentResponseDto(product);
     }
 
     //#3
+    @Transactional(readOnly = false)
     public ProductStudentResponseDto createNewProduct(ProductRequestDto dto, Long studentId) {
         User user = whoCanSee.findUserAndCheckPermission(studentId, Role.ROLE_STUDENT, "Student");
         Product newProduct = ProductMapper.toEntity(dto, user.getPerson().getStudentProfile());
@@ -96,6 +97,7 @@ public class ProductService {
     }
 
     //#4
+    @Transactional(readOnly = false)
     public ProductStudentResponseDto updateProductByMaker(Long studentId, Long productId, ProductRequestDto dto) {
         authorizeStudentAccess(studentId);
         Product existingProduct = findProduct(productId);
@@ -107,6 +109,7 @@ public class ProductService {
     }
 
     //#5
+    @Transactional(readOnly = false)
     public void deleteProductByMaker(Long studentId, Long productId) {
         authorizeStudentAccess(studentId);
         Product product = findProduct(productId);
@@ -128,12 +131,13 @@ public class ProductService {
     public Product getProductForImage(Long productId) {
         Product product = findProduct(productId);
         if (product.getBytes() == null) {
-            throw new ResourceNotFoundException("Image for product ", productId);
+            throw new ResourceNotFoundException("Image for product", productId);
         }
         return product;
     }
 
 
+    @Transactional(readOnly = false)
     public void uploadProductImageByMaker(Long studentId, Long productId, MultipartFile file) throws IOException {
         authorizeStudentAccess(studentId);
         Product product = findProduct(productId);
@@ -142,6 +146,7 @@ public class ProductService {
         uploadProductImage(product, file);
     }
 
+    @Transactional(readOnly = false)
     public void deleteProductImageByMaker(Long studentId, Long productId) {
         authorizeStudentAccess(studentId);
         Product product = findProduct(productId);
@@ -150,6 +155,7 @@ public class ProductService {
         product.removeImage();
         repos.save(product);
     }
+
 
     private void uploadProductImage(Product product, MultipartFile file) throws IOException {
 
@@ -164,6 +170,7 @@ public class ProductService {
         repos.save(product);
     }
 
+    //Helpers
 
     public void authorizeStudentAccess(Long id) {
         whoCanSee.checkUserPermission(id, Role.ROLE_STUDENT, "Student"); //current User is allowed and requested user (by admin) or current user is Student

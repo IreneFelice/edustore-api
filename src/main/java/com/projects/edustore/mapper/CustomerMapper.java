@@ -1,7 +1,7 @@
 package com.projects.edustore.mapper;
 
-import com.projects.edustore.dto.profileDto.CustomerUserRequestDto;
-import com.projects.edustore.dto.profileDto.CustomerUserResponseDto;
+import com.projects.edustore.dto.profile.CustomerUserRequestDto;
+import com.projects.edustore.dto.profile.CustomerUserResponseDto;
 import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.CustomerProfile;
 import com.projects.edustore.model.person.Person;
