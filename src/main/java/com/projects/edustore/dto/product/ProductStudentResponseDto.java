@@ -1,4 +1,4 @@
-package com.projects.edustore.dto.productDto;
+package com.projects.edustore.dto.product;
 
 import java.math.BigDecimal;
 

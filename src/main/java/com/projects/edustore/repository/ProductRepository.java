@@ -1,6 +1,6 @@
 package com.projects.edustore.repository;
 
-import com.projects.edustore.model.products.Product;
+import com.projects.edustore.model.product.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

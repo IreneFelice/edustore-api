@@ -1,4 +1,4 @@
-package com.projects.edustore.dto.OrderDto;
+package com.projects.edustore.dto.order;
 
 public class OrderStudentResponseDto {
     //List orderItems -> productIds

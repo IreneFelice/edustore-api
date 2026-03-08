@@ -1,7 +1,7 @@
 package com.projects.edustore.service;
 
-import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
-import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
+import com.projects.edustore.dto.profile.StudentUserRequestDto;
+import com.projects.edustore.dto.profile.StudentUserResponseDto;
 import com.projects.edustore.mapper.StudentMapper;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;

@@ -60,12 +60,15 @@ public class SecurityConfig {
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/authenticate", "/customers/register","/students/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers("/authenticated").hasAnyRole("STUDENT", "CUSTOMER", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
+
                         .requestMatchers("/students/**").hasAnyRole("STUDENT", "ADMIN")
                         .requestMatchers("/customers/**").hasAnyRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
+
                         .anyRequest().denyAll());
 
         return http.build();

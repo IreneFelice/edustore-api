@@ -1,4 +1,4 @@
-package com.projects.edustore.model.products;
+package com.projects.edustore.model.product;
 
 
 import com.projects.edustore.model.person.StudentProfile;
@@ -18,7 +18,7 @@ public class Product {
     private String description;
     private BigDecimal price;
 
-    private Integer stockQuantity;
+    private int stockQuantity;
     private BigDecimal costPrice;
 
     @ManyToOne
@@ -26,7 +26,7 @@ public class Product {
     private StudentProfile maker;
 
 
-    @Lob
+    @Lob // lazy fetch by default
     private byte[] bytes;
     private String contentType;
     private String originalFilename;
@@ -78,11 +78,11 @@ public class Product {
         this.price = price;
     }
 
-    public Integer getStockQuantity() {
+    public int getStockQuantity() {
         return stockQuantity;
     }
 
-    public void setStockQuantity(Integer stockQuantity) {
+    public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
     }
 

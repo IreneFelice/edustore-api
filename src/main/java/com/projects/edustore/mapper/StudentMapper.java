@@ -1,14 +1,13 @@
 package com.projects.edustore.mapper;
 
-import com.projects.edustore.dto.profileDto.StudentUserRequestDto;
-import com.projects.edustore.dto.profileDto.StudentUserResponseDto;
+import com.projects.edustore.dto.profile.StudentUserRequestDto;
+import com.projects.edustore.dto.profile.StudentUserResponseDto;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.person.Person;
 import com.projects.edustore.model.person.StudentProfile;
 import com.projects.edustore.model.User;
-import org.springframework.stereotype.Component;
 
-@Component
+
 public class StudentMapper {
 
     public static User toEntity(StudentUserRequestDto dto) {

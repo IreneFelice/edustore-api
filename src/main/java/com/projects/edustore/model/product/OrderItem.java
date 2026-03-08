@@ -1,4 +1,4 @@
-package com.projects.edustore.model.products;
+package com.projects.edustore.model.product;
 
 import jakarta.persistence.*;
 
@@ -17,7 +17,7 @@ public class OrderItem {
     @ManyToOne
     private Product product;
 
-    private int quantity;
+    private Integer quantity;
 
 
     public OrderItem() {}
@@ -44,11 +44,11 @@ public class OrderItem {
         this.product = product;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 }

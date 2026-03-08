@@ -1,5 +1,6 @@
 package com.projects.edustore.model.person;
-import com.projects.edustore.model.products.Order;
+import com.projects.edustore.model.product.Cart;
+import com.projects.edustore.model.product.Order;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class CustomerProfile {
 
     @OneToMany(mappedBy = "customer")
     private final List<Order> orders = new ArrayList<>();
+
+
 
 //    constructors
 

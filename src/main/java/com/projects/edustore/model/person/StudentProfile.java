@@ -1,6 +1,6 @@
 package com.projects.edustore.model.person;
 
-import com.projects.edustore.model.products.Product;
+import com.projects.edustore.model.product.Product;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.projects.edustore.controller;
 
-import com.projects.edustore.dto.productDto.ProductCustomerResponseDto;
-import com.projects.edustore.model.products.Product;
+import com.projects.edustore.dto.product.ProductCustomerResponseDto;
+import com.projects.edustore.model.product.Product;
 import com.projects.edustore.repository.ProductRepository;
 import com.projects.edustore.service.ProductService;
 import org.springframework.http.HttpHeaders;
