@@ -38,8 +38,6 @@ public class CartService {
     }
 
 
-
-
     public CartResponseDto getCart(Long id) {
         whoCanSee.checkUserPermission(id, Role.ROLE_CUSTOMER, "Customer");
 
@@ -49,7 +47,6 @@ public class CartService {
 
         return CartMapper.toCartResponse(existingCart);
     }
-
 
 
     @Transactional
@@ -100,7 +97,11 @@ public class CartService {
         giveBackToStock(productId, deletedQuantity);
 
         cart.removeCartItem(existingCartItem);
-        cartRepos.save(cart);
+        if (cart.getCartItems().isEmpty()) {
+            cartRepos.delete(cart);
+        } else {
+            cartRepos.save(cart);
+        }
     }
 
     private Cart getOrCreateCart(CustomerProfile customer, Long id) {
