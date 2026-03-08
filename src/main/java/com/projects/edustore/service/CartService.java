@@ -1,9 +1,11 @@
 package com.projects.edustore.service;
 
 
+import com.projects.edustore.dto.cart.CartItemDeleteDto;
 import com.projects.edustore.dto.cart.CartItemRequestDto;
 import com.projects.edustore.dto.cart.CartItemResponseDto;
 import com.projects.edustore.dto.cart.CartResponseDto;
+import com.projects.edustore.exception.OutOfStockException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.CartItemMapper;
 import com.projects.edustore.mapper.CartMapper;
@@ -36,13 +38,69 @@ public class CartService {
     }
 
 
-    private void checkAndAdjustStock(Product product, int quantity) {
 
-        if (product.getStockQuantity() >= quantity) {
-            product.setStockQuantity(product.getStockQuantity() - quantity);
+
+    public CartResponseDto getCart(Long id) {
+        whoCanSee.checkUserPermission(id, Role.ROLE_CUSTOMER, "Customer");
+
+        Cart existingCart = cartRepos
+                .findByCustomerId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart for customer", id));
+
+        return CartMapper.toCartResponse(existingCart);
+    }
+
+
+
+    @Transactional
+    public CartItemResponseDto addItemToCart(Long id, CartItemRequestDto dto) {
+        CustomerProfile customer = authorizeAndGetCustomer(id);
+
+        Long productId = dto.getProductId();
+
+        Product product = findProduct(productId);
+
+        Cart cart = getOrCreateCart(customer, id);
+
+
+        CartItem existingCartItem = cartItemRepos
+                .findByCartIdAndProductId(cart.getId(), productId)
+                .orElse(null);
+
+        if (existingCartItem != null) {
+
+            adjustStockByDifference(existingCartItem.getQuantity(), dto.getQuantity(), productId);
+
+            existingCartItem.setQuantity(dto.getQuantity());
+            cart.addCartItem(existingCartItem);
+            cartRepos.save(cart);
+            return CartItemMapper.toItemResponse(existingCartItem);
+
         } else {
-            throw new RuntimeException(); //TODO: appropriate exception (OutOfStockException)
+            checkAndAdjustStock(productId, dto.getQuantity());
+
+            CartItem newItem = CartItemMapper.toEntity(product, dto.getQuantity());
+            cart.addCartItem(newItem);
+            cartRepos.save(cart);
+            return CartItemMapper.toItemResponse(newItem);
         }
+    }
+
+
+    @Transactional
+    public void deleteItem(Long id, CartItemDeleteDto dto) {
+        CustomerProfile customer = authorizeAndGetCustomer(id);
+        Cart cart = getOrCreateCart(customer, id);
+
+        Long productId = dto.getProductId();
+        CartItem existingCartItem = cartItemRepos
+                .findByCartIdAndProductId(cart.getId(), productId)
+                .orElseThrow(() -> new ResourceNotFoundException("In this cart, the product", productId));
+        int deletedQuantity = existingCartItem.getQuantity();
+        giveBackToStock(productId, deletedQuantity);
+
+        cart.removeCartItem(existingCartItem);
+        cartRepos.save(cart);
     }
 
     private Cart getOrCreateCart(CustomerProfile customer, Long id) {
@@ -57,67 +115,48 @@ public class CartService {
         return newCart;
     }
 
-    private void adjustStockByDifference(int oldQuantity, int newQuantity, Product product) {
+
+    //Product
+
+    private Product findProduct(Long productId) {
+        return productRepos
+                .findById(productId)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    //Stock
+
+    private void checkAndAdjustStock(Long productId, int quantity) {
+        Product product = findProduct(productId);
+        if (product.getStockQuantity() >= quantity) {
+            product.setStockQuantity(product.getStockQuantity() - quantity);
+            productRepos.save(product);
+        } else {
+            throw new OutOfStockException("Product stock is insufficient");
+        }
+    }
+
+    private void giveBackToStock(Long productId, int quantity) {
+        Product product = findProduct(productId);
+        product.setStockQuantity(product.getStockQuantity() + quantity);
+        productRepos.save(product);
+    }
+
+    private void adjustStockByDifference(int oldQuantity, int newQuantity, Long productId) {
         int quantDiff = oldQuantity - newQuantity;
 
         if (quantDiff < 0) { //new is more than old, --> check Stock
             int extraQuantity = Math.abs(quantDiff);  // convert negative difference to positive value
-            checkAndAdjustStock(product, extraQuantity);
-            productRepos.save(product);
+            checkAndAdjustStock(productId, extraQuantity);
         } else if (quantDiff > 0) {
-            product.setStockQuantity(product.getStockQuantity() + quantDiff); // give back to Stock
-            productRepos.save(product);
+            giveBackToStock(productId, quantDiff);
         }
     }
 
-    @Transactional
-    public CartItemResponseDto addItemToCart(Long id, CartItemRequestDto dto) {
+    //Authorization
+    private CustomerProfile authorizeAndGetCustomer(Long id) {
         User user = whoCanSee.findUserAndCheckPermission(id, Role.ROLE_CUSTOMER, "Customer");
-        CustomerProfile customer = user.getPerson().getCustomerProfile();
-
-        Long productId = dto.getProductId();
-
-        Product product = productRepos
-                .findById(productId)
-                .orElseThrow(ResourceNotFoundException::new);
-
-
-        Cart cart = getOrCreateCart(customer, id);
-
-
-        CartItem existingCartItem = cartItemRepos
-                .findByCartIdAndProductId(cart.getId(), productId)
-                .orElse(null);
-
-        if (existingCartItem != null) {
-
-            adjustStockByDifference(existingCartItem.getQuantity(), dto.getQuantity(), product);
-
-            existingCartItem.setQuantity(dto.getQuantity());
-            cart.addCartItem(existingCartItem);
-            cartRepos.save(cart);
-            return CartItemMapper.toItemResponse(existingCartItem);
-
-        } else {
-            checkAndAdjustStock(product, dto.getQuantity());
-
-            CartItem newItem = CartItemMapper.toEntity(product, dto.getQuantity());
-            cart.addCartItem(newItem);
-            cartRepos.save(cart);
-            return CartItemMapper.toItemResponse(newItem);
-        }
-    }
-
-    private Cart findCart(Long customerId) {
-        return cartRepos.findByCustomerId(customerId).orElseThrow(() -> new ResourceNotFoundException("Cart for customer", customerId));
-    }
-
-    public CartResponseDto getCart(Long id) {
-        whoCanSee.checkUserPermission(id, Role.ROLE_CUSTOMER, "Customer");
-
-        Cart existingCart = findCart(id);
-
-        return CartMapper.toCartResponse(existingCart);
+        return user.getPerson().getCustomerProfile();
     }
 
 }

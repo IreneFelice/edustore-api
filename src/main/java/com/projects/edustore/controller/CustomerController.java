@@ -1,5 +1,6 @@
 package com.projects.edustore.controller;
 
+import com.projects.edustore.dto.cart.CartItemDeleteDto;
 import com.projects.edustore.dto.cart.CartItemRequestDto;
 import com.projects.edustore.dto.cart.CartItemResponseDto;
 import com.projects.edustore.dto.cart.CartResponseDto;
@@ -19,7 +20,7 @@ public class CustomerController {
     private final CustomerService customerService;
     public CartService cartService;
 
-    public CustomerController (CustomerService customerService, CartService cartService){
+    public CustomerController(CustomerService customerService, CartService cartService) {
         this.customerService = customerService;
         this.cartService = cartService;
     }
@@ -63,9 +64,16 @@ public class CustomerController {
         return ResponseEntity.ok(cartService.getCart(id));
     }
 
+    @DeleteMapping("/{id}/cart")
+    public ResponseEntity<Void> deleteItem(
+            @PathVariable Long id,
+            @Valid @RequestBody CartItemDeleteDto dto) {
+        cartService.deleteItem(id, dto);
+        return ResponseEntity.noContent().build();
+    }
 
 
-    //TODO: delete cartItem
+
 
     //TODO: create order
 
