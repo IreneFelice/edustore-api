@@ -6,9 +6,7 @@ import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.CustomerProfile;
 import com.projects.edustore.model.person.Person;
 import com.projects.edustore.model.Role;
-import org.springframework.stereotype.Component;
 
-@Component
 public class CustomerMapper {
 
     public static User toEntity(CustomerUserRequestDto dto) {

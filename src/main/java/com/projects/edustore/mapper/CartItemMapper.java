@@ -4,8 +4,6 @@ import com.projects.edustore.dto.cart.CartItemResponseDto;
 import com.projects.edustore.model.product.CartItem;
 import com.projects.edustore.model.product.Product;
 
-
-
 public class CartItemMapper {
 
     public static CartItem toEntity(Product product, Integer quantity) {
