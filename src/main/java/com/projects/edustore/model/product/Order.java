@@ -3,6 +3,7 @@ package com.projects.edustore.model.product;
 import com.projects.edustore.model.person.CustomerProfile;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,24 +19,28 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private CustomerProfile customer;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderItem> items = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderDate;
 
+    private BigDecimal totalPrice;
 
-    //status
-    // date
-    // total price
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus orderStatus;
+
 
     // constructors:
 
-    protected Order() {}
+    protected Order() {
+    }
 
     public Order(CustomerProfile customer) {
         this.customer = customer;
         this.orderDate = LocalDateTime.now();
+        this.orderStatus = OrderStatus.STATUS_PENDING;
     }
 
     // getters and setters
@@ -50,10 +55,9 @@ public class Order {
 
     public void setCustomer(CustomerProfile customer) {
         this.customer = customer;
-    }
-
-    public LocalDateTime getOrderDate() {
-        return orderDate;
+        if (customer != null) {
+            customer.addOrder(this);
+        }
     }
 
     public List<OrderItem> getItems() {
@@ -68,6 +72,26 @@ public class Order {
     public void removeItem(OrderItem item) {
         items.remove(item);
         item.setOrder(null);
+    }
+
+    public LocalDateTime getOrderDate() {
+        return orderDate;
+    }
+
+    public BigDecimal getTotalPrice() {
+     return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
 }

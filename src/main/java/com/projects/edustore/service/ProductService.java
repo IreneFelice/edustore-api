@@ -74,7 +74,7 @@ public class ProductService {
     }
 
     //#2
-    public ProductStudentResponseDto getProductForStudent(Long studentId, Long productId) {
+    public ProductStudentResponseDto getProductDetailsForTeam(Long studentId, Long productId) {
         User user = whoCanSee.findUserAndCheckPermission(studentId, Role.ROLE_STUDENT, "Student");
         Product product = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
 

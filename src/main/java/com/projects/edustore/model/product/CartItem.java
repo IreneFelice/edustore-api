@@ -2,6 +2,8 @@ package com.projects.edustore.model.product;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name="cart_items")
 public class CartItem {
@@ -14,6 +16,8 @@ public class CartItem {
     private Product product;
 
     private int quantity;
+
+    private BigDecimal subTotal;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")
@@ -59,5 +63,7 @@ public class CartItem {
         return cart;
     }
 
-
+    public BigDecimal getSubTotal() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
 }

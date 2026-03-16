@@ -11,6 +11,7 @@ public class CartItemMapper {
         return new CartItem(product, quantity);
     }
 
+    //TODO: Price subTotal from CartItem Entity (see also CartMapper)
     public static CartItemResponseDto toItemResponse(CartItem item) {
         CartItemResponseDto response = new CartItemResponseDto();
         response.setProductId(item.getProduct().getId());

@@ -67,10 +67,10 @@ public class StudentController {
 
     //2
     @GetMapping("/{studentId}/products/{productId}")
-    public ResponseEntity<ProductStudentResponseDto> getProductForStudent(
+    public ResponseEntity<ProductStudentResponseDto> getProductDetailsForTeam(
             @PathVariable Long studentId,
             @PathVariable Long productId) {
-        return ResponseEntity.ok(productService.getProductForStudent(studentId, productId));
+        return ResponseEntity.ok(productService.getProductDetailsForTeam(studentId, productId));
     }
 
     //3

@@ -14,6 +14,8 @@ public class CartMapper {
         CartResponseDto response = new CartResponseDto();
         response.setCartId(cart.getId());
 
+        //TODO: set TotalPrice
+
         int totalItemQuantity = 0;
 
         for(CartItem item : cart.getCartItems()) {

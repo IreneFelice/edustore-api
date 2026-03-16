@@ -62,6 +62,9 @@ public class SecurityConfig {
                         .requestMatchers("/authenticate", "/customers/register","/students/register").permitAll()
                         .requestMatchers("/authenticated").hasAnyRole("STUDENT", "CUSTOMER", "ADMIN")
 
+                                .requestMatchers("/orders/customer/**").hasAnyRole("STUDENT", "CUSTOMER", "ADMIN")
+
+
                         .requestMatchers("/students/**").hasAnyRole("STUDENT", "ADMIN")
                         .requestMatchers("/customers/**").hasAnyRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
