@@ -1,5 +1,6 @@
 package com.projects.edustore.dto.cart;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,9 @@ public class CartResponseDto {
 
     private List<CartItemResponseDto> items = new ArrayList<>();
 
-    private int totalItemAmount;
+    private BigDecimal totalPrice;
+
+    private Integer totalItemAmount;
 
 
     //getters + setters
@@ -30,6 +33,14 @@ public class CartResponseDto {
         return items;
     }
 
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
     public int getTotalItemAmount() {
         return totalItemAmount;
     }
@@ -37,4 +48,5 @@ public class CartResponseDto {
     public void setTotalItemAmount(int totalItemAmount) {
         this.totalItemAmount = totalItemAmount;
     }
+
 }

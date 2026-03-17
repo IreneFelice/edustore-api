@@ -65,7 +65,8 @@ public class CartService {
                 .orElse(null);
 
         if (existingCartItem != null) {
-
+            //item already exists in cart; replace old quantity by new
+            //stock adjustment based on difference between the two quantities
             adjustStockByDifference(existingCartItem.getQuantity(), dto.getQuantity(), productId);
 
             existingCartItem.setQuantity(dto.getQuantity());
@@ -144,14 +145,16 @@ public class CartService {
     }
 
     private void adjustStockByDifference(int oldQuantity, int newQuantity, Long productId) {
-        int quantDiff = oldQuantity - newQuantity;
+        int quantDiff = newQuantity - oldQuantity;
 
-        if (quantDiff < 0) { //new is more than old, --> check Stock
-            int extraQuantity = Math.abs(quantDiff);  // convert negative difference to positive value
-            checkAndAdjustStock(productId, extraQuantity);
-        } else if (quantDiff > 0) {
-            giveBackToStock(productId, quantDiff);
+        if (oldQuantity < newQuantity) { //extra quantity is requested
+            checkAndAdjustStock(productId, quantDiff);
+
+        } else if (newQuantity < oldQuantity) { //quantDiff is negative
+            int surplusQuantity = Math.abs(quantDiff); //convert negative difference to positive value
+            giveBackToStock(productId, surplusQuantity);
         }
+
     }
 
     //Authorization

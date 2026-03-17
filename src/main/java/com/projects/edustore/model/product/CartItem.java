@@ -15,9 +15,8 @@ public class CartItem {
     @JoinColumn(name="product_id")
     private Product product;
 
-    private int quantity;
+    private Integer quantity;
 
-    private BigDecimal subTotal;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")
@@ -25,9 +24,9 @@ public class CartItem {
 
     public CartItem() {}
 
-    public CartItem(Product product, Integer quantity) {
+    public CartItem(Product product, int quantity) {
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = quantity; //autoboxing int -> Integer, quantity can not be null
     }
 
     //getters + setters
@@ -61,6 +60,10 @@ public class CartItem {
 
     public Cart getCart() {
         return cart;
+    }
+
+    public BigDecimal getPrice() {
+        return product.getPrice();
     }
 
     public BigDecimal getSubTotal() {

@@ -39,6 +39,7 @@ public class OrderMapper {
         response.setOrderId(order.getId());
         response.setOrderDate(order.getOrderDate());
         response.setOrderStatus(order.getOrderStatus());
+        response.setOrderTotal(order.getTotalPrice());
 
         return response;
     }

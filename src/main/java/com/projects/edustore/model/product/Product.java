@@ -18,7 +18,7 @@ public class Product {
     private String description;
     private BigDecimal price;
 
-    private int stockQuantity;
+    private Integer stockQuantity;
     private BigDecimal costPrice;
 
     @ManyToOne

@@ -1,11 +1,17 @@
 package com.projects.edustore.dto.cart;
 
+import java.math.BigDecimal;
+
 public class CartItemResponseDto {
     private Long productId;
 
     private String productName;
 
-    private int quantity;
+    private Integer quantity;
+
+    private BigDecimal price;
+
+    private BigDecimal subTotal;
 
 
     //getters + setters
@@ -32,6 +38,14 @@ public class CartItemResponseDto {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public BigDecimal getPrice() { return price; }
+
+    public void setPrice(BigDecimal price) { this.price = price; }
+
+    public BigDecimal getSubTotal() { return subTotal; }
+
+    public void setSubTotal(BigDecimal subTotal) { this.subTotal = subTotal; }
 
 }
 

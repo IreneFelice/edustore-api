@@ -3,6 +3,7 @@ package com.projects.edustore.dto.order;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.projects.edustore.model.product.OrderStatus;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class OrderBasicResponseDto {
@@ -12,6 +13,8 @@ public class OrderBasicResponseDto {
     LocalDateTime orderDate;
 
     OrderStatus orderStatus;
+
+    BigDecimal orderTotal;
 
     public Long getOrderId() {
         return OrderId;
@@ -35,5 +38,13 @@ public class OrderBasicResponseDto {
 
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public BigDecimal getOrderTotal() {
+        return orderTotal;
+    }
+
+    public void setOrderTotal(BigDecimal orderTotal) {
+        this.orderTotal = orderTotal;
     }
 }
