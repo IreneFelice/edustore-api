@@ -13,7 +13,7 @@ public class OrderDetailsResponseDto {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime orderDate;
 
-    private OrderStatus orderStatus;
+    private OrderStatus status;
     private List<OrderItemDto> items = new ArrayList<>();
     private BigDecimal totalPrice;
 
@@ -43,12 +43,12 @@ public class OrderDetailsResponseDto {
         this.totalPrice = totalPrice;
     }
 
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
+    public OrderStatus getStatus() {
+        return status;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
     public List<OrderItemDto> getItems() {

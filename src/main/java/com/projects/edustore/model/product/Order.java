@@ -29,7 +29,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
 
     // constructors:
@@ -40,7 +40,7 @@ public class Order {
     public Order(CustomerProfile customer) {
         this.customer = customer;
         this.orderDate = LocalDateTime.now();
-        this.orderStatus = OrderStatus.STATUS_PENDING;
+        this.status = OrderStatus.PENDING;
     }
 
     // getters and setters
@@ -86,12 +86,12 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
+    public OrderStatus getStatus() {
+        return status;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setStatus(OrderStatus orderStatus) {
+        this.status = orderStatus;
     }
 
 }

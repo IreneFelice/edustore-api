@@ -1,5 +1,6 @@
-package com.projects.edustore.admin;
+package com.projects.edustore.controller;
 
+import com.projects.edustore.service.AdminUserReadService;
 import com.projects.edustore.dto.BaseUserResponseDto;
 import com.projects.edustore.dto.profile.CustomerUserResponseDto;
 import com.projects.edustore.dto.profile.StudentUserResponseDto;
@@ -15,45 +16,45 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("admin/users")
 @Validated
-public class UserController {
+public class AdminUserController {
 
-    private final UserService userService;
+    private final AdminUserReadService adminUserReadService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public AdminUserController(AdminUserReadService adminUserReadService) {
+        this.adminUserReadService = adminUserReadService;
     }
 
     @GetMapping
     public ResponseEntity<List<BaseUserResponseDto>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+        return ResponseEntity.ok(adminUserReadService.getAllUsers());
     }
 
-    // all students total or per team (optional requestParam)
+    // get all students in total or per team (optional requestParam)
     @GetMapping("/students")
     public ResponseEntity<List<StudentUserResponseDto>> getAllStudents(
             @RequestParam(required = false) List<String> teams) {
 
         if (teams == null || teams.isEmpty()) {
-            return ResponseEntity.ok(userService.getAllStudents());
+            return ResponseEntity.ok(adminUserReadService.getAllStudents());
         }
-        return ResponseEntity.ok(userService.getStudentsByTeams(teams));
+        return ResponseEntity.ok(adminUserReadService.getStudentsByTeams(teams));
     }
 
     @GetMapping("/customers")
     public ResponseEntity<List<CustomerUserResponseDto>> getAllCustomers() {
-        return ResponseEntity.ok(userService.getAllCustomers());
+        return ResponseEntity.ok(adminUserReadService.getAllCustomers());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BaseUserResponseDto> getUserById(
             @PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+        return ResponseEntity.ok(adminUserReadService.getUserById(id));
     }
 
     @GetMapping("/email")
     public ResponseEntity<BaseUserResponseDto> getByEmail(
             @RequestParam @Email(message = "Email must be valid") String email) {
-        return ResponseEntity.ok(userService.getByEmail(email));
+        return ResponseEntity.ok(adminUserReadService.getByEmail(email));
     }
 
 

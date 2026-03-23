@@ -2,6 +2,9 @@ package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.order.OrderBasicResponseDto;
 import com.projects.edustore.dto.order.OrderDetailsResponseDto;
+import com.projects.edustore.dto.order.OrderStudentRequestDto;
+import com.projects.edustore.dto.order.OrderStudentResponseDto;
+import com.projects.edustore.model.product.OrderStatus;
 import com.projects.edustore.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +20,6 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-/* customer sets cart to order
-  - customer id --> for finding right cart
-  - no dto needed for request
-  - later a request dto can contain notes, or discount codes etc.
- */
     @PostMapping("/customer/{customerId}")
     public ResponseEntity<OrderDetailsResponseDto> cartToOrder(
             @PathVariable Long customerId) {
@@ -33,41 +31,36 @@ public class OrderController {
             @PathVariable Long customerId) {
         return ResponseEntity.ok(orderService.getOrderOverviewByCustomer(customerId));
     }
-/* Customer requests overview of all own orders
-    Response dto contains list with per order:
-    - id
-    - status order
-    - date of placement
-    (- date of latest status change)
- */
 
-/* Customer requests to see order-details
-    customer- and order id in Path-variable
-    Response dto contains:
-    - items [list response dtos single item]
-    - total price
-    - id
-    - status order
-    - date of placement
-    - date of latest status change
- */
+    @GetMapping("/customer/{customerId}/details/{orderId}")
+    public ResponseEntity<OrderDetailsResponseDto> getCustomerOrderById(
+            @PathVariable Long customerId,
+            @PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.getOrderById(customerId, orderId));
+    }
 
-/* Student/admin wants overview all orders of all customers (per status)
-    Path-variable status
- */
+    @GetMapping("/student")
+    public ResponseEntity<List<OrderBasicResponseDto>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
+    @GetMapping("/student/details/{orderId}")
+    public ResponseEntity<OrderStudentResponseDto> getStudentOrderById(
+            @PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.getStudentOrderById(orderId));
+    }
 
+    @GetMapping("/student/status/{statusName}")
+    public ResponseEntity<List<OrderBasicResponseDto>> getOrdersByStatus(
+            @PathVariable String statusName) {
+        return ResponseEntity.ok(orderService.getOrdersByStatus(statusName));
+    }
 
-/* Student/admin wants order details
+    @PatchMapping("/student/status/{orderId}")
+    public ResponseEntity<OrderBasicResponseDto> updateStatus(
+            @PathVariable Long orderId,
+            @RequestBody OrderStudentRequestDto orderStudentRequestDto) {
+    return ResponseEntity.ok(orderService.updateStatus(orderId, orderStudentRequestDto));
+    }
 
- */
-
-
-/* Student/admin wants to update order status
-
- */
-
-/* admin wants to delete order
-
- */
 
 }
