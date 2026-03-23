@@ -2,6 +2,8 @@ package com.projects.edustore.model.product;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
@@ -15,12 +17,20 @@ public class OrderItem {
     private Order order;
 
     @ManyToOne
+    @JoinColumn(name = "product_id")
     private Product product;
 
     private Integer quantity;
 
+    private BigDecimal subTotal;
+
 
     public OrderItem() {}
+
+    public OrderItem(Product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
 
     //getters and setters
 
@@ -50,5 +60,9 @@ public class OrderItem {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public BigDecimal getSubtotal() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }
