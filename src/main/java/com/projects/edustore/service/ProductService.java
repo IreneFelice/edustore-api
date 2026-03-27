@@ -61,7 +61,6 @@ public class ProductService {
     /////////////////////////FOR STUDENTS/////////////////////////////////////////////////
 
 
-    //#1
     public List<ProductStudentResponseDto> getAllProductsForMaker(Long studentId) {
         authorizeStudentAccess(studentId);
         List<Product> products = repos.findByMaker_Id(studentId);
@@ -73,7 +72,6 @@ public class ProductService {
         return dtos;
     }
 
-    //#2
     public ProductStudentResponseDto getProductDetailsForTeam(Long studentId, Long productId) {
         User user = whoCanSee.findUserAndCheckPermission(studentId, Role.ROLE_STUDENT, "Student");
         Product product = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
@@ -87,7 +85,6 @@ public class ProductService {
         return ProductMapper.toStudentResponseDto(product);
     }
 
-    //#3
     @Transactional(readOnly = false)
     public ProductStudentResponseDto createNewProduct(ProductRequestDto dto, Long studentId) {
         User user = whoCanSee.findUserAndCheckPermission(studentId, Role.ROLE_STUDENT, "Student");
@@ -96,7 +93,6 @@ public class ProductService {
         return ProductMapper.toStudentResponseDto(newProduct);
     }
 
-    //#4
     @Transactional(readOnly = false)
     public ProductStudentResponseDto updateProductByMaker(Long studentId, Long productId, ProductRequestDto dto) {
         authorizeStudentAccess(studentId);
@@ -108,7 +104,6 @@ public class ProductService {
         return ProductMapper.toStudentResponseDto(existingProduct);
     }
 
-    //#5
     @Transactional(readOnly = false)
     public void deleteProductByMaker(Long studentId, Long productId) {
         authorizeStudentAccess(studentId);
@@ -170,7 +165,7 @@ public class ProductService {
         repos.save(product);
     }
 
-    //Helpers
+    //helpers
 
     public void authorizeStudentAccess(Long id) {
         whoCanSee.checkUserPermission(id, Role.ROLE_STUDENT, "Student"); //current User is allowed and requested user (by admin) or current user is Student

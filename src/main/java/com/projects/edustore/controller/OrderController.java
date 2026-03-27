@@ -4,7 +4,6 @@ import com.projects.edustore.dto.order.OrderBasicResponseDto;
 import com.projects.edustore.dto.order.OrderDetailsResponseDto;
 import com.projects.edustore.dto.order.OrderStudentRequestDto;
 import com.projects.edustore.dto.order.OrderStudentResponseDto;
-import com.projects.edustore.model.product.OrderStatus;
 import com.projects.edustore.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

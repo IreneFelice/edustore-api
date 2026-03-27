@@ -1,6 +1,5 @@
 package com.projects.edustore.service;
 
-
 import com.projects.edustore.dto.cart.CartItemDeleteDto;
 import com.projects.edustore.dto.cart.CartItemRequestDto;
 import com.projects.edustore.dto.cart.CartItemResponseDto;
@@ -58,7 +57,6 @@ public class CartService {
         Product product = findProduct(productId);
 
         Cart cart = getOrCreateCart(customer, id);
-
 
         CartItem existingCartItem = cartItemRepos
                 .findByCartIdAndProductId(cart.getId(), productId)

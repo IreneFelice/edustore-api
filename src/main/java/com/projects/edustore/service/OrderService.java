@@ -45,7 +45,7 @@ public class OrderService {
 
     public OrderDetailsResponseDto getOrderById(Long customerId, Long orderId) {
         checkCustomerPermission(customerId);
-        Order order = orderRepos.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order", orderId));
+        Order order = findOrder(orderId);
         return OrderMapper.toCustomerResponse(order);
     }
 
@@ -68,17 +68,24 @@ public class OrderService {
     }
 
     public OrderStudentResponseDto getStudentOrderById(Long orderId) {
-        Order order = orderRepos.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order", orderId));
+        Order order = findOrder(orderId);
         return OrderMapper.toStudentResponse(order);
     }
 
     public OrderBasicResponseDto updateStatus(Long orderId, OrderStudentRequestDto dto) {
-        Order order = orderRepos.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order", orderId));
+        Order order = findOrder(orderId);
 
         order.setStatus(dto.getStatus());
 
         orderRepos.save(order);
         return OrderMapper.toBasicResponse(order);
+    }
+
+    //helpers
+
+    private Order findOrder(Long orderId) {
+        Order order = orderRepos.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order", orderId));
+        return order;
     }
 
     private List<OrderBasicResponseDto> getDtoList(List<Order> orderList) {
