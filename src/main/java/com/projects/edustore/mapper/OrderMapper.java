@@ -36,8 +36,8 @@ public class OrderMapper {
 
         response.setOrderId(order.getId());
         response.setOrderDate(order.getOrderDate());
-        response.setOrderStatus(order.getStatus());
-        response.setOrderTotal(order.getTotalPrice());
+        response.setStatus(order.getStatus());
+        response.setTotalPrice(order.getTotalPrice());
 
         return response;
     }
@@ -102,11 +102,4 @@ public class OrderMapper {
         return response;
     }
 
-
 }
-
-/*
-    private Long customerId;
-    private String CustomerName;
-    private String email;
- */

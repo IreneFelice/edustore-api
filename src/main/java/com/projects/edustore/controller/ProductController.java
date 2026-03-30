@@ -41,7 +41,7 @@ public class ProductController {
     ///////////////////////IMAGE//////////////////////////////////////////////////
     @GetMapping("/{productId}/image")
     public ResponseEntity<byte[]> getProductImage(@PathVariable Long productId) {
-        Product product = productService.getProductForImage(productId);
+        Product product = productService.getProductWithImage(productId);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(product.getContentType()))

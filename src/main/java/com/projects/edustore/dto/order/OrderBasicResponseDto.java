@@ -7,14 +7,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class OrderBasicResponseDto {
-    Long OrderId;
+    private Long OrderId;
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
-    LocalDateTime orderDate;
+    private LocalDateTime orderDate;
 
-    OrderStatus orderStatus;
-
-    BigDecimal orderTotal;
+    private OrderStatus status;
+    private BigDecimal totalPrice;
 
     public Long getOrderId() {
         return OrderId;
@@ -32,19 +31,19 @@ public class OrderBasicResponseDto {
         this.orderDate = orderDate;
     }
 
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
+    public OrderStatus getStatus() {
+        return status;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
-    public BigDecimal getOrderTotal() {
-        return orderTotal;
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setOrderTotal(BigDecimal orderTotal) {
-        this.orderTotal = orderTotal;
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

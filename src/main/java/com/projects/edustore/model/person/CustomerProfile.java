@@ -76,6 +76,5 @@ public class CustomerProfile {
         order.setCustomer(null);
     }
 
-
 }
 

@@ -123,7 +123,7 @@ public class ProductService {
 
     private static final long MAX_IMAGE_SIZE = 1_000_000; // 1 MB
 
-    public Product getProductForImage(Long productId) {
+    public Product getProductWithImage(Long productId) {
         Product product = findProduct(productId);
         if (product.getBytes() == null) {
             throw new ResourceNotFoundException("Image for product", productId);
