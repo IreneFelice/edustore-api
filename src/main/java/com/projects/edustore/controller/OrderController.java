@@ -26,26 +26,26 @@ public class OrderController {
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<OrderBasicResponseDto>> getCustomerOrderOverview(
+    public ResponseEntity<List<OrderBasicResponseDto>> getOrderOverviewForCustomer(
             @PathVariable Long customerId) {
         return ResponseEntity.ok(orderService.getOrderOverviewByCustomer(customerId));
     }
 
     @GetMapping("/customer/{customerId}/details/{orderId}")
-    public ResponseEntity<OrderDetailsResponseDto> getCustomerOrderById(
+    public ResponseEntity<OrderDetailsResponseDto> getOrderByIdForCustomer(
             @PathVariable Long customerId,
             @PathVariable Long orderId) {
-        return ResponseEntity.ok(orderService.getOrderById(customerId, orderId));
+        return ResponseEntity.ok(orderService.getOrderByIdForCustomer(customerId, orderId));
     }
 
     @GetMapping("/student")
-    public ResponseEntity<List<OrderBasicResponseDto>> getAllOrders() {
+    public ResponseEntity<List<OrderBasicResponseDto>> getAllOrdersForStudent() {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
     @GetMapping("/student/details/{orderId}")
-    public ResponseEntity<OrderStudentResponseDto> getStudentOrderById(
+    public ResponseEntity<OrderStudentResponseDto> getOrderByIdForStudent(
             @PathVariable Long orderId) {
-        return ResponseEntity.ok(orderService.getStudentOrderById(orderId));
+        return ResponseEntity.ok(orderService.getOrderByIdForStudent(orderId));
     }
 
     @GetMapping("/student/status/{statusName}")

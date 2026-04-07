@@ -6,7 +6,6 @@ import com.projects.edustore.dto.order.OrderStudentRequestDto;
 import com.projects.edustore.dto.order.OrderStudentResponseDto;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.OrderMapper;
-import com.projects.edustore.model.Role;
 import com.projects.edustore.model.product.Cart;
 import com.projects.edustore.model.product.Order;
 import com.projects.edustore.model.product.OrderStatus;
@@ -42,7 +41,7 @@ public class OrderService {
         return OrderMapper.toCustomerResponse(newOrder);
     }
 
-    public OrderDetailsResponseDto getOrderById(Long customerId, Long orderId) {
+    public OrderDetailsResponseDto getOrderByIdForCustomer(Long customerId, Long orderId) {
         checkCustomerPermission(customerId);
         Order order = findOrder(orderId);
         return OrderMapper.toCustomerResponse(order);
@@ -66,7 +65,7 @@ public class OrderService {
         return getDtoList(orderList);
     }
 
-    public OrderStudentResponseDto getStudentOrderById(Long orderId) {
+    public OrderStudentResponseDto getOrderByIdForStudent(Long orderId) {
         Order order = findOrder(orderId);
         return OrderMapper.toStudentResponse(order);
     }
@@ -97,7 +96,7 @@ public class OrderService {
     }
 
     private void checkCustomerPermission(Long customerId) {
-        whoCanSee.checkUserPermission(customerId, Role.ROLE_CUSTOMER, "Customer");
+        whoCanSee.checkSelfOrAdminAccess(customerId);
     }
 
 }

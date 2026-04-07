@@ -94,7 +94,7 @@ class OrderServiceTest {
     void getOrderById() {
         when(orderRepos.findById(order.getId())).thenReturn(Optional.of(order));
 
-        OrderDetailsResponseDto result = orderService.getOrderById(userId, order.getId());
+        OrderDetailsResponseDto result = orderService.getOrderByIdForCustomer(userId, order.getId());
 
         assertNotNull(result);
         assertEquals(order.getStatus(), result.getStatus());
@@ -135,7 +135,7 @@ class OrderServiceTest {
     void getStudentOrderById() {
         when(orderRepos.findById(order.getId())).thenReturn(Optional.of(order));
 
-        OrderStudentResponseDto result = orderService.getStudentOrderById(order.getId());
+        OrderStudentResponseDto result = orderService.getOrderByIdForStudent(order.getId());
 
         assertEquals("lastName", result.getCustomerName());
         assertEquals("email@email.com", result.getEmail());

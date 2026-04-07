@@ -53,14 +53,6 @@ class CartServiceTest {
     @InjectMocks
     CartService cartService;
 
-    @BeforeEach
-    void setup() {
-        user = new User("TestName", "password", Role.ROLE_CUSTOMER);
-        Person person = Person.create(user, "firstName", "lastName", "email@email.com");
-        profile = CustomerProfile.create(person, "0612345678");
-        userId = 1L;
-    }
-
     private Product arrangeProduct() {
         Product product = new Product();
         productId = 1L;
@@ -111,7 +103,7 @@ class CartServiceTest {
     void getCart() {
         System.out.println("Test getCart:");
         //arrange
-        doNothing().when(whoCanSee).checkUserPermission(userId, Role.ROLE_CUSTOMER, "Customer");
+        doNothing().when(whoCanSee).checkSelfOrAdminAccess(userId);
         arrangeCart();
 
         //act
@@ -129,7 +121,7 @@ class CartServiceTest {
     void getCartNotFound() {
         System.out.println("Test getCartNotFound:");
         //arrange
-        doNothing().when(whoCanSee).checkUserPermission(userId, Role.ROLE_CUSTOMER, "Customer");
+        doNothing().when(whoCanSee).checkSelfOrAdminAccess(userId);
 
         //act and assert
         ResourceNotFoundException ex = assertThrows(
@@ -145,7 +137,7 @@ class CartServiceTest {
     void addNewItemToCart() {
         System.out.println("Test addNewItemToCart:");
         //arrange
-        when(whoCanSee.findUserAndCheckPermission(userId, Role.ROLE_CUSTOMER, "Customer")).thenReturn(user);
+        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
         Product product = arrangeProduct();
         Cart cart = arrangeCart();
         CartItemRequestDto dto = arrangeRequestDto();
@@ -167,7 +159,7 @@ class CartServiceTest {
     void addItemToNewCart() {
         System.out.println("Test addItemToNewCart:");
         //arrange
-        when(whoCanSee.findUserAndCheckPermission(userId, Role.ROLE_CUSTOMER, "Customer")).thenReturn(user);
+        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
         Product product = arrangeProduct();
         //no cart arranging
         CartItemRequestDto dto = arrangeRequestDto();
@@ -193,7 +185,7 @@ class CartServiceTest {
     void addExistingItemToCart() {
         System.out.println("Test addExistingItemToCart:");
         //arrange
-        when(whoCanSee.findUserAndCheckPermission(userId, Role.ROLE_CUSTOMER, "Customer")).thenReturn(user);
+        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
 
         Product product = arrangeProduct();
         Cart cart = arrangeCart();
@@ -221,7 +213,7 @@ class CartServiceTest {
     void addExistingItemToCartGiveBackToStock() {
         System.out.println("Test addExistingItemToNewCart_GiveBackToStock:");
         //arrange
-        when(whoCanSee.findUserAndCheckPermission(userId, Role.ROLE_CUSTOMER, "Customer")).thenReturn(user);
+        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
 
         Product product = arrangeProduct();
         Cart cart = arrangeCart();
@@ -249,7 +241,7 @@ class CartServiceTest {
     void addExistingItemToCartOutOfStock() {
         System.out.println("Test addExistingItemToNewCart_OutOfStock:");
         //arrange
-        when(whoCanSee.findUserAndCheckPermission(userId, Role.ROLE_CUSTOMER, "Customer")).thenReturn(user);
+        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
 
         Product product = arrangeProduct();
         Cart cart = arrangeCart();
@@ -285,7 +277,7 @@ class CartServiceTest {
     void deleteItemNotCart() {
         System.out.println("Test delete item, not cart:");
         //arrange
-        when(whoCanSee.findUserAndCheckPermission(userId, Role.ROLE_CUSTOMER, "Customer")).thenReturn(user);
+        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
         Cart cart = arrangeCart();
         Product product1 = arrangeProduct();
 
@@ -329,7 +321,7 @@ class CartServiceTest {
     void deleteItemAndCart() {
         System.out.println("Test delete item AND cart:");
         //arrange
-        when(whoCanSee.findUserAndCheckPermission(userId, Role.ROLE_CUSTOMER, "Customer")).thenReturn(user);
+        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
         Cart cart = arrangeCart();
         Product product1 = arrangeProduct();
 

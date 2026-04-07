@@ -42,7 +42,6 @@ VALUES (4, '+31611111111'),
        (5, '+31622222222'),
        (6, '+31633333333');
 
--- Products
 INSERT INTO products (name, description, price, stock_quantity, cost_price, maker_id)
 VALUES ('Vogelhuisje', 'Gemaakt door Tim, voor koolmeesjes.', 1.00, 2, 0.75, 3),
        ('Schilderij', 'Zonsondergang', 5.00, 1, 2.00, 3),
@@ -50,3 +49,16 @@ VALUES ('Vogelhuisje', 'Gemaakt door Tim, voor koolmeesjes.', 1.00, 2, 0.75, 3),
        ('Schilderij', 'Mijn lieverlingskleuren', 5.00, 1, 2.00, 2),
        ('Vogelhuisje', 'All birds matter.', 1.00, 2, 0.75, 8),
        ('Schilderij', '"Mama en ik" Alleen de mama van Loes mag dit kopen!', 5.00, 1, 2.00, 7);
+
+-- Carts
+INSERT INTO carts (id, customer_id)
+VALUES (1, 4);  --> Alice (customer id = 4)
+
+
+-- Cart Items
+INSERT INTO cart_items (id, product_id, quantity, cart_id)
+VALUES
+    (1, 1, 2, 1),
+    (2, 2, 1, 1);
+
+

@@ -2,10 +2,10 @@ package com.projects.edustore.service;
 
 import com.projects.edustore.dto.profile.CustomerUserRequestDto;
 import com.projects.edustore.dto.profile.CustomerUserResponseDto;
+import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.CustomerMapper;
-import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
-import com.projects.edustore.repository.CustomerRepository;
+import com.projects.edustore.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,18 +13,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomerService {
-    private final CustomerRepository repos;
+    private final UserRepository repos;
     private final PasswordEncoder passwordEncoder;
     private final WhoCanSeeWhoService whoCanSee;
 
-    public CustomerService(CustomerRepository repos, PasswordEncoder passwordEncoder, WhoCanSeeWhoService whoCanSee) {
+    public CustomerService(UserRepository repos, PasswordEncoder passwordEncoder, WhoCanSeeWhoService whoCanSee) {
         this.repos = repos;
         this.passwordEncoder = passwordEncoder;
         this.whoCanSee = whoCanSee;
     }
 
     public User findCustomer(Long id) {
-        return whoCanSee.findUserAndCheckPermission(id, Role.ROLE_CUSTOMER, "Customer");
+        return whoCanSee.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Customer", id));
     }
 
     public CustomerUserResponseDto getCustomerById(Long id) {

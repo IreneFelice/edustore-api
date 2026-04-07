@@ -53,8 +53,7 @@ public class ProductService {
     }
 
     public ProductCustomerResponseDto getProductForCustomer(Long productId) {
-        Product product = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
-        return ProductMapper.toCustomerResponseDto(product);
+        return ProductMapper.toCustomerResponseDto(findProduct(productId));
     }
 
 
@@ -73,8 +72,8 @@ public class ProductService {
     }
 
     public ProductStudentResponseDto getProductDetailsForTeam(Long studentId, Long productId) {
-        User user = whoCanSee.findUserAndCheckPermission(studentId, Role.ROLE_STUDENT, "Student");
-        Product product = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
+        User user = findStudentUserAndCheckAuthorisation(studentId);
+        Product product = findProduct(productId);
 
         String userTeam = user.getPerson().getStudentProfile().getTeam();
         String productMakerTeam = product.getMaker().getTeam();
@@ -87,8 +86,8 @@ public class ProductService {
 
     @Transactional(readOnly = false)
     public ProductStudentResponseDto createNewProduct(ProductRequestDto dto, Long studentId) {
-        User user = whoCanSee.findUserAndCheckPermission(studentId, Role.ROLE_STUDENT, "Student");
-        Product newProduct = ProductMapper.toEntity(dto, user.getPerson().getStudentProfile());
+        User user = findStudentUserAndCheckAuthorisation(studentId);
+        Product newProduct = ProductMapper.toEntity(dto,user.getPerson().getStudentProfile());
         repos.save(newProduct);
         return ProductMapper.toStudentResponseDto(newProduct);
     }
@@ -168,7 +167,11 @@ public class ProductService {
     //helpers
 
     public void authorizeStudentAccess(Long id) {
-        whoCanSee.checkUserPermission(id, Role.ROLE_STUDENT, "Student"); //current User is allowed and requested user (by admin) or current user is Student
+        whoCanSee.checkSelfOrAdminAccess(id);
+    }
+
+    public User findStudentUserAndCheckAuthorisation(Long id) {
+        return whoCanSee.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Student", id));
     }
 
     public Product findProduct(Long productId) {

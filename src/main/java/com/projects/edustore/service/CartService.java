@@ -38,7 +38,7 @@ public class CartService {
 
 
     public CartResponseDto getCart(Long id) {
-        whoCanSee.checkUserPermission(id, Role.ROLE_CUSTOMER, "Customer");
+        whoCanSee.checkSelfOrAdminAccess(id);
 
         Cart existingCart = cartRepos
                 .findByCustomerId(id)
@@ -135,7 +135,7 @@ public class CartService {
     }
 
     private CustomerProfile authorizeAndGetCustomer(Long id) {
-        User user = whoCanSee.findUserAndCheckPermission(id, Role.ROLE_CUSTOMER, "Customer");
+        User user = whoCanSee.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Customer", id));
         return user.getPerson().getCustomerProfile();
     }
 }

@@ -8,15 +8,10 @@ import com.projects.edustore.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
-/*
-  This service verifies:
-  - who the currently authenticated user is
-  - if they are allowed to access requested user (self or admin)
-  - if the requested user exists
-  - if the requested user has the expected role
-*/
 
 public class WhoCanSeeWhoService {
 
@@ -25,7 +20,6 @@ public class WhoCanSeeWhoService {
     public WhoCanSeeWhoService(UserRepository repos) {
         this.repos = repos;
     }
-
 
     public User getCurrentUser() {
 
@@ -38,7 +32,7 @@ public class WhoCanSeeWhoService {
     }
 
 
-    public void checkUserPermission(Long id, Role expectedRole, String roleName) { //authorizeUserAccess
+    public void checkSelfOrAdminAccess(Long id) { //authorizeUserAccess
 
         User currentUser = getCurrentUser();
 
@@ -48,27 +42,16 @@ public class WhoCanSeeWhoService {
         //  Not admin and trying to access another user
         if (!isAdmin && !isSelf) {
             throw new ForbiddenActionException(
-                    "You are not allowed to access or alter this user's information"
+                    "You are not allowed to access or modify this resource"
             );
-        }
-
-        //find requested user
-        User requestedUser = repos.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(roleName, id));
-
-        //requested user does not have expected role
-        if (expectedRole != null && requestedUser.getRole() != expectedRole) {
-            throw new ResourceNotFoundException(roleName, id);
         }
     }
 
-    public User findUserAndCheckPermission(Long requestedUserId, Role expectedRole, String roleName) {
-        checkUserPermission(requestedUserId, expectedRole, roleName);
-
-        return repos.findById(requestedUserId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        expectedRole != null ? expectedRole.name() : "User",
-                        requestedUserId));
+    public Optional<User> findUserAndCheckAuthorisation(Long id) {
+        checkSelfOrAdminAccess(id);
+        return repos.findById(id);
     }
 
 }
+
+
