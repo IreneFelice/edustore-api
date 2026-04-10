@@ -16,11 +16,11 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("admin/users")
 @Validated
-public class AdminUserController {
+public class UserAdminController {
 
     private final AdminUserReadService adminUserReadService;
 
-    public AdminUserController(AdminUserReadService adminUserReadService) {
+    public UserAdminController(AdminUserReadService adminUserReadService) {
         this.adminUserReadService = adminUserReadService;
     }
 
@@ -32,12 +32,12 @@ public class AdminUserController {
     // get all students in total or per team (optional requestParam)
     @GetMapping("/students")
     public ResponseEntity<List<StudentUserResponseDto>> getAllStudents(
-            @RequestParam(required = false) List<String> teams) {
+            @RequestParam(required = false) List<String> team) {
 
-        if (teams == null || teams.isEmpty()) {
+        if (team == null || team.isEmpty()) { //TODO: logic to Service
             return ResponseEntity.ok(adminUserReadService.getAllStudents());
         }
-        return ResponseEntity.ok(adminUserReadService.getStudentsByTeams(teams));
+        return ResponseEntity.ok(adminUserReadService.getStudentsByTeams(team));
     }
 
     @GetMapping("/customers")

@@ -26,9 +26,9 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository repos;
-    private final WhoCanSeeWhoService whoCanSee;
+    private final AuthorisationService whoCanSee;
 
-    public ProductService(ProductRepository repos, WhoCanSeeWhoService whoCanSee) {
+    public ProductService(ProductRepository repos, AuthorisationService whoCanSee) {
         this.repos = repos;
         this.whoCanSee = whoCanSee;
     }
@@ -179,8 +179,8 @@ public class ProductService {
     }
 
     public void checkStudentIsMaker(Long studentId, Product product) {
-        StudentProfile maker = product.getMaker();
         User currentUser = whoCanSee.getCurrentUser();
+        StudentProfile maker = product.getMaker();
 
         boolean isMaker = studentId.equals(maker.getId());
         boolean isAdmin = currentUser.getRole().equals(Role.ROLE_ADMIN);

@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,11 +31,11 @@ class OrderControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "Alice", roles = {"CUSTOMER"})
-    void shouldWriteCartToRightOrder() throws Exception {
+    void cartToOrder_shouldWriteCartToRightOrder() throws Exception {
 
         mockMvc.perform(post("/orders/customer/{customerId}", 4L))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.items.length()").value(2))
 
                 .andExpect(jsonPath("$.items[0].productId").value(1))
@@ -55,6 +56,14 @@ class OrderControllerIntegrationTest {
         assertEquals(1, orders.size());
         assertEquals(4L, orders.get(0).getCustomer().getId());
         assertEquals(new BigDecimal("7.00"), orders.get(0).getTotalPrice());
+    }
+
+    @Test
+    @WithMockUser(username = "Alice", roles = {"CUSTOMER"})
+    void getOrderByIdForCustomer_orderShouldReturnNotFound_forNotExistingOrder() throws Exception {
+        mockMvc.perform(get("/customer/{customerId}/details/{orderId}", 4L, 5L))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
 }

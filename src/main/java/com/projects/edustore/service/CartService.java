@@ -8,7 +8,6 @@ import com.projects.edustore.exception.OutOfStockException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.CartItemMapper;
 import com.projects.edustore.mapper.CartMapper;
-import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.CustomerProfile;
 import com.projects.edustore.model.product.Cart;
@@ -26,10 +25,10 @@ public class CartService {
     private final ProductRepository productRepos;
     private final CartItemRepository cartItemRepos;
     private final CartRepository cartRepos;
-    private final WhoCanSeeWhoService whoCanSee;
+    private final AuthorisationService whoCanSee;
 
 
-    public CartService(ProductRepository productRepos, CartItemRepository cartItemRepos, CartRepository cartRepos, WhoCanSeeWhoService whoCanSee) {
+    public CartService(ProductRepository productRepos, CartItemRepository cartItemRepos, CartRepository cartRepos, AuthorisationService whoCanSee) {
         this.productRepos = productRepos;
         this.cartItemRepos = cartItemRepos;
         this.cartRepos = cartRepos;

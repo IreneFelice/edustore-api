@@ -3,9 +3,10 @@ package com.projects.edustore.controller;
 import com.projects.edustore.dto.order.OrderBasicResponseDto;
 import com.projects.edustore.dto.order.OrderDetailsResponseDto;
 import com.projects.edustore.dto.order.OrderStudentRequestDto;
-import com.projects.edustore.dto.order.OrderStudentResponseDto;
+import com.projects.edustore.model.product.OrderStatus;
 import com.projects.edustore.service.OrderService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,47 +20,31 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/customer/{customerId}")
-    public ResponseEntity<OrderDetailsResponseDto> cartToOrder(
-            @PathVariable Long customerId) {
-        return ResponseEntity.ok(orderService.cartToOrder(customerId));
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping
+    public ResponseEntity<OrderDetailsResponseDto> cartToOrder() {
+        return ResponseEntity.ok(orderService.cartToOrder());
     }
 
-    @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<OrderBasicResponseDto>> getOrderOverviewForCustomer(
-            @PathVariable Long customerId) {
-        return ResponseEntity.ok(orderService.getOrderOverviewByCustomer(customerId));
+    @GetMapping
+    public ResponseEntity<List<OrderBasicResponseDto>> getOrders(
+            @RequestParam(required = false) Long customerId,
+            @RequestParam(required = false) OrderStatus status) {
+    return ResponseEntity.ok(orderService.getOrders(customerId, status));
     }
 
-    @GetMapping("/customer/{customerId}/details/{orderId}")
-    public ResponseEntity<OrderDetailsResponseDto> getOrderByIdForCustomer(
-            @PathVariable Long customerId,
-            @PathVariable Long orderId) {
-        return ResponseEntity.ok(orderService.getOrderByIdForCustomer(customerId, orderId));
+    @GetMapping("/details")
+    public ResponseEntity <OrderDetailsResponseDto> getOrderDetails(
+            @RequestParam Long orderId) {
+        return ResponseEntity.ok(orderService.getOrderDetails(orderId));
     }
 
-    @GetMapping("/student")
-    public ResponseEntity<List<OrderBasicResponseDto>> getAllOrdersForStudent() {
-        return ResponseEntity.ok(orderService.getAllOrders());
-    }
-    @GetMapping("/student/details/{orderId}")
-    public ResponseEntity<OrderStudentResponseDto> getOrderByIdForStudent(
-            @PathVariable Long orderId) {
-        return ResponseEntity.ok(orderService.getOrderByIdForStudent(orderId));
-    }
-
-    @GetMapping("/student/status/{statusName}")
-    public ResponseEntity<List<OrderBasicResponseDto>> getOrdersByStatus(
-            @PathVariable String statusName) {
-        return ResponseEntity.ok(orderService.getOrdersByStatus(statusName));
-    }
-
-    @PatchMapping("/student/status/{orderId}")
+    @PreAuthorize("hasRole('STUDENT')")
+    @PatchMapping("/{orderId}")
     public ResponseEntity<OrderBasicResponseDto> updateStatus(
             @PathVariable Long orderId,
             @RequestBody OrderStudentRequestDto orderStudentRequestDto) {
     return ResponseEntity.ok(orderService.updateStatus(orderId, orderStudentRequestDto));
     }
-
 
 }

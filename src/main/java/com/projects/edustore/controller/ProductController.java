@@ -1,9 +1,10 @@
 package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.product.ProductCustomerResponseDto;
+import com.projects.edustore.dto.profile.TeamNamesResponseDto;
 import com.projects.edustore.model.product.Product;
-import com.projects.edustore.repository.ProductRepository;
 import com.projects.edustore.service.ProductService;
+import com.projects.edustore.service.StudentService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +16,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-    ProductRepository repos;
     ProductService productService;
+    StudentService studentService;
 
-    public ProductController(ProductRepository repos, ProductService productService) {
-        this.repos = repos;
+    public ProductController(ProductService productService, StudentService studentService) {
         this.productService = productService;
+        this.studentService = studentService;
     }
 
     @GetMapping
@@ -28,7 +29,13 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProductsForCustomer());
     }
 
-    @GetMapping("/team/{team}")
+    @GetMapping("/teams")
+    public ResponseEntity<TeamNamesResponseDto> getAllUniqueTeamNames() {
+        return ResponseEntity.ok(studentService.getAllUniqueTeams());
+    }
+
+
+    @GetMapping("/teams/{team}")
     public ResponseEntity<List<ProductCustomerResponseDto>> getProductsByTeam(@PathVariable String team) {
         return ResponseEntity.ok(productService.getProductsByTeam(team));
     }

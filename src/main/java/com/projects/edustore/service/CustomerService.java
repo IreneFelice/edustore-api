@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
     private final UserRepository repos;
     private final PasswordEncoder passwordEncoder;
-    private final WhoCanSeeWhoService whoCanSee;
+    private final AuthorisationService whoCanSee;
 
-    public CustomerService(UserRepository repos, PasswordEncoder passwordEncoder, WhoCanSeeWhoService whoCanSee) {
+    public CustomerService(UserRepository repos, PasswordEncoder passwordEncoder, AuthorisationService whoCanSee) {
         this.repos = repos;
         this.passwordEncoder = passwordEncoder;
         this.whoCanSee = whoCanSee;

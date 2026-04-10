@@ -3,7 +3,7 @@ package com.projects.edustore.service;
 import com.projects.edustore.dto.order.OrderBasicResponseDto;
 import com.projects.edustore.dto.order.OrderDetailsResponseDto;
 import com.projects.edustore.dto.order.OrderStudentRequestDto;
-import com.projects.edustore.dto.order.OrderStudentResponseDto;
+import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.mapper.OrderMapper;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
@@ -36,25 +36,30 @@ class OrderServiceTest {
     private OrderRepository orderRepos;
 
     @Mock
-    private WhoCanSeeWhoService whoCanSee;
+    private AuthorisationService whoCanSee;
 
     @InjectMocks
     private OrderService orderService;
 
-    private CustomerProfile customer;
-    private User user;
-    private Long userId;
+    private User customerUser;
+    private User studentUser;
     private Cart cart;
     private Order order;
 
+
     @BeforeEach
     void setUp() {
-        user = new User("TestName", "password", Role.ROLE_CUSTOMER);
-        Person person = Person.create(user, "firstName", "lastName", "email@email.com");
-        customer = CustomerProfile.create(person, "0612345678");
-        userId = 1L;
+        // customer
+        customerUser = new User("TestName", "password", Role.ROLE_CUSTOMER);
+        customerUser.setId(1L);
+        Person person = Person.create(customerUser, "firstName", "lastName", "customer@email.com");
+        CustomerProfile customer = CustomerProfile.create(person, "0612345678");
 
-        // Mock product
+        // student
+        studentUser = new User("Student", "password", Role.ROLE_STUDENT);
+        studentUser.setId(2L);
+
+        // product
         Product product = new Product();
         product.setId(10L);
         product.setName("Asbak van klei");
@@ -73,13 +78,11 @@ class OrderServiceTest {
 
     @Test
     void cartToOrder() {
-        when(cartRepos.findByCustomerId(userId)).thenReturn(Optional.of(cart));
+        when(whoCanSee.getCurrentUser()).thenReturn(customerUser);
+        when(cartRepos.findByCustomerId(customerUser.getId())).thenReturn(Optional.of(cart));
+        when(orderRepos.save(any(Order.class))).thenReturn(order);
 
-        Order savedOrder = OrderMapper.toEntity(cart);
-
-        when(orderRepos.save(any(Order.class))).thenReturn(savedOrder);
-
-        OrderDetailsResponseDto result = orderService.cartToOrder(userId);
+        OrderDetailsResponseDto result = orderService.cartToOrder();
 
         assertNotNull(result);
         assertEquals(OrderStatus.PENDING, result.getStatus());
@@ -91,54 +94,87 @@ class OrderServiceTest {
     }
 
     @Test
-    void getOrderById() {
-        when(orderRepos.findById(order.getId())).thenReturn(Optional.of(order));
-
-        OrderDetailsResponseDto result = orderService.getOrderByIdForCustomer(userId, order.getId());
-
-        assertNotNull(result);
-        assertEquals(order.getStatus(), result.getStatus());
-        assertEquals(1, result.getItems().size());
-    }
-
-    @Test
-    void getOrderOverviewByCustomer() {
-        when(orderRepos.findByCustomerId(userId)).thenReturn(List.of(order));
-
-        List<OrderBasicResponseDto> result = orderService.getOrderOverviewByCustomer(1L);
-
-        assertEquals(1, result.size());
-        assertEquals(order.getTotalPrice(), result.get(0).getTotalPrice());
-    }
-
-    @Test
-    void getAllOrders() {
-        when(orderRepos.findAll()).thenReturn(List.of(order));
-
-        List<OrderBasicResponseDto> result = orderService.getAllOrders();
-
-        assertEquals(1, result.size());
-    }
-
-    @Test
-    void getOrdersByStatus() {
-        when(orderRepos.findAllByStatus(OrderStatus.PENDING))
+    void getOrders_customer_onlyOwnOrders() {
+        when(whoCanSee.getCurrentUser()).thenReturn(customerUser);
+        when(orderRepos.findByCustomerId(customerUser.getId()))
                 .thenReturn(List.of(order));
 
-        List<OrderBasicResponseDto> result = orderService.getOrdersByStatus("pending");
+        List<OrderBasicResponseDto> result =
+                orderService.getOrders(null, null);
 
         assertEquals(1, result.size());
-        assertEquals(OrderStatus.PENDING, result.get(0).getStatus());
     }
 
     @Test
-    void getStudentOrderById() {
+    void getOrders_customer_isNotOwner() {
+        when(whoCanSee.getCurrentUser()).thenReturn(customerUser);
+
+        Long strangerId = customerUser.getId() + 9;
+
+        ForbiddenActionException ex = assertThrows(
+                ForbiddenActionException.class,
+                () -> orderService.getOrders(strangerId, null)
+        );
+
+        assertEquals(
+                "You are not allowed to access or modify this resource",
+                ex.getMessage()
+        );
+    }
+    @Test
+    void getOrders_withStatusFilter_forCustomer() {
+        when(whoCanSee.getCurrentUser()).thenReturn(customerUser);
+        when(orderRepos.findByCustomerId(customerUser.getId()))
+                .thenReturn(List.of(order));
+
+        List<OrderBasicResponseDto> result = orderService.getOrders(null, OrderStatus.PENDING);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void getOrders_all_forStudent() {
+        when(whoCanSee.getCurrentUser()).thenReturn(studentUser);
+        when(orderRepos.findAll())
+                .thenReturn(List.of(order));
+
+        List<OrderBasicResponseDto> result =
+                orderService.getOrders(null, null);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void getOrders_withCustomerId_withStatusFilter_forStudent() {
+        when(whoCanSee.getCurrentUser()).thenReturn(studentUser);
+        when(orderRepos.findByCustomerId(customerUser.getId()))
+                .thenReturn(List.of(order));
+
+        List<OrderBasicResponseDto> result = orderService.getOrders(1L, OrderStatus.PENDING);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void getOrderDetails_forCustomer() {
+        when(whoCanSee.getCurrentUser()).thenReturn(customerUser);
         when(orderRepos.findById(order.getId())).thenReturn(Optional.of(order));
 
-        OrderStudentResponseDto result = orderService.getOrderByIdForStudent(order.getId());
+        OrderDetailsResponseDto result = orderService.getOrderDetails(order.getId());
 
-        assertEquals("lastName", result.getCustomerName());
-        assertEquals("email@email.com", result.getEmail());
+        assertNotNull(result);
+        assertEquals(OrderStatus.PENDING, result.getStatus());
+        assertEquals("Asbak van klei", result.getItems().get(0).getProductName());
+    }
+
+    @Test
+    void getOrderDetails_asStudent() {
+        when(whoCanSee.getCurrentUser()).thenReturn(studentUser);
+        when(orderRepos.findById(order.getId())).thenReturn(Optional.of(order));
+
+        OrderDetailsResponseDto result = orderService.getOrderDetails(order.getId());
+
+        assertNotNull(result);
     }
 
     @Test
@@ -154,4 +190,5 @@ class OrderServiceTest {
         assertEquals(OrderStatus.CLOSED, result.getStatus());
         verify(orderRepos).save(order);
     }
+
 }

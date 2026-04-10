@@ -13,11 +13,11 @@ import java.util.Optional;
 
 @Service
 
-public class WhoCanSeeWhoService {
+public class AuthorisationService {
 
     private final UserRepository repos;
 
-    public WhoCanSeeWhoService(UserRepository repos) {
+    public AuthorisationService(UserRepository repos) {
         this.repos = repos;
     }
 
@@ -35,7 +35,7 @@ public class WhoCanSeeWhoService {
     public void checkSelfOrAdminAccess(Long id) { //authorizeUserAccess
 
         User currentUser = getCurrentUser();
-
+        System.out.println("Current user ID: " + currentUser.getId());
         boolean isAdmin = currentUser.getRole() == Role.ROLE_ADMIN;
         boolean isSelf = currentUser.getId().equals(id);
 
@@ -48,8 +48,13 @@ public class WhoCanSeeWhoService {
     }
 
     public Optional<User> findUserAndCheckAuthorisation(Long id) {
+        User user = repos.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", id));
+
+        System.out.println("Requested ID: " + id);
         checkSelfOrAdminAccess(id);
-        return repos.findById(id);
+
+        return Optional.of(user);
     }
 
 }

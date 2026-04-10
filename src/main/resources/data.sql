@@ -31,9 +31,9 @@ VALUES (1, 'Lucas', 'Janssen', 'lucas@admin.com'),
 
 -- Student Profiles
 INSERT INTO student_profiles (id, team)
-VALUES (2, 'middenbouw'),
+VALUES (2, 'bovenbouw'),
        (3, 'bovenbouw'),
-       (7, 'bovenbouw'),
+       (7, 'onderbouw'),
        (8, 'middenbouw');
 
 -- Customer Profiles

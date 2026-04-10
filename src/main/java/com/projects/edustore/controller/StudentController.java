@@ -2,12 +2,13 @@ package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.profile.StudentUserRequestDto;
 import com.projects.edustore.dto.profile.StudentUserResponseDto;
-import com.projects.edustore.service.ProductService;
 import com.projects.edustore.service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -15,7 +16,7 @@ import java.util.List;
 public class StudentController {
     private final StudentService studentService;
 
-    public StudentController(StudentService studentService, ProductService productService) {
+    public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
 
@@ -30,10 +31,17 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getByTeam(studentId));
     }
 
-    @PostMapping("/register")
+    @PostMapping("/register") //    TODO URI builders for every @PostMapping (and .created)
     public ResponseEntity<StudentUserResponseDto> createStudentUser(
             @Valid @RequestBody StudentUserRequestDto studentUserRequestDto) {
-        return ResponseEntity.ok(studentService.createUser(studentUserRequestDto));
+        StudentUserResponseDto response = studentService.createStudentUser(studentUserRequestDto);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/students/{id}")
+                .buildAndExpand(response.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     @PutMapping("/{studentId}")

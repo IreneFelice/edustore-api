@@ -48,10 +48,18 @@ class CartServiceTest {
     ProductRepository productRepos;
 
     @Mock
-    WhoCanSeeWhoService whoCanSee;
+    AuthorisationService whoCanSee;
 
     @InjectMocks
     CartService cartService;
+
+    @BeforeEach
+    void setup() {
+        user = new User("TestName", "password", Role.ROLE_CUSTOMER);
+        Person person = Person.create(user, "firstName", "lastName", "email@email.com");
+        profile = CustomerProfile.create(person, "0612345678");
+        userId = 1L;
+    }
 
     private Product arrangeProduct() {
         Product product = new Product();
@@ -119,7 +127,7 @@ class CartServiceTest {
 
     @Test
     void getCartNotFound() {
-        System.out.println("Test getCartNotFound:");
+        System.out.println("Test getCart_NotFound:");
         //arrange
         doNothing().when(whoCanSee).checkSelfOrAdminAccess(userId);
 

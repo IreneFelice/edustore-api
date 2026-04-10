@@ -6,8 +6,10 @@ import com.projects.edustore.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -37,7 +39,14 @@ public class StudentProductController {
         public ResponseEntity<ProductStudentResponseDto> createProduct(
                 @PathVariable Long studentId,
                 @RequestBody ProductRequestDto dto) {
-            return ResponseEntity.ok(productService.createNewProduct(dto, studentId));
+            ProductStudentResponseDto response = productService.createNewProduct(dto, studentId);
+
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/products/{id}")
+                    .buildAndExpand(response.getId())
+                    .toUri();
+            return ResponseEntity.created(location).body(response);
         }
 
         @PutMapping("/{productId}")

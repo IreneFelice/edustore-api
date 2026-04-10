@@ -7,7 +7,7 @@ public class CustomerUserRequestDto extends BaseUserRequestDto {
 
     @Pattern(
             regexp = "^[0-9]{7,15}$",
-            message = "Phone number should contain only digits and be 7 to 15 characters long."
+            message = "Phone number should contain only digits and must be 7 to 15 characters long."
     )
     private String phoneNumber;
 

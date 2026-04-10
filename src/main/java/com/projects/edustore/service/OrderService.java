@@ -3,9 +3,11 @@ package com.projects.edustore.service;
 import com.projects.edustore.dto.order.OrderBasicResponseDto;
 import com.projects.edustore.dto.order.OrderDetailsResponseDto;
 import com.projects.edustore.dto.order.OrderStudentRequestDto;
-import com.projects.edustore.dto.order.OrderStudentResponseDto;
+import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.OrderMapper;
+import com.projects.edustore.model.Role;
+import com.projects.edustore.model.User;
 import com.projects.edustore.model.product.Cart;
 import com.projects.edustore.model.product.Order;
 import com.projects.edustore.model.product.OrderStatus;
@@ -20,19 +22,20 @@ import java.util.List;
 public class OrderService {
     private final CartRepository cartRepos;
     private final OrderRepository orderRepos;
-    private final WhoCanSeeWhoService whoCanSee;
+    private final AuthorisationService whoCanSee;
 
-    public OrderService(CartRepository cartRepos, OrderRepository orderRepos, WhoCanSeeWhoService whoCanSee) {
+    public OrderService(CartRepository cartRepos, OrderRepository orderRepos, AuthorisationService whoCanSee) {
         this.cartRepos = cartRepos;
         this.orderRepos = orderRepos;
         this.whoCanSee = whoCanSee;
     }
 
-    public OrderDetailsResponseDto cartToOrder(Long customerId) {
-        checkCustomerPermission(customerId);
+    public OrderDetailsResponseDto cartToOrder() {
+        User currentUser = whoCanSee.getCurrentUser();
+        Long userId = currentUser.getId();
 
-        Cart cart = cartRepos.findByCustomerId(customerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cart for customer", customerId));
+        Cart cart = cartRepos.findByCustomerId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart for customer", userId));
 
         Order newOrder = OrderMapper.toEntity(cart);
 
@@ -41,33 +44,55 @@ public class OrderService {
         return OrderMapper.toCustomerResponse(newOrder);
     }
 
-    public OrderDetailsResponseDto getOrderByIdForCustomer(Long customerId, Long orderId) {
-        checkCustomerPermission(customerId);
+
+    public List<OrderBasicResponseDto> getOrders(Long customerId, OrderStatus status) {
+        User currentUser = whoCanSee.getCurrentUser();
+        List<Order> orders;
+
+        if (currentUser.getRole().equals(Role.ROLE_CUSTOMER)) {
+
+            // for customer
+            Long ownId = currentUser.getId();
+            if (customerId != null && !customerId.equals(ownId)) {
+                throw new ForbiddenActionException("You are not allowed to access or modify this resource");
+            }
+            orders = orderRepos.findByCustomerId(ownId);
+        } else {
+
+            // for student/admin
+            if (customerId != null) {
+                orders = orderRepos.findByCustomerId(customerId);
+            } else {
+                orders = orderRepos.findAll();
+            }
+        }
+
+        // OrderStatus
+        if (status != null) {
+            List<Order> filteredOrders = new ArrayList<>();
+
+            for (Order order : orders) {
+                if (order.getStatus() == (status)) {
+                    filteredOrders.add(order);
+                }
+            }
+            return getBasicDtoList(filteredOrders);
+        } else {
+            return getBasicDtoList(orders);
+        }
+    }
+
+    public OrderDetailsResponseDto getOrderDetails(Long orderId) {
         Order order = findOrder(orderId);
-        return OrderMapper.toCustomerResponse(order);
-    }
+        User currentUser = whoCanSee.getCurrentUser();
 
-    public List<OrderBasicResponseDto> getOrderOverviewByCustomer(Long customerId) {
-        checkCustomerPermission(customerId);
-        List<Order> orderList = orderRepos.findByCustomerId(customerId);
-        return getDtoList(orderList);
-    }
+        if (currentUser.getRole() == Role.ROLE_CUSTOMER) {
+            checkCustomerPermission(order.getCustomer().getId());
+            return OrderMapper.toCustomerResponse(order);
 
-    public List<OrderBasicResponseDto> getAllOrders() {
-        List<Order> orderList = orderRepos.findAll();
-        return getDtoList(orderList);
-    }
-
-    public List<OrderBasicResponseDto> getOrdersByStatus(String status) {
-        OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
-
-        List<Order> orderList = orderRepos.findAllByStatus(orderStatus);
-        return getDtoList(orderList);
-    }
-
-    public OrderStudentResponseDto getOrderByIdForStudent(Long orderId) {
-        Order order = findOrder(orderId);
-        return OrderMapper.toStudentResponse(order);
+        } else {
+            return OrderMapper.toStudentResponse(order);
+        }
     }
 
     public OrderBasicResponseDto updateStatus(Long orderId, OrderStudentRequestDto dto) {
@@ -86,10 +111,10 @@ public class OrderService {
         return order;
     }
 
-    private List<OrderBasicResponseDto> getDtoList(List<Order> orderList) {
+    private List<OrderBasicResponseDto> getBasicDtoList(List<Order> orderList) {
         List<OrderBasicResponseDto> dtoList = new ArrayList<>();
 
-        for(Order order : orderList) {
+        for (Order order : orderList) {
             dtoList.add(OrderMapper.toBasicResponse(order));
         }
         return dtoList;

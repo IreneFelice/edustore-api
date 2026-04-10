@@ -43,12 +43,16 @@ public class StudentProfile {
 
     //    getters and setters
 
-    public List<Product> getProducts() { //TODO
-        return products;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    protected void setPerson(Person person) {
+        this.person = person;
     }
 
     public String getTeam() {
@@ -59,13 +63,7 @@ public class StudentProfile {
         this.team = team.toLowerCase();
     }
 
-    public Person getPerson() {
-        return person;
-    }
-
-    protected void setPerson(Person person) {
-        this.person = person;
-    }
+    public List<Product> getProducts() { return products; }
 
 
 }
