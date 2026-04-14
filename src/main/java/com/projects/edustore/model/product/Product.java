@@ -1,11 +1,8 @@
 package com.projects.edustore.model.product;
 
-
 import com.projects.edustore.model.person.StudentProfile;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
-
 
 @Entity
 @Table(name = "products")
@@ -15,9 +12,11 @@ public class Product {
     private Long id;
 
     private String name;
-    private String description;
-    private BigDecimal price;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    private BigDecimal price;
     private Integer stockQuantity;
     private BigDecimal costPrice;
 
@@ -25,8 +24,7 @@ public class Product {
     @JoinColumn(name = "maker_id")
     private StudentProfile maker;
 
-
-    @Lob // lazy fetch by default
+    @Lob
     private byte[] bytes;
     private String contentType;
     private String originalFilename;
@@ -53,6 +51,9 @@ public class Product {
     public Long getId() {
         return id;
     }
+
+    public void setId(Long id) {
+        this.id = id; }
 
     public String getName() {
         return name;

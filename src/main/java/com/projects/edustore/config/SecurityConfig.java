@@ -61,11 +61,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/authenticate", "/customers/register","/students/register").permitAll()
                         .requestMatchers("/authenticated").hasAnyRole("STUDENT", "CUSTOMER", "ADMIN")
-
+                        .requestMatchers("/orders/**").hasAnyRole("CUSTOMER", "STUDENT", "ADMIN")
                         .requestMatchers("/students/**").hasAnyRole("STUDENT", "ADMIN")
                         .requestMatchers("/customers/**").hasAnyRole("CUSTOMER")
-                        .requestMatchers("/orders/customer/**").hasAnyRole("CUSTOMER", "ADMIN")
-                        .requestMatchers("/orders/student/**").hasAnyRole("STUDENT", "ADMIN")
+
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()

@@ -53,7 +53,6 @@ public class CustomerProfile {
         return phoneNumber;
     }
 
-
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
@@ -69,11 +68,6 @@ public class CustomerProfile {
     public void addOrder(Order order) {
         orders.add(order);
         order.setCustomer(this);
-    }
-
-    public void removeOrder(Order order) {
-        orders.remove(order);
-        order.setCustomer(null);
     }
 
 

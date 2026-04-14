@@ -18,9 +18,6 @@ public class JwtUtil {
 
     private static final MacAlgorithm ALGORITHM = Jwts.SIG.HS256;
 
-    private JwtUtil() {
-    }
-
     // put data claims in payload of JWT String
     public String generateToken(String userName) {
         return Jwts.builder()

@@ -4,9 +4,6 @@ import com.projects.edustore.dto.BaseUserResponseDto;
 import com.projects.edustore.model.User;
 
 
-//    TODO make link builder utility
-
-
 public class UserMapper {
 
     private static void fillBaseResponse (BaseUserResponseDto dto, User user) {

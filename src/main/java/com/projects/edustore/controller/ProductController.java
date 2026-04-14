@@ -1,8 +1,8 @@
 package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.product.ProductCustomerResponseDto;
+import com.projects.edustore.dto.product.TeamNamesResponseDto;
 import com.projects.edustore.model.product.Product;
-import com.projects.edustore.repository.ProductRepository;
 import com.projects.edustore.service.ProductService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,11 +15,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-    ProductRepository repos;
     ProductService productService;
 
-    public ProductController(ProductRepository repos, ProductService productService) {
-        this.repos = repos;
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
@@ -28,7 +26,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProductsForCustomer());
     }
 
-    @GetMapping("/team/{team}")
+    @GetMapping("/teams")
+    public ResponseEntity<TeamNamesResponseDto> getAllUniqueTeamNames() {
+        return ResponseEntity.ok(productService.getAllUniqueTeams());
+    }
+
+    @GetMapping("/teams/{team}")
     public ResponseEntity<List<ProductCustomerResponseDto>> getProductsByTeam(@PathVariable String team) {
         return ResponseEntity.ok(productService.getProductsByTeam(team));
     }
@@ -41,7 +44,7 @@ public class ProductController {
     ///////////////////////IMAGE//////////////////////////////////////////////////
     @GetMapping("/{productId}/image")
     public ResponseEntity<byte[]> getProductImage(@PathVariable Long productId) {
-        Product product = productService.getProductForImage(productId);
+        Product product = productService.getProductWithImage(productId);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(product.getContentType()))
@@ -49,7 +52,5 @@ public class ProductController {
                         "inline; filename=\"" + product.getOriginalFilename() + "\"")
                 .body(product.getBytes());
     }
-
-
 }
 

@@ -1,6 +1,5 @@
 package com.projects.edustore.service;
 
-
 import com.projects.edustore.dto.cart.CartItemDeleteDto;
 import com.projects.edustore.dto.cart.CartItemRequestDto;
 import com.projects.edustore.dto.cart.CartItemResponseDto;
@@ -9,7 +8,6 @@ import com.projects.edustore.exception.OutOfStockException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.CartItemMapper;
 import com.projects.edustore.mapper.CartMapper;
-import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.CustomerProfile;
 import com.projects.edustore.model.product.Cart;
@@ -27,10 +25,10 @@ public class CartService {
     private final ProductRepository productRepos;
     private final CartItemRepository cartItemRepos;
     private final CartRepository cartRepos;
-    private final WhoCanSeeWhoService whoCanSee;
+    private final AuthorisationService whoCanSee;
 
 
-    public CartService(ProductRepository productRepos, CartItemRepository cartItemRepos, CartRepository cartRepos, WhoCanSeeWhoService whoCanSee) {
+    public CartService(ProductRepository productRepos, CartItemRepository cartItemRepos, CartRepository cartRepos, AuthorisationService whoCanSee) {
         this.productRepos = productRepos;
         this.cartItemRepos = cartItemRepos;
         this.cartRepos = cartRepos;
@@ -39,7 +37,7 @@ public class CartService {
 
 
     public CartResponseDto getCart(Long id) {
-        whoCanSee.checkUserPermission(id, Role.ROLE_CUSTOMER, "Customer");
+        whoCanSee.checkSelfOrAdminAccess(id);
 
         Cart existingCart = cartRepos
                 .findByCustomerId(id)
@@ -47,7 +45,6 @@ public class CartService {
 
         return CartMapper.toCartResponse(existingCart);
     }
-
 
     @Transactional
     public CartItemResponseDto addItemToCart(Long id, CartItemRequestDto dto) {
@@ -59,7 +56,6 @@ public class CartService {
 
         Cart cart = getOrCreateCart(customer, id);
 
-
         CartItem existingCartItem = cartItemRepos
                 .findByCartIdAndProductId(cart.getId(), productId)
                 .orElse(null);
@@ -68,15 +64,11 @@ public class CartService {
             //item already exists in cart; replace old quantity by new
             //stock adjustment based on difference between the two quantities
             adjustStockByDifference(existingCartItem.getQuantity(), dto.getQuantity(), productId);
-
             existingCartItem.setQuantity(dto.getQuantity());
-            cart.addCartItem(existingCartItem);
             cartRepos.save(cart);
             return CartItemMapper.toItemResponse(existingCartItem);
-
         } else {
             checkAndAdjustStock(productId, dto.getQuantity());
-
             CartItem newItem = CartItemMapper.toEntity(product, dto.getQuantity());
             cart.addCartItem(newItem);
             cartRepos.save(cart);
@@ -84,19 +76,16 @@ public class CartService {
         }
     }
 
-
     @Transactional
     public void deleteItem(Long id, CartItemDeleteDto dto) {
         CustomerProfile customer = authorizeAndGetCustomer(id);
         Cart cart = getOrCreateCart(customer, id);
-
         Long productId = dto.getProductId();
         CartItem existingCartItem = cartItemRepos
                 .findByCartIdAndProductId(cart.getId(), productId)
                 .orElseThrow(() -> new ResourceNotFoundException("In this cart, the product", productId));
         int deletedQuantity = existingCartItem.getQuantity();
         giveBackToStock(productId, deletedQuantity);
-
         cart.removeCartItem(existingCartItem);
         if (cart.getCartItems().isEmpty()) {
             cartRepos.delete(cart);
@@ -108,25 +97,14 @@ public class CartService {
     private Cart getOrCreateCart(CustomerProfile customer, Long id) {
         return cartRepos.findByCustomerId(id)
                 .orElseGet(() ->
-                        createNewCart(customer));
+                        new Cart(customer));
     }
-
-    private Cart createNewCart(CustomerProfile customer) {
-        Cart newCart = new Cart(customer);
-        cartRepos.save(newCart);
-        return newCart;
-    }
-
-
-    //Product
 
     private Product findProduct(Long productId) {
         return productRepos
                 .findById(productId)
                 .orElseThrow(ResourceNotFoundException::new);
     }
-
-    //Stock
 
     private void checkAndAdjustStock(Long productId, int quantity) {
         Product product = findProduct(productId);
@@ -144,23 +122,19 @@ public class CartService {
         productRepos.save(product);
     }
 
+
     private void adjustStockByDifference(int oldQuantity, int newQuantity, Long productId) {
         int quantDiff = newQuantity - oldQuantity;
-
         if (oldQuantity < newQuantity) { //extra quantity is requested
             checkAndAdjustStock(productId, quantDiff);
-
         } else if (newQuantity < oldQuantity) { //quantDiff is negative
             int surplusQuantity = Math.abs(quantDiff); //convert negative difference to positive value
             giveBackToStock(productId, surplusQuantity);
         }
-
     }
 
-    //Authorization
     private CustomerProfile authorizeAndGetCustomer(Long id) {
-        User user = whoCanSee.findUserAndCheckPermission(id, Role.ROLE_CUSTOMER, "Customer");
+        User user = whoCanSee.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Customer", id));
         return user.getPerson().getCustomerProfile();
     }
-
 }

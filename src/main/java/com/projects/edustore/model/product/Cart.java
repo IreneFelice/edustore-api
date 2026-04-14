@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "cart")
+@Table(name = "carts")
 public class Cart {
 
     @Id
@@ -42,6 +42,10 @@ public class Cart {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id){
+        this.id = id;
     }
 
     public List<CartItem> getCartItems() {

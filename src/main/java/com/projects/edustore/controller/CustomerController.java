@@ -6,6 +6,9 @@ import com.projects.edustore.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/customers")
@@ -26,7 +29,14 @@ public class CustomerController {
     @PostMapping("/register")
     public ResponseEntity<CustomerUserResponseDto> createCustomerUser(
             @Valid @RequestBody CustomerUserRequestDto customerUserRequestDto) {
-        return ResponseEntity.ok(customerService.createUser(customerUserRequestDto));
+        CustomerUserResponseDto response = customerService.createUser(customerUserRequestDto);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/customers/{id}")
+                .buildAndExpand(response.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     @PutMapping("/{id}")

@@ -21,12 +21,9 @@ import java.util.List;
 public class AdminUserReadService {
     private final UserRepository repos;
 
-
     public AdminUserReadService(UserRepository repos) {
         this.repos = repos;
     }
-
-    //////////// Base User
 
     public List<BaseUserResponseDto> getAllUsers() {
         List<User> users = repos.findAll();
@@ -38,8 +35,12 @@ public class AdminUserReadService {
     }
 
     public BaseUserResponseDto getUserById(Long id) {
-        User existing = findUser(id);
-        return UserMapper.toBaseDto(existing);
+        User existing = repos.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", id));
+        return switch (existing.getRole()) {
+            case ROLE_STUDENT -> StudentMapper.toResponseDto(existing);
+            case ROLE_CUSTOMER -> CustomerMapper.toResponseDto(existing);
+            default -> UserMapper.toBaseDto(existing);
+        };
     }
 
     public BaseUserResponseDto getByEmail(String email) {
@@ -51,38 +52,24 @@ public class AdminUserReadService {
         };
     }
 
-    //   helper
-    private User findUser(Long id) {
-        return repos.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", id));
-    }
+    public List<StudentUserResponseDto> getAllStudents(List<String> teams) {
+        List<User> students;
 
-//    //////////// Students
-
-    public List<StudentUserResponseDto> getAllStudents() {
-        List<User> students = repos.findByRole(Role.ROLE_STUDENT);
-
+        if (teams == null || teams.isEmpty()) {
+            students = repos.findByRole(Role.ROLE_STUDENT);
+        } else {
+            List<String> lowerCaseTeams = new ArrayList<>();
+            for (String team : teams) {
+                lowerCaseTeams.add(team.toLowerCase());
+            }
+            students = repos.findByPerson_StudentProfile_TeamIn(lowerCaseTeams);
+        }
         List<StudentUserResponseDto> dtos = new ArrayList<>();
         for (User user : students) {
             dtos.add(StudentMapper.toResponseDto(user));
         }
         return dtos;
     }
-
-    public List<StudentUserResponseDto> getStudentsByTeams(List<String> teams) {
-        List<String> lowerCaseTeams = new ArrayList<>();
-        for (String team : teams) {
-            lowerCaseTeams.add(team.toLowerCase());
-        }
-        List<User> students = repos.findByPerson_StudentProfile_TeamIn(lowerCaseTeams);
-        List<StudentUserResponseDto> dtos = new ArrayList<>();
-
-        for (User user : students) {
-            dtos.add(StudentMapper.toResponseDto(user));
-        }
-        return dtos;
-    }
-
-    //    /////////// Customers
 
     public List<CustomerUserResponseDto> getAllCustomers() {
         List<User> customers = repos.findByRole(Role.ROLE_CUSTOMER);
@@ -93,5 +80,4 @@ public class AdminUserReadService {
         }
         return dtos;
     }
-
 }

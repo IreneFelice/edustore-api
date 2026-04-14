@@ -3,6 +3,8 @@ package com.projects.edustore.service;
 import com.projects.edustore.dto.product.ProductCustomerResponseDto;
 import com.projects.edustore.dto.product.ProductRequestDto;
 import com.projects.edustore.dto.product.ProductStudentResponseDto;
+import com.projects.edustore.dto.product.UpdateProductMakerDto;
+import com.projects.edustore.dto.product.TeamNamesResponseDto;
 import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.ProductMapper;
@@ -12,6 +14,7 @@ import com.projects.edustore.model.person.StudentProfile;
 import com.projects.edustore.model.product.Product;
 import com.projects.edustore.repository.ProductRepository;
 
+import com.projects.edustore.repository.UserRepository;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +29,12 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository repos;
-    private final WhoCanSeeWhoService whoCanSee;
+    private final UserRepository studentRepos;
+    private final AuthorisationService whoCanSee;
 
-    public ProductService(ProductRepository repos, WhoCanSeeWhoService whoCanSee) {
+    public ProductService(ProductRepository repos, UserRepository studentRepos, AuthorisationService whoCanSee) {
         this.repos = repos;
+        this.studentRepos = studentRepos;
         this.whoCanSee = whoCanSee;
     }
 
@@ -40,6 +45,11 @@ public class ProductService {
             dtos.add(ProductMapper.toCustomerResponseDto(product));
         }
         return dtos;
+    }
+
+    public TeamNamesResponseDto getAllUniqueTeams() {
+        List<String> teamNames = studentRepos.findAllUniqueTeams();
+        return new TeamNamesResponseDto(teamNames);
     }
 
     public List<ProductCustomerResponseDto> getProductsByTeam(String team) {
@@ -53,15 +63,12 @@ public class ProductService {
     }
 
     public ProductCustomerResponseDto getProductForCustomer(Long productId) {
-        Product product = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
-        return ProductMapper.toCustomerResponseDto(product);
+        return ProductMapper.toCustomerResponseDto(findProduct(productId));
     }
 
 
     /////////////////////////FOR STUDENTS/////////////////////////////////////////////////
 
-
-    //#1
     public List<ProductStudentResponseDto> getAllProductsForMaker(Long studentId) {
         authorizeStudentAccess(studentId);
         List<Product> products = repos.findByMaker_Id(studentId);
@@ -73,10 +80,9 @@ public class ProductService {
         return dtos;
     }
 
-    //#2
     public ProductStudentResponseDto getProductDetailsForTeam(Long studentId, Long productId) {
-        User user = whoCanSee.findUserAndCheckPermission(studentId, Role.ROLE_STUDENT, "Student");
-        Product product = repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
+        User user = findStudentUserAndCheckAuthorisation(studentId);
+        Product product = findProduct(productId);
 
         String userTeam = user.getPerson().getStudentProfile().getTeam();
         String productMakerTeam = product.getMaker().getTeam();
@@ -87,16 +93,14 @@ public class ProductService {
         return ProductMapper.toStudentResponseDto(product);
     }
 
-    //#3
     @Transactional(readOnly = false)
     public ProductStudentResponseDto createNewProduct(ProductRequestDto dto, Long studentId) {
-        User user = whoCanSee.findUserAndCheckPermission(studentId, Role.ROLE_STUDENT, "Student");
-        Product newProduct = ProductMapper.toEntity(dto, user.getPerson().getStudentProfile());
+        User user = findStudentUserAndCheckAuthorisation(studentId);
+        Product newProduct = ProductMapper.toEntity(dto,user.getPerson().getStudentProfile());
         repos.save(newProduct);
         return ProductMapper.toStudentResponseDto(newProduct);
     }
 
-    //#4
     @Transactional(readOnly = false)
     public ProductStudentResponseDto updateProductByMaker(Long studentId, Long productId, ProductRequestDto dto) {
         authorizeStudentAccess(studentId);
@@ -108,13 +112,24 @@ public class ProductService {
         return ProductMapper.toStudentResponseDto(existingProduct);
     }
 
-    //#5
     @Transactional(readOnly = false)
     public void deleteProductByMaker(Long studentId, Long productId) {
         authorizeStudentAccess(studentId);
         Product product = findProduct(productId);
         checkStudentIsMaker(studentId, product);
         repos.delete(product);
+    }
+
+    @Transactional(readOnly = false)
+    public void updateMaker(Long studentId, Long productId, UpdateProductMakerDto dto) {
+        authorizeStudentAccess(studentId);
+        Product product = findProduct(productId);
+        checkStudentIsMaker(studentId, product);
+
+        User newMaker = studentRepos.findById(dto.getMakerId())
+                .orElseThrow(()-> new ResourceNotFoundException("Maker", dto.getMakerId()));
+        product.setMaker(newMaker.getPerson().getStudentProfile());
+        repos.save(product);
     }
 
 
@@ -128,14 +143,13 @@ public class ProductService {
 
     private static final long MAX_IMAGE_SIZE = 1_000_000; // 1 MB
 
-    public Product getProductForImage(Long productId) {
+    public Product getProductWithImage(Long productId) {
         Product product = findProduct(productId);
         if (product.getBytes() == null) {
             throw new ResourceNotFoundException("Image for product", productId);
         }
         return product;
     }
-
 
     @Transactional(readOnly = false)
     public void uploadProductImageByMaker(Long studentId, Long productId, MultipartFile file) throws IOException {
@@ -170,10 +184,14 @@ public class ProductService {
         repos.save(product);
     }
 
-    //Helpers
+    //helpers
 
     public void authorizeStudentAccess(Long id) {
-        whoCanSee.checkUserPermission(id, Role.ROLE_STUDENT, "Student"); //current User is allowed and requested user (by admin) or current user is Student
+        whoCanSee.checkSelfOrAdminAccess(id);
+    }
+
+    public User findStudentUserAndCheckAuthorisation(Long id) {
+        return whoCanSee.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Student", id));
     }
 
     public Product findProduct(Long productId) {
@@ -181,8 +199,8 @@ public class ProductService {
     }
 
     public void checkStudentIsMaker(Long studentId, Product product) {
-        StudentProfile maker = product.getMaker();
         User currentUser = whoCanSee.getCurrentUser();
+        StudentProfile maker = product.getMaker();
 
         boolean isMaker = studentId.equals(maker.getId());
         boolean isAdmin = currentUser.getRole().equals(Role.ROLE_ADMIN);
@@ -191,5 +209,4 @@ public class ProductService {
             throw new ForbiddenActionException("No permission for requested action. This is not your item.");
         }
     }
-
 }

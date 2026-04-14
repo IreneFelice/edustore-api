@@ -95,4 +95,14 @@ public class GlobalExceptionHandler {
                 .body(errorMessage);
     }
 
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<String> handleEmailExists(EmailAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+
+    @ExceptionHandler(UserNameAlreadyExistsException.class)
+    public ResponseEntity<String> handleUserNameExists(UserNameAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
 }

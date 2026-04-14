@@ -69,11 +69,6 @@ public class Order {
         item.setOrder(this);
     }
 
-    public void removeItem(OrderItem item) {
-        items.remove(item);
-        item.setOrder(null);
-    }
-
     public LocalDateTime getOrderDate() {
         return orderDate;
     }

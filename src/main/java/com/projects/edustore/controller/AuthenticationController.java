@@ -45,13 +45,6 @@ public class AuthenticationController {
     @PostMapping(value = "/authenticate")
     public ResponseEntity<AuthResponseDto> createAuthenticationToken(@Valid @RequestBody AuthRequestDto dto) {
 
-        // check valid input format
-        if (dto.getUserName() == null || dto.getPassword() == null) {
-            throw new HttpMessageNotReadableException(
-                    "Wrong JSON for login request. Example: { \"userName\": \"johndoe\", \"password\": \"wachtwoord123\" }"
-            );
-        }
-
         try {
             // check username and password validity
             Authentication authentication = authenticationManager.authenticate(
