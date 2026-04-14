@@ -2,7 +2,9 @@ package com.projects.edustore.service;
 
 import com.projects.edustore.dto.profile.CustomerUserRequestDto;
 import com.projects.edustore.dto.profile.CustomerUserResponseDto;
+import com.projects.edustore.exception.EmailAlreadyExistsException;
 import com.projects.edustore.exception.ResourceNotFoundException;
+import com.projects.edustore.exception.UserNameAlreadyExistsException;
 import com.projects.edustore.mapper.CustomerMapper;
 import com.projects.edustore.model.User;
 import com.projects.edustore.repository.UserRepository;
@@ -32,8 +34,20 @@ public class CustomerService {
         return CustomerMapper.toResponseDto(user);
     }
 
+    private void validateNewUser(CustomerUserRequestDto dto){
+
+        if(repos.existsByUserName(dto.getUserName())){
+            throw new UserNameAlreadyExistsException();
+        }
+
+        if(repos.existsByPerson_Email(dto.getEmail())) {
+            throw new EmailAlreadyExistsException();
+        }
+    }
+
     @Transactional
     public CustomerUserResponseDto createUser(CustomerUserRequestDto dto) {
+        validateNewUser(dto);
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
 
         User newCustomer = CustomerMapper.toEntity(dto);

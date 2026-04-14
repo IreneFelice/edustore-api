@@ -2,7 +2,9 @@ package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.product.ProductRequestDto;
 import com.projects.edustore.dto.product.ProductStudentResponseDto;
+import com.projects.edustore.dto.product.UpdateProductMakerDto;
 import com.projects.edustore.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,13 +59,23 @@ public class StudentProductController {
             return ResponseEntity.ok(productService.updateProductByMaker(studentId, productId, dto));
         }
 
-        @DeleteMapping("/delete/{productId}")
+        @DeleteMapping("/{productId}")
         public ResponseEntity<Void> deleteProduct(
                 @PathVariable Long studentId,
                 @PathVariable Long productId) {
             productService.deleteProductByMaker(studentId, productId);
             return ResponseEntity.noContent().build();
         }
+
+    @PatchMapping("/{productId}/maker")
+    public ResponseEntity<String> updateProductMaker(
+            @PathVariable Long studentId,
+            @PathVariable Long productId,
+            @Valid @RequestBody UpdateProductMakerDto dto) {
+
+        productService.updateMaker(studentId, productId, dto);
+        return ResponseEntity.ok("Product with id " + productId + ", now has maker with id " + dto.getMakerId());
+    }
 
         //////// Product image //////////////
 
@@ -78,10 +90,10 @@ public class StudentProductController {
         }
 
         @DeleteMapping("/{productId}/image")
-        public ResponseEntity<String> deleteProductImage(
+        public ResponseEntity<Void> deleteProductImage(
                 @PathVariable Long studentId,
                 @PathVariable Long productId) {
             productService.deleteProductImageByMaker(studentId, productId);
-            return ResponseEntity.ok("Image deleted.");
+            return ResponseEntity.noContent().build();
         }
     }

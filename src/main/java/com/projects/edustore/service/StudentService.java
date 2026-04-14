@@ -2,9 +2,10 @@ package com.projects.edustore.service;
 
 import com.projects.edustore.dto.profile.StudentUserRequestDto;
 import com.projects.edustore.dto.profile.StudentUserResponseDto;
-import com.projects.edustore.dto.profile.TeamNamesResponseDto;
+import com.projects.edustore.exception.EmailAlreadyExistsException;
 import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
+import com.projects.edustore.exception.UserNameAlreadyExistsException;
 import com.projects.edustore.mapper.StudentMapper;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
@@ -40,16 +41,11 @@ public class StudentService {
 
     public StudentUserResponseDto getStudentById(Long id) {
         User user = findAndAuthorizeStudent(id);
-        if(user.getRole().equals(Role.ROLE_STUDENT)){
-        return StudentMapper.toResponseDto(user);
+        if (user.getRole().equals(Role.ROLE_STUDENT)) {
+            return StudentMapper.toResponseDto(user);
         } else {
             throw new ResourceNotFoundException("Student", id);
         }
-    }
-
-    public TeamNamesResponseDto getAllUniqueTeams() {
-        List<String> teamNames = repos.findAllUniqueTeams();
-        return new TeamNamesResponseDto(teamNames);
     }
 
     public List<StudentUserResponseDto> getByTeam(Long id) {
@@ -66,6 +62,7 @@ public class StudentService {
 
     @Transactional
     public StudentUserResponseDto createStudentUser(StudentUserRequestDto dto) {
+        validateNewUser(dto);
         String hashed = passwordEncoder.encode(dto.getPassword());
 
         User newStudent = StudentMapper.toEntity(dto);
@@ -74,6 +71,17 @@ public class StudentService {
         User savedUser = repos.save(newStudent);
 
         return StudentMapper.toResponseDto(savedUser);
+    }
+
+    private void validateNewUser(StudentUserRequestDto dto){
+
+        if(repos.existsByUserName(dto.getUserName())){
+            throw new UserNameAlreadyExistsException();
+        }
+
+        if(repos.existsByPerson_Email(dto.getEmail())) {
+            throw new EmailAlreadyExistsException();
+        }
     }
 
     @Transactional
@@ -95,7 +103,7 @@ public class StudentService {
         List<Product> ownedProducts = productRepos.findByMaker_Id(id);
         if (ownedProducts.size() > 0) {
             throw new ForbiddenActionException(
-                    "Student still has products and cannot be deleted"
+                    "Student still has " + ownedProducts.size() + " products and cannot be deleted"
             );
         }
         repos.delete(existingStudent);

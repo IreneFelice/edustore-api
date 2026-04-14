@@ -66,7 +66,7 @@ class OrderServiceTest {
         product.setPrice(new BigDecimal("5"));
 
         // CartItem
-        CartItem cartItem = new CartItem(product, 2); // quantity = 2
+        CartItem cartItem = new CartItem(product, 2);
 
         // Cart
         cart = new Cart(customer);

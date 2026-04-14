@@ -29,15 +29,11 @@ public class UserAdminController {
         return ResponseEntity.ok(adminUserReadService.getAllUsers());
     }
 
-    // get all students in total or per team (optional requestParam)
+    // get all students in total or in specific team(s)
     @GetMapping("/students")
     public ResponseEntity<List<StudentUserResponseDto>> getAllStudents(
-            @RequestParam(required = false) List<String> team) {
-
-        if (team == null || team.isEmpty()) { //TODO: logic to Service
-            return ResponseEntity.ok(adminUserReadService.getAllStudents());
-        }
-        return ResponseEntity.ok(adminUserReadService.getStudentsByTeams(team));
+            @RequestParam(required = false) List<String> teams) {
+        return ResponseEntity.ok(adminUserReadService.getAllStudents(teams));
     }
 
     @GetMapping("/customers")
@@ -56,7 +52,6 @@ public class UserAdminController {
             @RequestParam @Email(message = "Email must be valid") String email) {
         return ResponseEntity.ok(adminUserReadService.getByEmail(email));
     }
-
 
 }
 

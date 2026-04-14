@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class OrderBasicResponseDto {
-    private Long OrderId;
+    private Long orderId;
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime orderDate;
@@ -16,11 +16,11 @@ public class OrderBasicResponseDto {
     private BigDecimal totalPrice;
 
     public Long getOrderId() {
-        return OrderId;
+        return orderId;
     }
 
     public void setOrderId(Long orderId) {
-        OrderId = orderId;
+        this.orderId = orderId;
     }
 
     public LocalDateTime getOrderDate() {

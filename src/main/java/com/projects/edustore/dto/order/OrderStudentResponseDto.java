@@ -2,7 +2,7 @@ package com.projects.edustore.dto.order;
 
 public class OrderStudentResponseDto extends OrderDetailsResponseDto {
     private Long customerId;
-    private String CustomerName;
+    private String customerName;
     private String email;
 
     public Long getCustomerId() {
@@ -14,11 +14,11 @@ public class OrderStudentResponseDto extends OrderDetailsResponseDto {
     }
 
     public String getCustomerName() {
-        return CustomerName;
+        return customerName;
     }
 
     public void setCustomerName(String customerName) {
-        CustomerName = customerName;
+        this.customerName = customerName;
     }
 
     public String getEmail() {

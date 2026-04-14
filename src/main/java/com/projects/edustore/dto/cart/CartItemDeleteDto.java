@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 public class CartItemDeleteDto {
 
-    @NotNull(message = "Product Id is required")
+    @NotNull(message = "ProductId is required")
     private Long productId;
 
     public Long getProductId() {

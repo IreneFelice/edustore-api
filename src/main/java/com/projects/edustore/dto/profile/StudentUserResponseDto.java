@@ -2,6 +2,7 @@ package com.projects.edustore.dto.profile;
 
 import com.projects.edustore.dto.BaseUserResponseDto;
 
+
 public class StudentUserResponseDto extends BaseUserResponseDto {
     private String team;
 

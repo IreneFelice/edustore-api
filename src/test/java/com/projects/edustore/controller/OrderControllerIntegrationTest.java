@@ -33,7 +33,7 @@ class OrderControllerIntegrationTest {
     @WithMockUser(username = "Alice", roles = {"CUSTOMER"})
     void cartToOrder_shouldWriteCartToRightOrder() throws Exception {
 
-        mockMvc.perform(post("/orders/customer/{customerId}", 4L))
+        mockMvc.perform(post("/orders", 4L))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.items.length()").value(2))
@@ -60,8 +60,9 @@ class OrderControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "Alice", roles = {"CUSTOMER"})
-    void getOrderByIdForCustomer_orderShouldReturnNotFound_forNotExistingOrder() throws Exception {
-        mockMvc.perform(get("/customer/{customerId}/details/{orderId}", 4L, 5L))
+    void getOrderDetails_ForCustomer_shouldReturnNotFound_forNotExistingOrder() throws Exception {
+        mockMvc.perform(get("/orders/details")
+                .param("orderId", "4"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }

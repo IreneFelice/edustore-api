@@ -1,4 +1,4 @@
-package com.projects.edustore.dto.profile;
+package com.projects.edustore.dto.product;
 
 import java.util.List;
 

@@ -1,10 +1,9 @@
 package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.product.ProductCustomerResponseDto;
-import com.projects.edustore.dto.profile.TeamNamesResponseDto;
+import com.projects.edustore.dto.product.TeamNamesResponseDto;
 import com.projects.edustore.model.product.Product;
 import com.projects.edustore.service.ProductService;
-import com.projects.edustore.service.StudentService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +16,9 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     ProductService productService;
-    StudentService studentService;
 
-    public ProductController(ProductService productService, StudentService studentService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.studentService = studentService;
     }
 
     @GetMapping
@@ -31,9 +28,8 @@ public class ProductController {
 
     @GetMapping("/teams")
     public ResponseEntity<TeamNamesResponseDto> getAllUniqueTeamNames() {
-        return ResponseEntity.ok(studentService.getAllUniqueTeams());
+        return ResponseEntity.ok(productService.getAllUniqueTeams());
     }
-
 
     @GetMapping("/teams/{team}")
     public ResponseEntity<List<ProductCustomerResponseDto>> getProductsByTeam(@PathVariable String team) {
@@ -56,7 +52,5 @@ public class ProductController {
                         "inline; filename=\"" + product.getOriginalFilename() + "\"")
                 .body(product.getBytes());
     }
-
-
 }
 

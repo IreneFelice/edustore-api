@@ -8,7 +8,9 @@ import com.projects.edustore.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -23,7 +25,14 @@ public class OrderController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping
     public ResponseEntity<OrderDetailsResponseDto> cartToOrder() {
-        return ResponseEntity.ok(orderService.cartToOrder());
+        OrderDetailsResponseDto response = orderService.cartToOrder();
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/orders/{id}")
+                .buildAndExpand(response.getOrderId())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping
@@ -33,18 +42,18 @@ public class OrderController {
     return ResponseEntity.ok(orderService.getOrders(customerId, status));
     }
 
-    @GetMapping("/details")
+    @GetMapping("/{id}")
     public ResponseEntity <OrderDetailsResponseDto> getOrderDetails(
-            @RequestParam Long orderId) {
-        return ResponseEntity.ok(orderService.getOrderDetails(orderId));
+            @PathVariable Long id) {
+        return ResponseEntity.ok(orderService.getOrderDetails(id));
     }
 
     @PreAuthorize("hasRole('STUDENT')")
-    @PatchMapping("/{orderId}")
+    @PatchMapping("/{id}")
     public ResponseEntity<OrderBasicResponseDto> updateStatus(
-            @PathVariable Long orderId,
+            @PathVariable Long id,
             @RequestBody OrderStudentRequestDto orderStudentRequestDto) {
-    return ResponseEntity.ok(orderService.updateStatus(orderId, orderStudentRequestDto));
+    return ResponseEntity.ok(orderService.updateStatus(id, orderStudentRequestDto));
     }
 
 }

@@ -26,12 +26,13 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentById(studentId));
     }
 
+    // get all existing team names through ProductController - getAllUniqueTeamNames()
     @GetMapping("/{studentId}/team")
-    public ResponseEntity<List<StudentUserResponseDto>> getStudentsOwnTeam(@PathVariable Long studentId) {
+    public ResponseEntity<List<StudentUserResponseDto>> getStudentsInOwnTeam(@PathVariable Long studentId) {
         return ResponseEntity.ok(studentService.getByTeam(studentId));
     }
 
-    @PostMapping("/register") //    TODO URI builders for every @PostMapping (and .created)
+    @PostMapping("/register")
     public ResponseEntity<StudentUserResponseDto> createStudentUser(
             @Valid @RequestBody StudentUserRequestDto studentUserRequestDto) {
         StudentUserResponseDto response = studentService.createStudentUser(studentUserRequestDto);

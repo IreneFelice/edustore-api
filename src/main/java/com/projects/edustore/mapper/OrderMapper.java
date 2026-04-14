@@ -14,7 +14,7 @@ public class OrderMapper {
     public static Order toEntity(Cart cart) {
         Order order = new Order(cart.getCustomer());
 
-        BigDecimal totalPrice = new BigDecimal("0");
+        BigDecimal totalPrice = BigDecimal.ZERO;
 
         for (CartItem item : cart.getCartItems()) {
 
@@ -31,75 +31,48 @@ public class OrderMapper {
         return order;
     }
 
+    private static void mapBasicFields(Order order, OrderBasicResponseDto dto) {
+        dto.setOrderId(order.getId());
+        dto.setOrderDate(order.getOrderDate());
+        dto.setStatus(order.getStatus());
+        dto.setTotalPrice(order.getTotalPrice());
+    }
+
+    private static void mapOrderItems(Order order, OrderDetailsResponseDto dto) {
+        List<OrderItemDto> dtoItems = dto.getItems(); // Empty ArrayList, to add OrderItemDto
+
+        for (OrderItem item : order.getItems()) {
+            dtoItems.add(OrderItemMapper.toItemDto(item));
+        }
+
+        dto.addItemDtos(dtoItems);
+    }
+
     public static OrderBasicResponseDto toBasicResponse(Order order) {
-        OrderBasicResponseDto response = new OrderBasicResponseDto();
+        OrderBasicResponseDto dto = new OrderBasicResponseDto();
+        mapBasicFields(order, dto);
 
-        response.setOrderId(order.getId());
-        response.setOrderDate(order.getOrderDate());
-        response.setStatus(order.getStatus());
-        response.setTotalPrice(order.getTotalPrice());
-
-        return response;
+        return dto;
     }
 
     public static OrderDetailsResponseDto toCustomerResponse(Order order) {
-        OrderDetailsResponseDto response = new OrderDetailsResponseDto();
+        OrderDetailsResponseDto dto = new OrderDetailsResponseDto();
+        mapBasicFields(order, dto);
+        mapOrderItems(order, dto);
 
-        response.setOrderId(order.getId());
-        response.setOrderDate(order.getOrderDate());
-        response.setTotalPrice(order.getTotalPrice());
-        response.setStatus(order.getStatus());
-
-        List<OrderItemDto> dtoItems = response.getItems(); // Empty ArrayList, to add OrderItemDto
-
-        for (OrderItem item : order.getItems()) {
-
-            OrderItemDto dto = new OrderItemDto();
-
-            dto.setProductId(item.getProduct().getId());
-            dto.setProductName(item.getProduct().getName());
-            dto.setPrice(item.getProduct().getPrice());
-            dto.setQuantity(item.getQuantity());
-            dto.setSubtotal(item.getSubtotal());
-
-            dtoItems.add(dto);
-        }
-
-        response.addItemDtos(dtoItems);
-
-        return response;
+        return dto;
     }
 
     public static OrderStudentResponseDto toStudentResponse(Order order) {
-        OrderStudentResponseDto response = new OrderStudentResponseDto();
+        OrderStudentResponseDto dto = new OrderStudentResponseDto();
+        mapBasicFields(order, dto);
+        mapOrderItems(order, dto);
 
-        response.setCustomerId(order.getCustomer().getId());
-        response.setCustomerName(order.getCustomer().getPerson().getLastName());
-        response.setEmail(order.getCustomer().getPerson().getEmail());
+        dto.setCustomerId(order.getCustomer().getId());
+        dto.setCustomerName(order.getCustomer().getPerson().getLastName());
+        dto.setEmail(order.getCustomer().getPerson().getEmail());
 
-        response.setOrderId(order.getId());
-        response.setOrderDate(order.getOrderDate());
-        response.setTotalPrice(order.getTotalPrice());
-        response.setStatus(order.getStatus());
-
-        List<OrderItemDto> dtoItems = response.getItems(); // Empty ArrayList, to add OrderItemDto
-
-        for (OrderItem item : order.getItems()) {
-
-            OrderItemDto dto = new OrderItemDto();
-
-            dto.setProductId(item.getProduct().getId());
-            dto.setProductName(item.getProduct().getName());
-            dto.setPrice(item.getProduct().getPrice());
-            dto.setQuantity(item.getQuantity());
-            dto.setSubtotal(item.getSubtotal());
-
-            dtoItems.add(dto);
-        }
-
-        response.addItemDtos(dtoItems);
-
-        return response;
+        return dto;
     }
 
 }

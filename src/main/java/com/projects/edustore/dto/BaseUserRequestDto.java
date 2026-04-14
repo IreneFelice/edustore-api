@@ -1,27 +1,30 @@
 package com.projects.edustore.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 
 public class BaseUserRequestDto {
 
-    @Size(min = 3, max = 50, message = "Username should be between 3 and 50 characters.")
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username should be between 3 and 50 characters")
     private String userName;
 
-
-    @Size(min = 2, message = "First name should be at least 2 characters long")
-    @Size(max = 50, message = "First name should be less than 50 characters")
+    @NotBlank(message = "First name is required")
+    @Size(min = 2, max = 50, message = "First name should be between 2 and 50 characters")
     private String firstName;
 
-    @Size(min = 2, message = "First name should be at least 2 characters long")
-    @Size(max = 50, message = "Last name should be less than 50 characters")
+    @NotBlank(message = "Last name is required")
+    @Size(min = 2, max = 50, message = "Last name should be between 2 and 50 characters")
     private String lastName;
 
-    @Size(min = 6, message = "Email should be valid")
+    @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
+    @Size(max = 100, message = "Email should not exceed 100 characters")
     private String email;
 
+    @NotBlank(message = "Password is required")
     @Size(min = 8, max = 100, message = "Password should be between 8 and 100 characters")
     private String password;
 
