@@ -61,8 +61,7 @@ class OrderControllerIntegrationTest {
     @Test
     @WithMockUser(username = "Alice", roles = {"CUSTOMER"})
     void getOrderDetails_ForCustomer_shouldReturnNotFound_forNotExistingOrder() throws Exception {
-        mockMvc.perform(get("/orders/details")
-                .param("orderId", "4"))
+        mockMvc.perform(get("/orders/{id}", 4))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
