@@ -8,6 +8,7 @@ import com.projects.edustore.exception.UserNameAlreadyExistsException;
 import com.projects.edustore.mapper.CustomerMapper;
 import com.projects.edustore.model.User;
 import com.projects.edustore.repository.UserRepository;
+import com.projects.edustore.security.AuthorisationService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,16 +18,16 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
     private final UserRepository repos;
     private final PasswordEncoder passwordEncoder;
-    private final AuthorisationService whoCanSee;
+    private final AuthorisationService authorizer;
 
-    public CustomerService(UserRepository repos, PasswordEncoder passwordEncoder, AuthorisationService whoCanSee) {
+    public CustomerService(UserRepository repos, PasswordEncoder passwordEncoder, AuthorisationService authorizer) {
         this.repos = repos;
         this.passwordEncoder = passwordEncoder;
-        this.whoCanSee = whoCanSee;
+        this.authorizer = authorizer;
     }
 
     public User findCustomer(Long id) {
-        return whoCanSee.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Customer", id));
+        return authorizer.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Customer", id));
     }
 
     public CustomerUserResponseDto getCustomerById(Long id) {

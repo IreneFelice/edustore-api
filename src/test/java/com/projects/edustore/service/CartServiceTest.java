@@ -16,6 +16,7 @@ import com.projects.edustore.model.product.Product;
 import com.projects.edustore.repository.CartItemRepository;
 import com.projects.edustore.repository.CartRepository;
 import com.projects.edustore.repository.ProductRepository;
+import com.projects.edustore.security.AuthorisationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +49,7 @@ class CartServiceTest {
     ProductRepository productRepos;
 
     @Mock
-    AuthorisationService whoCanSee;
+    AuthorisationService authorizer;
 
     @InjectMocks
     CartService cartService;
@@ -111,7 +112,7 @@ class CartServiceTest {
     void getCart() {
         System.out.println("Test getCart:");
         //arrange
-        doNothing().when(whoCanSee).checkSelfOrAdminAccess(userId);
+        doNothing().when(authorizer).checkSelfOrAdminAccess(userId);
         arrangeCart();
 
         //act
@@ -129,7 +130,7 @@ class CartServiceTest {
     void getCartNotFound() {
         System.out.println("Test getCart_NotFound:");
         //arrange
-        doNothing().when(whoCanSee).checkSelfOrAdminAccess(userId);
+        doNothing().when(authorizer).checkSelfOrAdminAccess(userId);
 
         //act and assert
         ResourceNotFoundException ex = assertThrows(
@@ -145,7 +146,7 @@ class CartServiceTest {
     void addNewItemToCart() {
         System.out.println("Test addNewItemToCart:");
         //arrange
-        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
+        when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
         Product product = arrangeProduct();
         Cart cart = arrangeCart();
         CartItemRequestDto dto = arrangeRequestDto();
@@ -167,7 +168,7 @@ class CartServiceTest {
     void addItemToNewCart() {
         System.out.println("Test addItemToNewCart:");
         //arrange
-        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
+        when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
         Product product = arrangeProduct();
         //no cart arranging
         CartItemRequestDto dto = arrangeRequestDto();
@@ -193,7 +194,7 @@ class CartServiceTest {
     void addExistingItemToCart() {
         System.out.println("Test addExistingItemToCart:");
         //arrange
-        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
+        when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
 
         Product product = arrangeProduct();
         Cart cart = arrangeCart();
@@ -221,7 +222,7 @@ class CartServiceTest {
     void addExistingItemToCartGiveBackToStock() {
         System.out.println("Test addExistingItemToNewCart_GiveBackToStock:");
         //arrange
-        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
+        when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
 
         Product product = arrangeProduct();
         Cart cart = arrangeCart();
@@ -249,7 +250,7 @@ class CartServiceTest {
     void addExistingItemToCartOutOfStock() {
         System.out.println("Test addExistingItemToNewCart_OutOfStock:");
         //arrange
-        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
+        when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
 
         Product product = arrangeProduct();
         Cart cart = arrangeCart();
@@ -285,7 +286,7 @@ class CartServiceTest {
     void deleteItemNotCart() {
         System.out.println("Test delete item, not cart:");
         //arrange
-        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
+        when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
         Cart cart = arrangeCart();
         Product product1 = arrangeProduct();
 
@@ -329,7 +330,7 @@ class CartServiceTest {
     void deleteItemAndCart() {
         System.out.println("Test delete item AND cart:");
         //arrange
-        when(whoCanSee.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
+        when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
         Cart cart = arrangeCart();
         Product product1 = arrangeProduct();
 

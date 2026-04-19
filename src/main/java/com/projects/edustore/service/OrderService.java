@@ -13,6 +13,7 @@ import com.projects.edustore.model.product.Order;
 import com.projects.edustore.model.product.OrderStatus;
 import com.projects.edustore.repository.CartRepository;
 import com.projects.edustore.repository.OrderRepository;
+import com.projects.edustore.security.AuthorisationService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,16 +23,16 @@ import java.util.List;
 public class OrderService {
     private final CartRepository cartRepos;
     private final OrderRepository orderRepos;
-    private final AuthorisationService whoCanSee;
+    private final AuthorisationService authorizer;
 
-    public OrderService(CartRepository cartRepos, OrderRepository orderRepos, AuthorisationService whoCanSee) {
+    public OrderService(CartRepository cartRepos, OrderRepository orderRepos, AuthorisationService authorizer) {
         this.cartRepos = cartRepos;
         this.orderRepos = orderRepos;
-        this.whoCanSee = whoCanSee;
+        this.authorizer = authorizer;
     }
 
     public OrderDetailsResponseDto cartToOrder() {
-        User currentUser = whoCanSee.getCurrentUser();
+        User currentUser = authorizer.getCurrentUser();
         Long userId = currentUser.getId();
 
         Cart cart = cartRepos.findByCustomerId(userId)
@@ -46,7 +47,7 @@ public class OrderService {
 
 
     public List<OrderBasicResponseDto> getOrders(Long customerId, OrderStatus status) {
-        User currentUser = whoCanSee.getCurrentUser();
+        User currentUser = authorizer.getCurrentUser();
         List<Order> orders;
 
         if (currentUser.getRole().equals(Role.ROLE_CUSTOMER)) {
@@ -84,7 +85,7 @@ public class OrderService {
 
     public OrderDetailsResponseDto getOrderDetails(Long orderId) {
         Order order = findOrder(orderId);
-        User currentUser = whoCanSee.getCurrentUser();
+        User currentUser = authorizer.getCurrentUser();
 
         if (currentUser.getRole() == Role.ROLE_CUSTOMER) {
             checkCustomerPermission(order.getCustomer().getId());
@@ -121,7 +122,7 @@ public class OrderService {
     }
 
     private void checkCustomerPermission(Long customerId) {
-        whoCanSee.checkSelfOrAdminAccess(customerId);
+        authorizer.checkSelfOrAdminAccess(customerId);
     }
 
 }

@@ -12,6 +12,7 @@ import com.projects.edustore.model.User;
 import com.projects.edustore.model.product.Product;
 import com.projects.edustore.repository.ProductRepository;
 import com.projects.edustore.repository.UserRepository;
+import com.projects.edustore.security.AuthorisationService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,18 +26,18 @@ public class StudentService {
 
     private final UserRepository repos;
     private final PasswordEncoder passwordEncoder;
-    private final AuthorisationService whoCanSee;
+    private final AuthorisationService authorizer;
     private final ProductRepository productRepos;
 
-    public StudentService(UserRepository repos, PasswordEncoder passwordEncoder, AuthorisationService whoCanSee, ProductRepository productRepos) {
+    public StudentService(UserRepository repos, PasswordEncoder passwordEncoder, AuthorisationService authorizer, ProductRepository productRepos) {
         this.repos = repos;
         this.passwordEncoder = passwordEncoder;
-        this.whoCanSee = whoCanSee;
+        this.authorizer = authorizer;
         this.productRepos = productRepos;
     }
 
     private User findAndAuthorizeStudent(Long id) {
-        return whoCanSee.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Student", id));
+        return authorizer.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Student", id));
     }
 
     public StudentUserResponseDto getStudentById(Long id) {

@@ -12,6 +12,7 @@ import com.projects.edustore.model.person.Person;
 import com.projects.edustore.model.product.*;
 import com.projects.edustore.repository.CartRepository;
 import com.projects.edustore.repository.OrderRepository;
+import com.projects.edustore.security.AuthorisationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +37,7 @@ class OrderServiceTest {
     private OrderRepository orderRepos;
 
     @Mock
-    private AuthorisationService whoCanSee;
+    private AuthorisationService authorizer;
 
     @InjectMocks
     private OrderService orderService;
@@ -78,7 +79,7 @@ class OrderServiceTest {
 
     @Test
     void cartToOrder() {
-        when(whoCanSee.getCurrentUser()).thenReturn(customerUser);
+        when(authorizer.getCurrentUser()).thenReturn(customerUser);
         when(cartRepos.findByCustomerId(customerUser.getId())).thenReturn(Optional.of(cart));
         when(orderRepos.save(any(Order.class))).thenReturn(order);
 
@@ -95,7 +96,7 @@ class OrderServiceTest {
 
     @Test
     void getOrders_customer_onlyOwnOrders() {
-        when(whoCanSee.getCurrentUser()).thenReturn(customerUser);
+        when(authorizer.getCurrentUser()).thenReturn(customerUser);
         when(orderRepos.findByCustomerId(customerUser.getId()))
                 .thenReturn(List.of(order));
 
@@ -107,7 +108,7 @@ class OrderServiceTest {
 
     @Test
     void getOrders_customer_isNotOwner() {
-        when(whoCanSee.getCurrentUser()).thenReturn(customerUser);
+        when(authorizer.getCurrentUser()).thenReturn(customerUser);
 
         Long strangerId = customerUser.getId() + 9;
 
@@ -123,7 +124,7 @@ class OrderServiceTest {
     }
     @Test
     void getOrders_withStatusFilter_forCustomer() {
-        when(whoCanSee.getCurrentUser()).thenReturn(customerUser);
+        when(authorizer.getCurrentUser()).thenReturn(customerUser);
         when(orderRepos.findByCustomerId(customerUser.getId()))
                 .thenReturn(List.of(order));
 
@@ -134,7 +135,7 @@ class OrderServiceTest {
 
     @Test
     void getOrders_all_forStudent() {
-        when(whoCanSee.getCurrentUser()).thenReturn(studentUser);
+        when(authorizer.getCurrentUser()).thenReturn(studentUser);
         when(orderRepos.findAll())
                 .thenReturn(List.of(order));
 
@@ -146,7 +147,7 @@ class OrderServiceTest {
 
     @Test
     void getOrders_withCustomerId_withStatusFilter_forStudent() {
-        when(whoCanSee.getCurrentUser()).thenReturn(studentUser);
+        when(authorizer.getCurrentUser()).thenReturn(studentUser);
         when(orderRepos.findByCustomerId(customerUser.getId()))
                 .thenReturn(List.of(order));
 
@@ -157,7 +158,7 @@ class OrderServiceTest {
 
     @Test
     void getOrderDetails_forCustomer() {
-        when(whoCanSee.getCurrentUser()).thenReturn(customerUser);
+        when(authorizer.getCurrentUser()).thenReturn(customerUser);
         when(orderRepos.findById(order.getId())).thenReturn(Optional.of(order));
 
         OrderDetailsResponseDto result = orderService.getOrderDetails(order.getId());
@@ -169,7 +170,7 @@ class OrderServiceTest {
 
     @Test
     void getOrderDetails_asStudent() {
-        when(whoCanSee.getCurrentUser()).thenReturn(studentUser);
+        when(authorizer.getCurrentUser()).thenReturn(studentUser);
         when(orderRepos.findById(order.getId())).thenReturn(Optional.of(order));
 
         OrderDetailsResponseDto result = orderService.getOrderDetails(order.getId());

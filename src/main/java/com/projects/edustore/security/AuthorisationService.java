@@ -1,4 +1,4 @@
-package com.projects.edustore.service;
+package com.projects.edustore.security;
 
 import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;

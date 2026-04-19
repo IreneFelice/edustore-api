@@ -16,6 +16,7 @@ import com.projects.edustore.model.product.Product;
 import com.projects.edustore.repository.CartItemRepository;
 import com.projects.edustore.repository.CartRepository;
 import com.projects.edustore.repository.ProductRepository;
+import com.projects.edustore.security.AuthorisationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,19 +26,19 @@ public class CartService {
     private final ProductRepository productRepos;
     private final CartItemRepository cartItemRepos;
     private final CartRepository cartRepos;
-    private final AuthorisationService whoCanSee;
+    private final AuthorisationService authorizer;
 
 
-    public CartService(ProductRepository productRepos, CartItemRepository cartItemRepos, CartRepository cartRepos, AuthorisationService whoCanSee) {
+    public CartService(ProductRepository productRepos, CartItemRepository cartItemRepos, CartRepository cartRepos, AuthorisationService authorizer) {
         this.productRepos = productRepos;
         this.cartItemRepos = cartItemRepos;
         this.cartRepos = cartRepos;
-        this.whoCanSee = whoCanSee;
+        this.authorizer = authorizer;
     }
 
 
     public CartResponseDto getCart(Long id) {
-        whoCanSee.checkSelfOrAdminAccess(id);
+        authorizer.checkSelfOrAdminAccess(id);
 
         Cart existingCart = cartRepos
                 .findByCustomerId(id)
@@ -134,7 +135,7 @@ public class CartService {
     }
 
     private CustomerProfile authorizeAndGetCustomer(Long id) {
-        User user = whoCanSee.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Customer", id));
+        User user = authorizer.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Customer", id));
         return user.getPerson().getCustomerProfile();
     }
 }

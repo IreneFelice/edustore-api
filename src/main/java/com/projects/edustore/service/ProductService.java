@@ -15,6 +15,7 @@ import com.projects.edustore.model.product.Product;
 import com.projects.edustore.repository.ProductRepository;
 
 import com.projects.edustore.repository.UserRepository;
+import com.projects.edustore.security.AuthorisationService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,16 +27,15 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository repos;
     private final UserRepository studentRepos;
-    private final AuthorisationService whoCanSee;
+    private final AuthorisationService authorizer;
 
-    public ProductService(ProductRepository repos, UserRepository studentRepos, AuthorisationService whoCanSee) {
+    public ProductService(ProductRepository repos, UserRepository studentRepos, AuthorisationService authorizer) {
         this.repos = repos;
         this.studentRepos = studentRepos;
-        this.whoCanSee = whoCanSee;
+        this.authorizer = authorizer;
     }
 
     public List<ProductCustomerResponseDto> getAllProductsForCustomer() {
@@ -93,7 +93,7 @@ public class ProductService {
         return ProductMapper.toStudentResponseDto(product);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public ProductStudentResponseDto createNewProduct(ProductRequestDto dto, Long studentId) {
         User user = findStudentUserAndCheckAuthorisation(studentId);
         Product newProduct = ProductMapper.toEntity(dto,user.getPerson().getStudentProfile());
@@ -101,7 +101,7 @@ public class ProductService {
         return ProductMapper.toStudentResponseDto(newProduct);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public ProductStudentResponseDto updateProductByMaker(Long studentId, Long productId, ProductRequestDto dto) {
         authorizeStudentAccess(studentId);
         Product existingProduct = findProduct(productId);
@@ -112,7 +112,7 @@ public class ProductService {
         return ProductMapper.toStudentResponseDto(existingProduct);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void deleteProductByMaker(Long studentId, Long productId) {
         authorizeStudentAccess(studentId);
         Product product = findProduct(productId);
@@ -120,7 +120,7 @@ public class ProductService {
         repos.delete(product);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void updateMaker(Long studentId, Long productId, UpdateProductMakerDto dto) {
         authorizeStudentAccess(studentId);
         Product product = findProduct(productId);
@@ -151,7 +151,7 @@ public class ProductService {
         return product;
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void uploadProductImageByMaker(Long studentId, Long productId, MultipartFile file) throws IOException {
         authorizeStudentAccess(studentId);
         Product product = findProduct(productId);
@@ -160,7 +160,7 @@ public class ProductService {
         uploadProductImage(product, file);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void deleteProductImageByMaker(Long studentId, Long productId) {
         authorizeStudentAccess(studentId);
         Product product = findProduct(productId);
@@ -170,7 +170,7 @@ public class ProductService {
         repos.save(product);
     }
 
-
+// helpers
     private void uploadProductImage(Product product, MultipartFile file) throws IOException {
 
         if (!ALLOWED_IMAGE_TYPES.contains(file.getContentType()) || file.getSize() > MAX_IMAGE_SIZE) {
@@ -184,22 +184,20 @@ public class ProductService {
         repos.save(product);
     }
 
-    //helpers
-
-    public void authorizeStudentAccess(Long id) {
-        whoCanSee.checkSelfOrAdminAccess(id);
+    private void authorizeStudentAccess(Long id) {
+        authorizer.checkSelfOrAdminAccess(id);
     }
 
-    public User findStudentUserAndCheckAuthorisation(Long id) {
-        return whoCanSee.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Student", id));
+    private User findStudentUserAndCheckAuthorisation(Long id) {
+        return authorizer.findUserAndCheckAuthorisation(id).orElseThrow(() -> new ResourceNotFoundException("Student", id));
     }
 
-    public Product findProduct(Long productId) {
+    private Product findProduct(Long productId) {
         return repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
     }
 
-    public void checkStudentIsMaker(Long studentId, Product product) {
-        User currentUser = whoCanSee.getCurrentUser();
+    private void checkStudentIsMaker(Long studentId, Product product) {
+        User currentUser = authorizer.getCurrentUser();
         StudentProfile maker = product.getMaker();
 
         boolean isMaker = studentId.equals(maker.getId());
