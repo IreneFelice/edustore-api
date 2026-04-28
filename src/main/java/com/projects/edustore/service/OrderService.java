@@ -55,7 +55,7 @@ public class OrderService {
             // for customer
             Long ownId = currentUser.getId();
             if (customerId != null && !customerId.equals(ownId)) {
-                throw new ForbiddenActionException("You are not allowed to access or modify this resource");
+                throw new ForbiddenActionException();
             }
             orders = orderRepos.findByCustomerId(ownId);
         } else {

@@ -6,7 +6,4 @@ public class EmailAlreadyExistsException extends RuntimeException{
         super("Email already in use");
     }
 
-    public EmailAlreadyExistsException(String message) {
-        super(message);
-    }
 }

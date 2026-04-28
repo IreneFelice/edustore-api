@@ -1,4 +1,4 @@
-package com.projects.edustore.exception;
+package com.projects.edustore.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,13 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-public class AuthenticationFailedException extends RuntimeException {
-    public AuthenticationFailedException(String message) {
-        super(message);
-    }
-
     @Component
-    public static class CustomJwtAuthEntryPoint implements AuthenticationEntryPoint {
+    public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
 
 
         @Override
@@ -23,10 +18,10 @@ public class AuthenticationFailedException extends RuntimeException {
                              HttpServletResponse response,
                              AuthenticationException ex) throws IOException {
 
-            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("text/plain");
 
-           response.getWriter().write("Access denied: token is invalid or expired.");
+            response.getWriter().write("Token is invalid or expired.");
         }
     }
-}
+

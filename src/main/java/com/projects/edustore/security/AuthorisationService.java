@@ -41,9 +41,7 @@ public class AuthorisationService {
 
         //  Not admin and trying to access another user
         if (!isAdmin && !isSelf) {
-            throw new ForbiddenActionException(
-                    "You are not allowed to access or modify this resource"
-            );
+            throw new ForbiddenActionException();
         }
     }
 

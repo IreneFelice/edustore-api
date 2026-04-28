@@ -113,7 +113,7 @@ public class CartService {
             product.setStockQuantity(product.getStockQuantity() - quantity);
             productRepos.save(product);
         } else {
-            throw new OutOfStockException("Product stock is insufficient");
+            throw new OutOfStockException();
         }
     }
 

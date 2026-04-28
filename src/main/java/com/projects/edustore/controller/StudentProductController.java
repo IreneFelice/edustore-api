@@ -40,7 +40,7 @@ public class StudentProductController {
         @PostMapping
         public ResponseEntity<ProductStudentResponseDto> createProduct(
                 @PathVariable Long studentId,
-                @RequestBody ProductRequestDto dto) {
+                @Valid @RequestBody ProductRequestDto dto) {
             ProductStudentResponseDto response = productService.createNewProduct(dto, studentId);
 
             URI location = ServletUriComponentsBuilder

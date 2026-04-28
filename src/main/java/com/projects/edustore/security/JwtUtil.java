@@ -2,6 +2,7 @@ package com.projects.edustore.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.MacAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,11 +13,11 @@ import java.util.Date;
 
 @Service
 public class JwtUtil {
-    private static final String STRING_KEY = "supersecretkey1234567890123456ssshhh";
-    private static final SecretKey KEY = Keys.hmacShaKeyFor(STRING_KEY.getBytes());
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
-
+    private final String SECRET_KEY = "dGVhY2hlcmpvaW5lZG1vdmVtZW50c29taWxlZmF0Y29sbGVnZXJ1bnByaW5jaXBsZWY=";
+    byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+    private final SecretKey KEY = Keys.hmacShaKeyFor(keyBytes);
     private static final MacAlgorithm ALGORITHM = Jwts.SIG.HS256;
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
     // put data claims in payload of JWT String
     public String generateToken(String userName) {

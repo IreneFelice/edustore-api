@@ -88,7 +88,7 @@ public class ProductService {
         String productMakerTeam = product.getMaker().getTeam();
 
         if (!userTeam.equals(productMakerTeam)) {
-            throw new ForbiddenActionException("Protected details of this product can not be accessed, because it's not owned by your team.");
+            throw new ForbiddenActionException();
         }
         return ProductMapper.toStudentResponseDto(product);
     }
@@ -204,7 +204,7 @@ public class ProductService {
         boolean isAdmin = currentUser.getRole().equals(Role.ROLE_ADMIN);
 
         if (!isMaker && !isAdmin) {
-            throw new ForbiddenActionException("No permission for requested action. This is not your item.");
+            throw new ForbiddenActionException();
         }
     }
 }

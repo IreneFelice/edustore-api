@@ -27,6 +27,7 @@ public class StudentController {
     }
 
     // get all existing team names through ProductController - getAllUniqueTeamNames()
+
     @GetMapping("/{studentId}/team")
     public ResponseEntity<List<StudentUserResponseDto>> getStudentsInOwnTeam(@PathVariable Long studentId) {
         return ResponseEntity.ok(studentService.getByTeam(studentId));
