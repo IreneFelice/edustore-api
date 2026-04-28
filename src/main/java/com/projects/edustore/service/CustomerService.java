@@ -2,6 +2,7 @@ package com.projects.edustore.service;
 
 import com.projects.edustore.dto.profile.CustomerUserRequestDto;
 import com.projects.edustore.dto.profile.CustomerUserResponseDto;
+import com.projects.edustore.dto.profile.CustomerUserUpdateDto;
 import com.projects.edustore.exception.EmailAlreadyExistsException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.exception.UserNameAlreadyExistsException;
@@ -59,7 +60,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public CustomerUserResponseDto updateCustomer(Long id, CustomerUserRequestDto dto) {
+    public CustomerUserResponseDto updateCustomer(Long id, CustomerUserUpdateDto dto) {
         User existingCustomer = findCustomer(id);
 
         CustomerMapper.updateEntity(existingCustomer, dto);

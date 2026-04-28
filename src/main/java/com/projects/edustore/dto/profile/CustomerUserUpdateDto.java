@@ -1,12 +1,10 @@
 package com.projects.edustore.dto.profile;
 
-import com.projects.edustore.dto.BaseUserRequestDto;
-import jakarta.validation.constraints.NotBlank;
+import com.projects.edustore.dto.BaseUserUpdateDto;
 import jakarta.validation.constraints.Pattern;
 
-public class CustomerUserRequestDto extends BaseUserRequestDto {
+public class CustomerUserUpdateDto extends BaseUserUpdateDto {
 
-    @NotBlank(message = "Phone number is required")
     @Pattern(
             regexp = "^[0-9]{7,15}$",
             message = "Phone number should contain only digits and should be between 7 to 15 characters"

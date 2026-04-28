@@ -36,9 +36,9 @@ VALUES (2, 'bovenbouw'),
 
 -- Customer Profiles
 INSERT INTO customer_profiles (id, phone_number)
-VALUES (4, '+31611111111'),
-       (5, '+31622222222'),
-       (6, '+31633333333');
+VALUES (4, '0611111111'),
+       (5, '0622222222'),
+       (6, '0633333333');
 
 -- Products
 INSERT INTO products (name, description, price, stock_quantity, cost_price, maker_id)

@@ -2,6 +2,7 @@ package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.profile.CustomerUserRequestDto;
 import com.projects.edustore.dto.profile.CustomerUserResponseDto;
+import com.projects.edustore.dto.profile.CustomerUserUpdateDto;
 import com.projects.edustore.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +40,10 @@ public class CustomerController {
         return ResponseEntity.created(location).body(response);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<CustomerUserResponseDto> updateCustomer(
             @PathVariable Long id,
-            @Valid @RequestBody CustomerUserRequestDto dto) {
+            @Valid @RequestBody CustomerUserUpdateDto dto) {
         return ResponseEntity.ok(customerService.updateCustomer(id, dto));
     }
 

@@ -2,6 +2,7 @@ package com.projects.edustore.service;
 
 import com.projects.edustore.dto.profile.StudentUserRequestDto;
 import com.projects.edustore.dto.profile.StudentUserResponseDto;
+import com.projects.edustore.dto.profile.StudentUserUpdateDto;
 import com.projects.edustore.exception.EmailAlreadyExistsException;
 import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
@@ -86,7 +87,7 @@ public class StudentService {
     }
 
     @Transactional
-    public StudentUserResponseDto updateEntity(Long id, StudentUserRequestDto dto) {
+    public StudentUserResponseDto updateEntity(Long id, StudentUserUpdateDto dto) {
         User existingStudent = findAndAuthorizeStudent(id);
 
         StudentMapper.updateEntity(existingStudent, dto);
