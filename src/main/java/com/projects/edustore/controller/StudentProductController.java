@@ -2,6 +2,7 @@ package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.product.ProductRequestDto;
 import com.projects.edustore.dto.product.ProductStudentResponseDto;
+import com.projects.edustore.dto.product.ProductUpdateDto;
 import com.projects.edustore.dto.product.UpdateProductMakerDto;
 import com.projects.edustore.service.ProductService;
 import jakarta.validation.Valid;
@@ -51,20 +52,12 @@ public class StudentProductController {
             return ResponseEntity.created(location).body(response);
         }
 
-        @PutMapping("/{productId}")
+        @PatchMapping("/{productId}")
         public ResponseEntity<ProductStudentResponseDto> updateProduct(
                 @PathVariable Long studentId,
                 @PathVariable Long productId,
-                @RequestBody ProductRequestDto dto) {
+                @Valid @RequestBody ProductUpdateDto dto) {
             return ResponseEntity.ok(productService.updateProductByMaker(studentId, productId, dto));
-        }
-
-        @DeleteMapping("/{productId}")
-        public ResponseEntity<Void> deleteProduct(
-                @PathVariable Long studentId,
-                @PathVariable Long productId) {
-            productService.deleteProductByMaker(studentId, productId);
-            return ResponseEntity.noContent().build();
         }
 
     @PatchMapping("/{productId}/maker")
@@ -74,7 +67,15 @@ public class StudentProductController {
             @Valid @RequestBody UpdateProductMakerDto dto) {
 
         productService.updateMaker(studentId, productId, dto);
-        return ResponseEntity.ok("Product with id " + productId + ", now has maker with id " + dto.getMakerId());
+        return ResponseEntity.ok("Product with id " + productId + ", now has maker with id " + dto.getNewMakerId());
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> deleteProduct(
+            @PathVariable Long studentId,
+            @PathVariable Long productId) {
+        productService.deleteProductByMaker(studentId, productId);
+        return ResponseEntity.noContent().build();
     }
 
         //////// Product image //////////////

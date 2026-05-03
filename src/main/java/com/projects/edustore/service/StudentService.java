@@ -105,7 +105,7 @@ public class StudentService {
         List<Product> ownedProducts = productRepos.findByMaker_Id(id);
         if (ownedProducts.size() > 0) {
             throw new ForbiddenActionException(
-                    "Student still has " + ownedProducts.size() + " products and cannot be deleted"
+                    "Student cannot be deleted, still has " + ownedProducts.size() + " product(s). Change makerId of product(s) first."
             );
         }
         repos.delete(existingStudent);

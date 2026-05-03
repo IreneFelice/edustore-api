@@ -1,10 +1,6 @@
 package com.projects.edustore.service;
 
-import com.projects.edustore.dto.product.ProductCustomerResponseDto;
-import com.projects.edustore.dto.product.ProductRequestDto;
-import com.projects.edustore.dto.product.ProductStudentResponseDto;
-import com.projects.edustore.dto.product.UpdateProductMakerDto;
-import com.projects.edustore.dto.product.TeamNamesResponseDto;
+import com.projects.edustore.dto.product.*;
 import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.mapper.ProductMapper;
@@ -28,18 +24,18 @@ import java.util.Set;
 
 @Service
 public class ProductService {
-    private final ProductRepository repos;
-    private final UserRepository studentRepos;
+    private final ProductRepository productRepos;
+    private final UserRepository userRepos;
     private final AuthorisationService authorizer;
 
-    public ProductService(ProductRepository repos, UserRepository studentRepos, AuthorisationService authorizer) {
-        this.repos = repos;
-        this.studentRepos = studentRepos;
+    public ProductService(ProductRepository productRepos, UserRepository userRepos, AuthorisationService authorizer) {
+        this.productRepos = productRepos;
+        this.userRepos = userRepos;
         this.authorizer = authorizer;
     }
 
     public List<ProductCustomerResponseDto> getAllProductsForCustomer() {
-        List<Product> products = repos.findAll();
+        List<Product> products = productRepos.findAll();
         List<ProductCustomerResponseDto> dtos = new ArrayList<>();
         for (Product product : products) {
             dtos.add(ProductMapper.toCustomerResponseDto(product));
@@ -48,12 +44,12 @@ public class ProductService {
     }
 
     public TeamNamesResponseDto getAllUniqueTeams() {
-        List<String> teamNames = studentRepos.findAllUniqueTeams();
+        List<String> teamNames = userRepos.findAllUniqueTeams();
         return new TeamNamesResponseDto(teamNames);
     }
 
     public List<ProductCustomerResponseDto> getProductsByTeam(String team) {
-        List<Product> products = repos.findByMaker_TeamIgnoreCase(team);
+        List<Product> products = productRepos.findByMaker_TeamIgnoreCase(team);
 
         List<ProductCustomerResponseDto> dtos = new ArrayList<>();
         for (Product product : products) {
@@ -71,7 +67,7 @@ public class ProductService {
 
     public List<ProductStudentResponseDto> getAllProductsForMaker(Long studentId) {
         authorizeStudentAccess(studentId);
-        List<Product> products = repos.findByMaker_Id(studentId);
+        List<Product> products = productRepos.findByMaker_Id(studentId);
         List<ProductStudentResponseDto> dtos = new ArrayList<>();
 
         for (Product product : products) {
@@ -96,19 +92,19 @@ public class ProductService {
     @Transactional
     public ProductStudentResponseDto createNewProduct(ProductRequestDto dto, Long studentId) {
         User user = findStudentUserAndCheckAuthorisation(studentId);
-        Product newProduct = ProductMapper.toEntity(dto,user.getPerson().getStudentProfile());
-        repos.save(newProduct);
+        Product newProduct = ProductMapper.toEntity(dto, user.getPerson().getStudentProfile());
+        productRepos.save(newProduct);
         return ProductMapper.toStudentResponseDto(newProduct);
     }
 
     @Transactional
-    public ProductStudentResponseDto updateProductByMaker(Long studentId, Long productId, ProductRequestDto dto) {
+    public ProductStudentResponseDto updateProductByMaker(Long studentId, Long productId, ProductUpdateDto dto) {
         authorizeStudentAccess(studentId);
         Product existingProduct = findProduct(productId);
         checkStudentIsMaker(studentId, existingProduct);
 
         ProductMapper.updateProduct(existingProduct, dto);
-        repos.save(existingProduct);
+        productRepos.save(existingProduct);
         return ProductMapper.toStudentResponseDto(existingProduct);
     }
 
@@ -117,7 +113,7 @@ public class ProductService {
         authorizeStudentAccess(studentId);
         Product product = findProduct(productId);
         checkStudentIsMaker(studentId, product);
-        repos.delete(product);
+        productRepos.delete(product);
     }
 
     @Transactional
@@ -126,12 +122,16 @@ public class ProductService {
         Product product = findProduct(productId);
         checkStudentIsMaker(studentId, product);
 
-        User newMaker = studentRepos.findById(dto.getMakerId())
-                .orElseThrow(()-> new ResourceNotFoundException("Maker", dto.getMakerId()));
-        product.setMaker(newMaker.getPerson().getStudentProfile());
-        repos.save(product);
-    }
+        User newMaker = userRepos.findById(dto.getNewMakerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Maker", dto.getNewMakerId()));
 
+        if (newMaker.getPerson().getStudentProfile() != null) {
+            product.setMaker(newMaker.getPerson().getStudentProfile());
+            productRepos.save(product);
+        } else {
+            throw new ResourceNotFoundException("Maker", dto.getNewMakerId());
+        }
+    }
 
     ////// Product image
 
@@ -167,10 +167,10 @@ public class ProductService {
         checkStudentIsMaker(studentId, product);
 
         product.removeImage();
-        repos.save(product);
+        productRepos.save(product);
     }
 
-// helpers
+    // helpers
     private void uploadProductImage(Product product, MultipartFile file) throws IOException {
 
         if (!ALLOWED_IMAGE_TYPES.contains(file.getContentType()) || file.getSize() > MAX_IMAGE_SIZE) {
@@ -181,7 +181,7 @@ public class ProductService {
                 file.getContentType(),
                 file.getOriginalFilename()
         );
-        repos.save(product);
+        productRepos.save(product);
     }
 
     private void authorizeStudentAccess(Long id) {
@@ -193,7 +193,7 @@ public class ProductService {
     }
 
     private Product findProduct(Long productId) {
-        return repos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
+        return productRepos.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", productId));
     }
 
     private void checkStudentIsMaker(Long studentId, Product product) {
@@ -207,4 +207,5 @@ public class ProductService {
             throw new ForbiddenActionException();
         }
     }
+
 }

@@ -3,6 +3,7 @@ package com.projects.edustore.mapper;
 import com.projects.edustore.dto.product.ProductRequestDto;
 import com.projects.edustore.dto.product.ProductCustomerResponseDto;
 import com.projects.edustore.dto.product.ProductStudentResponseDto;
+import com.projects.edustore.dto.product.ProductUpdateDto;
 import com.projects.edustore.model.person.StudentProfile;
 import com.projects.edustore.model.product.Product;
 
@@ -21,7 +22,7 @@ public class ProductMapper {
         return product;
     }
 
-    public static void updateProduct(Product existing, ProductRequestDto dto) {
+    public static void updateProduct(Product existing, ProductUpdateDto dto) {
 
         if (dto.getName() != null) existing.setName(dto.getName());
         if (dto.getDescription() != null) existing.setDescription(dto.getDescription());
