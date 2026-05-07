@@ -1,7 +1,9 @@
 package com.projects.edustore.controller;
-import com.projects.edustore.dto.AuthRequestDto;
-import com.projects.edustore.dto.AuthResponseDto;
+import com.projects.edustore.dto.user.AuthRequestDto;
+import com.projects.edustore.dto.user.AuthResponseDto;
+import com.projects.edustore.dto.user.AuthenticatedResponseDto;
 import com.projects.edustore.exception.ResourceNotFoundException;
+import com.projects.edustore.mapper.AuthenticatedMapper;
 import com.projects.edustore.model.User;
 import com.projects.edustore.repository.UserRepository;
 import com.projects.edustore.security.JwtUtil;
@@ -31,12 +33,11 @@ public class AuthenticationController {
     }
 
     @GetMapping(value = "/authenticated")
-    public ResponseEntity<Object> authenticated(Principal principal) {
-
+    public ResponseEntity<AuthenticatedResponseDto> authenticated(Principal principal) {
         String username = principal.getName();
         User user = repos.findByUserName(username).orElseThrow(() -> new ResourceNotFoundException());
-        Long id = user.getId();
-        return ResponseEntity.ok().body("Username: " + username + " | Id: " + id);
+
+        return ResponseEntity.ok(AuthenticatedMapper.toResponse(user));
     }
 
     @PostMapping(value = "/authenticate")

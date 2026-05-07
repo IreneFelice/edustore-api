@@ -17,7 +17,7 @@ public class JwtUtil {
     byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
     private final SecretKey KEY = Keys.hmacShaKeyFor(keyBytes);
     private static final MacAlgorithm ALGORITHM = Jwts.SIG.HS256;
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60;  // 1 hour
 
     // put data claims in payload of JWT String
     public String generateToken(String userName) {

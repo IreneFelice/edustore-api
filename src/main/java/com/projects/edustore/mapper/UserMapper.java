@@ -1,6 +1,6 @@
 package com.projects.edustore.mapper;
 
-import com.projects.edustore.dto.BaseUserResponseDto;
+import com.projects.edustore.dto.user.BaseUserResponseDto;
 import com.projects.edustore.model.User;
 
 

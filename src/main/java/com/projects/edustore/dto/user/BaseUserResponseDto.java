@@ -1,4 +1,4 @@
-package com.projects.edustore.dto;
+package com.projects.edustore.dto.user;
 
 
 import com.projects.edustore.model.Role;

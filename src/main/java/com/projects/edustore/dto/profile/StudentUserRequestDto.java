@@ -1,6 +1,6 @@
 package com.projects.edustore.dto.profile;
 
-import com.projects.edustore.dto.BaseUserRequestDto;
+import com.projects.edustore.dto.user.BaseUserRequestDto;
 import jakarta.validation.constraints.Size;
 
 public class StudentUserRequestDto extends BaseUserRequestDto {

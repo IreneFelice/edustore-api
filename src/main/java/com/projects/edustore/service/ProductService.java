@@ -3,11 +3,11 @@ package com.projects.edustore.service;
 import com.projects.edustore.dto.product.*;
 import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
-import com.projects.edustore.mapper.ProductMapper;
+import com.projects.edustore.mapper.product.journey.ProductMapper;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.StudentProfile;
-import com.projects.edustore.model.product.Product;
+import com.projects.edustore.model.product.journey.Product;
 import com.projects.edustore.repository.ProductRepository;
 
 import com.projects.edustore.repository.UserRepository;

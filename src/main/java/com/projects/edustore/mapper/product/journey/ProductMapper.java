@@ -1,11 +1,11 @@
-package com.projects.edustore.mapper;
+package com.projects.edustore.mapper.product.journey;
 
 import com.projects.edustore.dto.product.ProductRequestDto;
 import com.projects.edustore.dto.product.ProductCustomerResponseDto;
 import com.projects.edustore.dto.product.ProductStudentResponseDto;
 import com.projects.edustore.dto.product.ProductUpdateDto;
 import com.projects.edustore.model.person.StudentProfile;
-import com.projects.edustore.model.product.Product;
+import com.projects.edustore.model.product.journey.Product;
 
 
 public class ProductMapper {

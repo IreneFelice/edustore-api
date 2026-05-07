@@ -1,10 +1,11 @@
-package com.projects.edustore.mapper;
+package com.projects.edustore.mapper.product.journey;
 
 import com.projects.edustore.dto.order.*;
-import com.projects.edustore.model.product.Cart;
-import com.projects.edustore.model.product.CartItem;
-import com.projects.edustore.model.product.Order;
-import com.projects.edustore.model.product.OrderItem;
+import com.projects.edustore.mapper.product.journey.OrderItemMapper;
+import com.projects.edustore.model.product.journey.Cart;
+import com.projects.edustore.model.product.journey.CartItem;
+import com.projects.edustore.model.product.journey.Order;
+import com.projects.edustore.model.product.journey.OrderItem;
 
 import java.math.BigDecimal;
 import java.util.List;

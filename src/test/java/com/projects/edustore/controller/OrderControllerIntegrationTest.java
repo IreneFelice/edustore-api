@@ -1,6 +1,6 @@
 package com.projects.edustore.controller;
 
-import com.projects.edustore.model.product.Order;
+import com.projects.edustore.model.product.journey.Order;
 import com.projects.edustore.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

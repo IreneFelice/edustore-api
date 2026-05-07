@@ -1,7 +1,7 @@
-package com.projects.edustore.mapper;
+package com.projects.edustore.mapper.product.journey;
 
 import com.projects.edustore.dto.order.OrderItemDto;
-import com.projects.edustore.model.product.OrderItem;
+import com.projects.edustore.model.product.journey.OrderItem;
 
 public class OrderItemMapper {
 

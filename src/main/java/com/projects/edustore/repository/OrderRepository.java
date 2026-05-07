@@ -1,7 +1,7 @@
 package com.projects.edustore.repository;
 
-import com.projects.edustore.model.product.Order;
-import com.projects.edustore.model.product.OrderStatus;
+import com.projects.edustore.model.product.journey.Order;
+import com.projects.edustore.model.product.journey.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

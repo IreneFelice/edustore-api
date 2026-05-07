@@ -1,12 +1,12 @@
 package com.projects.edustore.service;
 
-import com.projects.edustore.dto.BaseUserResponseDto;
+import com.projects.edustore.dto.user.BaseUserResponseDto;
 
 import com.projects.edustore.dto.profile.CustomerUserResponseDto;
 import com.projects.edustore.dto.profile.StudentUserResponseDto;
 import com.projects.edustore.exception.ResourceNotFoundException;
-import com.projects.edustore.mapper.CustomerMapper;
-import com.projects.edustore.mapper.StudentMapper;
+import com.projects.edustore.mapper.person.CustomerMapper;
+import com.projects.edustore.mapper.person.StudentMapper;
 import com.projects.edustore.mapper.UserMapper;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;

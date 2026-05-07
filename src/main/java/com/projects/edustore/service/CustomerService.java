@@ -4,10 +4,12 @@ import com.projects.edustore.dto.profile.CustomerUserRequestDto;
 import com.projects.edustore.dto.profile.CustomerUserResponseDto;
 import com.projects.edustore.dto.profile.CustomerUserUpdateDto;
 import com.projects.edustore.exception.EmailAlreadyExistsException;
+import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.exception.UserNameAlreadyExistsException;
-import com.projects.edustore.mapper.CustomerMapper;
+import com.projects.edustore.mapper.person.CustomerMapper;
 import com.projects.edustore.model.User;
+import com.projects.edustore.model.product.journey.Cart;
 import com.projects.edustore.repository.UserRepository;
 import com.projects.edustore.security.AuthorisationService;
 import jakarta.transaction.Transactional;
@@ -73,6 +75,12 @@ public class CustomerService {
 
     public void deleteUser(Long id) {
         User existing = findCustomer(id);
+        Cart cart = existing.getPerson().getCustomerProfile().getCart();
+        if (cart != null && cart.getCartItems().size() > 0) {
+            throw new ForbiddenActionException(
+                    "Customer cannot be deleted, still has " + cart.getCartItems().size() + " products in shopping cart. Empty cart is required."
+            );
+        }
         repos.delete(existing);
     }
 

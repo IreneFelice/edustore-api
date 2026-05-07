@@ -1,4 +1,4 @@
-package com.projects.edustore.model.product;
+package com.projects.edustore.model.product.journey;
 
 import jakarta.persistence.*;
 

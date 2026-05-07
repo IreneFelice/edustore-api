@@ -1,4 +1,4 @@
-package com.projects.edustore.mapper;
+package com.projects.edustore.mapper.person;
 
 import com.projects.edustore.dto.profile.CustomerUserRequestDto;
 import com.projects.edustore.dto.profile.CustomerUserResponseDto;

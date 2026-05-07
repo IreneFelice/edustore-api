@@ -1,17 +1,16 @@
 -- Users
 INSERT INTO users (user_name, password, role)
-VALUES
-('LucasBaas', '$2y$10$2MKeX/xCH1l2JqScMvvPpecA0FTSuQ1h01ds07rOzoHz0bTAHjbfW', 'ROLE_ADMIN'),
+VALUES ('LucasBaas', '$2y$10$2MKeX/xCH1l2JqScMvvPpecA0FTSuQ1h01ds07rOzoHz0bTAHjbfW', 'ROLE_ADMIN'),
 
-('Yoyo', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT'),
-('Tim', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT'),
+       ('Yoyo', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT'),
+       ('Tim', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT'),
 
-('Alice', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_CUSTOMER'),
-('Bob', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_CUSTOMER'),
-('Charlie', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_CUSTOMER'),
+       ('Alice', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_CUSTOMER'),
+       ('Bob', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_CUSTOMER'),
+       ('Charlie', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_CUSTOMER'),
 
-('Loesje', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT'),
-('jack', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT');
+       ('Loesje', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT'),
+       ('jack', '$2y$10$rKu8uI9oeNjaXuUI1vlLz.f97I7o6tGCAz1FZ9zWo9bnU4lRJp98C', 'ROLE_STUDENT');
 
 
 -- Persons
@@ -44,19 +43,29 @@ VALUES (4, '0611111111'),
 INSERT INTO products (name, description, price, stock_quantity, cost_price, maker_id)
 VALUES ('Vogelhuisje', 'Gemaakt door Tim, voor koolmeesjes.', 1.00, 2, 0.75, 3),
        ('Schilderij', 'Zonsondergang', 5.00, 1, 2.00, 3),
-       ('Vogelhuisje', 'Gemaakt met liefde.', 1.00, 2, 0.75, 7),
-       ('Schilderij', 'Mijn lieverlingskleuren', 5.00, 1, 2.00, 2),
-       ('Vogelhuisje', 'All birds matter.', 1.00, 2, 0.75, 8),
-       ('Schilderij', '"Mama en ik" Alleen de mama van Loes mag dit kopen!', 5.00, 1, 2.00, 7);
+       ('Vogelhuisje 2', 'Gemaakt met liefde.', 1.00, 2, 0.75, 7),
+       ('Schilderij 2', 'Mijn lieverlingskleuren', 5.00, 1, 2.00, 2),
+       ('Vogelhuisje 3', 'All birds matter.', 1.00, 2, 0.75, 8),
+       ('Schilderij 3', '"Mama en ik" Alleen de mama van Loes mag dit kopen!', 5.00, 1, 2.00, 7);
 
 
 -- Carts
-INSERT INTO carts (id, customer_id)
-VALUES (1, 4);
+INSERT INTO carts (customer_id)
+VALUES (4);
 
 
 -- Cart Items
-INSERT INTO cart_items (id, product_id, quantity, cart_id)
-VALUES
-    (1, 1, 2, 1),
-    (2, 2, 1, 1);
+INSERT INTO cart_items (product_id, quantity, cart_id)
+VALUES (1, 2, 1),
+       (2, 1, 1);
+
+-- Order
+INSERT INTO orders (customer_id, order_date, total_price, status)
+VALUES (4, '2026-05-05 13:12:00', 1.00, 'READY'),
+       (5, '2026-05-05 14:00:00', 15.00, 'PENDING');
+
+-- Order Items
+INSERT INTO order_items (order_id, product_id, quantity)
+VALUES (1, 1, 1),
+       (2, 4, 2),
+       (2,2,1);

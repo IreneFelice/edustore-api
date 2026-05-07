@@ -1,4 +1,4 @@
-package com.projects.edustore.dto;
+package com.projects.edustore.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;

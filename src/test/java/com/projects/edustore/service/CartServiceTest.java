@@ -1,8 +1,8 @@
 package com.projects.edustore.service;
 
-import com.projects.edustore.dto.cart.CartItemDeleteDto;
 import com.projects.edustore.dto.cart.CartItemRequestDto;
 import com.projects.edustore.dto.cart.CartItemResponseDto;
+import com.projects.edustore.dto.cart.CartDetailsResponseDto;
 import com.projects.edustore.dto.cart.CartResponseDto;
 import com.projects.edustore.exception.OutOfStockException;
 import com.projects.edustore.exception.ResourceNotFoundException;
@@ -10,9 +10,9 @@ import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.CustomerProfile;
 import com.projects.edustore.model.person.Person;
-import com.projects.edustore.model.product.Cart;
-import com.projects.edustore.model.product.CartItem;
-import com.projects.edustore.model.product.Product;
+import com.projects.edustore.model.product.journey.Cart;
+import com.projects.edustore.model.product.journey.CartItem;
+import com.projects.edustore.model.product.journey.Product;
 import com.projects.edustore.repository.CartItemRepository;
 import com.projects.edustore.repository.CartRepository;
 import com.projects.edustore.repository.ProductRepository;
@@ -90,7 +90,6 @@ class CartServiceTest {
 
     private CartItemRequestDto arrangeRequestDto() {
         CartItemRequestDto dto = new CartItemRequestDto();
-        dto.setProductId(1L);
         dto.setQuantity(2);
         System.out.println("Requested quantity: " + dto.getQuantity());
         return dto;
@@ -109,8 +108,26 @@ class CartServiceTest {
     }
 
     @Test
+    void getCartDetails() {
+        System.out.println("Test getCart details: ");
+        //arrange
+        doNothing().when(authorizer).checkSelfOrAdminAccess(userId);
+        arrangeCart();
+
+        //act
+        CartDetailsResponseDto result = cartService.getCartDetails(userId);
+
+        //assert
+        assertNotNull(result);
+        assertNotNull(result.getItems());
+        assertEquals(1, result.getCartId());
+        System.out.println("Cart id: " + result.getCartId());
+        System.out.println("//");
+    }
+
+    @Test
     void getCart() {
-        System.out.println("Test getCart:");
+        System.out.println("Test getCart: ");
         //arrange
         doNothing().when(authorizer).checkSelfOrAdminAccess(userId);
         arrangeCart();
@@ -120,11 +137,11 @@ class CartServiceTest {
 
         //assert
         assertNotNull(result);
-        assertNotNull(result.getItems());
         assertEquals(1, result.getCartId());
         System.out.println("Cart id: " + result.getCartId());
         System.out.println("//");
     }
+
 
     @Test
     void getCartNotFound() {
@@ -143,8 +160,8 @@ class CartServiceTest {
     }
 
     @Test
-    void addNewItemToCart() {
-        System.out.println("Test addNewItemToCart:");
+    void setCartItemQuantity() {
+        System.out.println("Test setCartItemQuantity:");
         //arrange
         when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
         Product product = arrangeProduct();
@@ -157,7 +174,7 @@ class CartServiceTest {
                 .thenReturn(Optional.empty());
 
         //act
-        CartItemResponseDto result = cartService.addItemToCart(userId, dto);
+        CartItemResponseDto result = cartService.setCartItemQuantity(userId, productId, dto.getQuantity());
 
         //assert
         assertItemToCart(result, product, cart);
@@ -165,8 +182,8 @@ class CartServiceTest {
     }
 
     @Test
-    void addItemToNewCart() {
-        System.out.println("Test addItemToNewCart:");
+    void setCartItemQuantity_NewCart() {
+        System.out.println("Test setCartItemQuantity for new Cart:");
         //arrange
         when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
         Product product = arrangeProduct();
@@ -179,7 +196,7 @@ class CartServiceTest {
                 .thenReturn(Optional.empty());
 
         //act
-        CartItemResponseDto result = cartService.addItemToCart(userId, dto);
+        CartItemResponseDto result = cartService.setCartItemQuantity(userId, productId, dto.getQuantity());
 
         //assert
         ArgumentCaptor<Cart> cartCaptor = ArgumentCaptor.forClass(Cart.class);
@@ -191,8 +208,8 @@ class CartServiceTest {
     }
 
     @Test
-    void addExistingItemToCart() {
-        System.out.println("Test addExistingItemToCart:");
+    void setCartItemQuantity_ExistingCartItem() {
+        System.out.println("Test setCartItemQuantity for existing cartItem:");
         //arrange
         when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
 
@@ -212,15 +229,15 @@ class CartServiceTest {
                 .thenReturn(Optional.of(existingItem));
 
         //act
-        CartItemResponseDto result = cartService.addItemToCart(userId, dto);
+        CartItemResponseDto result = cartService.setCartItemQuantity(userId, productId, dto.getQuantity());
 
         //assert
         assertItemToCart(result, product, cart);
     }
 
     @Test
-    void addExistingItemToCartGiveBackToStock() {
-        System.out.println("Test addExistingItemToNewCart_GiveBackToStock:");
+    void setCartItemQuantity_GiveBackToStock() {
+        System.out.println("Test setCartItemQuantity and give back to stock:");
         //arrange
         when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
 
@@ -240,15 +257,15 @@ class CartServiceTest {
                 .thenReturn(Optional.of(existingItem));
 
         //act
-        CartItemResponseDto result = cartService.addItemToCart(userId, dto);
+        CartItemResponseDto result = cartService.setCartItemQuantity(userId, productId, dto.getQuantity());
 
         //assert
         assertItemToCart(result, product, cart);
     }
 
     @Test
-    void addExistingItemToCartOutOfStock() {
-        System.out.println("Test addExistingItemToNewCart_OutOfStock:");
+    void setCartItemQuantity_CartOutOfStock() {
+        System.out.println("Test setCartItemQuantity when Out of stock:");
         //arrange
         when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
 
@@ -261,7 +278,6 @@ class CartServiceTest {
         product.setStockQuantity(product.getStockQuantity() - existingItem.getQuantity());
 
         CartItemRequestDto dto = new CartItemRequestDto();
-        dto.setProductId(1L);
         dto.setQuantity(12);
         System.out.println("Requested quantity: " + dto.getQuantity());
 
@@ -272,7 +288,7 @@ class CartServiceTest {
 
         //act and assert
         OutOfStockException ex = assertThrows(
-                OutOfStockException.class, () -> cartService.addItemToCart(userId, dto)
+                OutOfStockException.class, () -> cartService.setCartItemQuantity(userId, productId, dto.getQuantity())
         );
 
         assertEquals("Product stock is insufficient", ex.getMessage());
@@ -283,7 +299,7 @@ class CartServiceTest {
     }
 
     @Test
-    void deleteItemNotCart() {
+    void deleteItem_NotCart() {
         System.out.println("Test delete item, not cart:");
         //arrange
         when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
@@ -307,17 +323,13 @@ class CartServiceTest {
         product1.setStockQuantity(product1.getStockQuantity() - existingItem1.getQuantity());
         product2.setStockQuantity(product2.getStockQuantity() - existingItem2.getQuantity());
 
-
-        CartItemDeleteDto dto = new CartItemDeleteDto();
-        dto.setProductId(product1.getId());
-
         System.out.println("Number of unique items in cart, before delete: " + cart.getCartItems().size());
 
         when(cartItemRepos.findByCartIdAndProductId(cart.getId(), product1.getId()))
                 .thenReturn(Optional.of(existingItem1));
 
         //act
-        cartService.deleteItem(userId, dto);
+        cartService.deleteItem(userId, productId);
 
         //assert
         assertEquals(1, cart.getCartItems().size());
@@ -327,7 +339,7 @@ class CartServiceTest {
     }
 
     @Test
-    void deleteItemAndCart() {
+    void deleteItem_DeleteEmptyCart() {
         System.out.println("Test delete item AND cart:");
         //arrange
         when(authorizer.findUserAndCheckAuthorisation(userId)).thenReturn(Optional.of(user));
@@ -339,21 +351,18 @@ class CartServiceTest {
         cart.addCartItem(existingItem1);
         product1.setStockQuantity(product1.getStockQuantity() - existingItem1.getQuantity());
 
-        CartItemDeleteDto dto = new CartItemDeleteDto();
-        dto.setProductId(product1.getId());
-
         System.out.println("Number of unique items in cart, before delete: " + cart.getCartItems().size());
 
         when(cartItemRepos.findByCartIdAndProductId(cart.getId(), product1.getId()))
                 .thenReturn(Optional.of(existingItem1));
 
         //act
-        cartService.deleteItem(userId, dto);
+        cartService.deleteItem(userId, productId);
 
         //assert
         assertEquals(0, cart.getCartItems().size());
         verify(cartRepos).delete(cart);
-        System.out.println("Number of unique items in cart after delete: " + cart.getCartItems().size());
+        System.out.println("Number of unique items in cart after delete: " + cart.getCartItems().size() + ", cart gets deleted");
         System.out.println("//");
     }
 

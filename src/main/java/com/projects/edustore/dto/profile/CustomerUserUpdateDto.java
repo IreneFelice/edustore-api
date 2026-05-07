@@ -1,6 +1,6 @@
 package com.projects.edustore.dto.profile;
 
-import com.projects.edustore.dto.BaseUserUpdateDto;
+import com.projects.edustore.dto.user.BaseUserUpdateDto;
 import jakarta.validation.constraints.Pattern;
 
 public class CustomerUserUpdateDto extends BaseUserUpdateDto {

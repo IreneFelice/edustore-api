@@ -1,4 +1,4 @@
-package com.projects.edustore.model.product;
+package com.projects.edustore.model.product.journey;
 
 import com.projects.edustore.model.person.CustomerProfile;
 import jakarta.persistence.*;
@@ -54,6 +54,14 @@ public class Cart {
 
     public CustomerProfile getCustomer() {
         return customer;
+    }
+
+    public void setCustomer(CustomerProfile customer) {
+        this.customer = customer;
+        if (customer != null && customer.getCart() != this) {
+            customer.setCart(this);
+        }
+
     }
 }
 
