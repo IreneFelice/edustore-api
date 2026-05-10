@@ -1,7 +1,6 @@
 package com.projects.edustore.model.product.journey;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
 @Entity
@@ -22,12 +21,22 @@ public class OrderItem {
 
     private Integer quantity;
 
+    private String productName;
 
-    public OrderItem() {}
+    private BigDecimal productPrice;
 
-    public OrderItem(Product product, int quantity) {
+    private BigDecimal subtotal;
+
+
+    public OrderItem() {
+    }
+
+    public OrderItem(Product product, int quantity, String productName, BigDecimal productPrice, BigDecimal subtotal) {
         this.product = product;
         this.quantity = quantity;
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.subtotal = subtotal;
     }
 
     //getters and setters
@@ -60,7 +69,27 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public BigDecimal getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(BigDecimal productPrice) {
+        this.productPrice = productPrice;
+    }
+
     public BigDecimal getSubtotal() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+        return subtotal;
+    }
+
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
     }
 }

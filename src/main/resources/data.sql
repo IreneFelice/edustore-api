@@ -65,7 +65,7 @@ VALUES (4, '2026-05-05 13:12:00', 1.00, 'READY'),
        (5, '2026-05-05 14:00:00', 15.00, 'PENDING');
 
 -- Order Items
-INSERT INTO order_items (order_id, product_id, quantity)
-VALUES (1, 1, 1),
-       (2, 4, 2),
-       (2,2,1);
+INSERT INTO order_items (order_id, product_id, quantity, product_name, product_price, subtotal)
+VALUES (1, 1, 1, 'Vogelhuisje', 1.00, 1.00),
+       (2, 4, 2, 'Schilderij 2', 5.00, 10.00),
+       (2, 2, 1, 'Schilderij', 5.00, 5.00);

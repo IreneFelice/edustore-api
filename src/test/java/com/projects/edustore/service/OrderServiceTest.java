@@ -10,7 +10,6 @@ import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.CustomerProfile;
 import com.projects.edustore.model.person.Person;
 import com.projects.edustore.model.product.journey.*;
-import com.projects.edustore.model.productJourney.*;
 import com.projects.edustore.repository.CartRepository;
 import com.projects.edustore.repository.OrderRepository;
 import com.projects.edustore.security.AuthorisationService;

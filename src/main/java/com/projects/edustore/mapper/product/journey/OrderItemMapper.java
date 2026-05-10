@@ -9,8 +9,8 @@ public class OrderItemMapper {
         OrderItemDto response = new OrderItemDto();
 
         response.setProductId(item.getProduct().getId());
-        response.setProductName(item.getProduct().getName());
-        response.setPrice(item.getProduct().getPrice());
+        response.setProductName(item.getProductName());
+        response.setPrice(item.getProductPrice());
         response.setQuantity(item.getQuantity());
         response.setSubtotal(item.getSubtotal());
 
