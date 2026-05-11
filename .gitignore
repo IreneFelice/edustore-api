@@ -3,6 +3,9 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+**/klad.java
+Scratches and Consoles/
+
 
 ### STS ###
 .apt_generated
