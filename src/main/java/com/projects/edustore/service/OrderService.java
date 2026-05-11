@@ -15,6 +15,7 @@ import com.projects.edustore.repository.CartRepository;
 import com.projects.edustore.repository.OrderRepository;
 import com.projects.edustore.security.AuthorisationService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class OrderService {
         this.authorizer = authorizer;
     }
 
+    @Transactional
     public OrderDetailsResponseDto cartToOrder() {
         User currentUser = authorizer.getCurrentUser();
         Long userId = currentUser.getId();
@@ -96,6 +98,7 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public OrderBasicResponseDto updateStatus(Long orderId, OrderStudentRequestDto dto) {
         Order order = findOrder(orderId);
 
