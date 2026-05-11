@@ -38,21 +38,21 @@ VALUES (2, 'middenbouw'),
 
 -- Customer Profiles
 INSERT INTO customer_profiles (id, phone_number)
-VALUES (4, '+31611111111'),
-       (5, '+31622222222'),
-       (6, '+31633333333');
+VALUES (4, '0611111111'),
+       (5, '0622222222'),
+       (6, '0633333333');
 
 INSERT INTO products (name, description, price, stock_quantity, cost_price, maker_id)
 VALUES ('Vogelhuisje', 'Gemaakt door Tim, voor koolmeesjes.', 1.00, 2, 0.75, 3),
        ('Schilderij', 'Zonsondergang', 5.00, 1, 2.00, 3),
-       ('Vogelhuisje', 'Gemaakt met liefde.', 1.00, 2, 0.75, 2),
-       ('Schilderij', 'Mijn lieverlingskleuren', 5.00, 1, 2.00, 2),
-       ('Vogelhuisje', 'All birds matter.', 1.00, 2, 0.75, 8),
-       ('Schilderij', '"Mama en ik" Alleen de mama van Loes mag dit kopen!', 5.00, 1, 2.00, 7);
+       ('Vogelhuisje2', 'Gemaakt met liefde.', 1.00, 2, 0.75, 2),
+       ('Schilderij2', 'Mijn lieverlingskleuren', 5.00, 1, 2.00, 2),
+       ('Vogelhuisje3', 'All birds matter.', 1.00, 2, 0.75, 8),
+       ('Schilderij3', '"Mama en ik" Alleen de mama van Loes mag dit kopen!', 5.00, 1, 2.00, 7);
 
 -- Carts
 INSERT INTO carts (id, customer_id)
-VALUES (1, 4);  --> Alice (customer id = 4)
+VALUES (1, 4);
 
 
 -- Cart Items

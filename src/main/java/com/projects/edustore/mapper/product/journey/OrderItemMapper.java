@@ -1,7 +1,7 @@
-package com.projects.edustore.mapper;
+package com.projects.edustore.mapper.product.journey;
 
 import com.projects.edustore.dto.order.OrderItemDto;
-import com.projects.edustore.model.product.OrderItem;
+import com.projects.edustore.model.product.journey.OrderItem;
 
 public class OrderItemMapper {
 
@@ -9,8 +9,8 @@ public class OrderItemMapper {
         OrderItemDto response = new OrderItemDto();
 
         response.setProductId(item.getProduct().getId());
-        response.setProductName(item.getProduct().getName());
-        response.setPrice(item.getProduct().getPrice());
+        response.setProductName(item.getProductName());
+        response.setPrice(item.getProductPrice());
         response.setQuantity(item.getQuantity());
         response.setSubtotal(item.getSubtotal());
 

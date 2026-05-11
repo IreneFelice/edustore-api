@@ -2,14 +2,15 @@ package com.projects.edustore.service;
 
 import com.projects.edustore.dto.profile.StudentUserRequestDto;
 import com.projects.edustore.dto.profile.StudentUserResponseDto;
+import com.projects.edustore.dto.profile.StudentUserUpdateDto;
 import com.projects.edustore.exception.EmailAlreadyExistsException;
 import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
 import com.projects.edustore.exception.UserNameAlreadyExistsException;
-import com.projects.edustore.mapper.StudentMapper;
+import com.projects.edustore.mapper.person.StudentMapper;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
-import com.projects.edustore.model.product.Product;
+import com.projects.edustore.model.product.journey.Product;
 import com.projects.edustore.repository.ProductRepository;
 import com.projects.edustore.repository.UserRepository;
 import com.projects.edustore.security.AuthorisationService;
@@ -86,7 +87,7 @@ public class StudentService {
     }
 
     @Transactional
-    public StudentUserResponseDto updateEntity(Long id, StudentUserRequestDto dto) {
+    public StudentUserResponseDto updateEntity(Long id, StudentUserUpdateDto dto) {
         User existingStudent = findAndAuthorizeStudent(id);
 
         StudentMapper.updateEntity(existingStudent, dto);
@@ -104,7 +105,7 @@ public class StudentService {
         List<Product> ownedProducts = productRepos.findByMaker_Id(id);
         if (ownedProducts.size() > 0) {
             throw new ForbiddenActionException(
-                    "Student still has " + ownedProducts.size() + " products and cannot be deleted"
+                    "Student cannot be deleted, still has " + ownedProducts.size() + " product(s). Change makerId of product(s) first."
             );
         }
         repos.delete(existingStudent);

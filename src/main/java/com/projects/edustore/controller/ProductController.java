@@ -2,7 +2,7 @@ package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.product.ProductCustomerResponseDto;
 import com.projects.edustore.dto.product.TeamNamesResponseDto;
-import com.projects.edustore.model.product.Product;
+import com.projects.edustore.model.product.journey.Product;
 import com.projects.edustore.service.ProductService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -37,7 +37,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductCustomerResponseDto> getProduct(@PathVariable Long productId) {
+    public ResponseEntity<ProductCustomerResponseDto> getProductById(@PathVariable Long productId) {
         return ResponseEntity.ok(productService.getProductForCustomer(productId));
     }
 

@@ -1,7 +1,7 @@
 package com.projects.edustore.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.projects.edustore.model.product.OrderStatus;
+import com.projects.edustore.model.product.journey.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

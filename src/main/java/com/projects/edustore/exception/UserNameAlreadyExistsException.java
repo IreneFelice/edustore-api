@@ -6,7 +6,4 @@ public class UserNameAlreadyExistsException extends RuntimeException {
         super("Username already in use");
     }
 
-    public UserNameAlreadyExistsException(String message) {
-        super(message);
-    }
 }

@@ -2,6 +2,7 @@ package com.projects.edustore.controller;
 
 import com.projects.edustore.dto.profile.StudentUserRequestDto;
 import com.projects.edustore.dto.profile.StudentUserResponseDto;
+import com.projects.edustore.dto.profile.StudentUserUpdateDto;
 import com.projects.edustore.service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class StudentController {
     }
 
     // get all existing team names through ProductController - getAllUniqueTeamNames()
+
     @GetMapping("/{studentId}/team")
     public ResponseEntity<List<StudentUserResponseDto>> getStudentsInOwnTeam(@PathVariable Long studentId) {
         return ResponseEntity.ok(studentService.getByTeam(studentId));
@@ -45,10 +47,10 @@ public class StudentController {
         return ResponseEntity.created(location).body(response);
     }
 
-    @PutMapping("/{studentId}")
+    @PatchMapping("/{studentId}")
     public ResponseEntity<StudentUserResponseDto> updateStudent(
             @PathVariable Long studentId,
-            @Valid @RequestBody StudentUserRequestDto dto) {
+            @Valid @RequestBody StudentUserUpdateDto dto) {
         return ResponseEntity.ok(studentService.updateEntity(studentId, dto));
     }
 

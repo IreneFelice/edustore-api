@@ -1,5 +1,7 @@
 package com.projects.edustore.model.person;
-import com.projects.edustore.model.product.Order;
+
+import com.projects.edustore.model.product.journey.Cart;
+import com.projects.edustore.model.product.journey.Order;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ public class CustomerProfile {
     @OneToMany(mappedBy = "customer")
     private final List<Order> orders = new ArrayList<>();
 
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private Cart cart;
 
 
 //    constructors
@@ -47,7 +51,8 @@ public class CustomerProfile {
     }
 
     public Person getPerson() {
-        return person; }
+        return person;
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -70,6 +75,14 @@ public class CustomerProfile {
         order.setCustomer(this);
     }
 
+    public Cart getCart() {
+        return cart;
+    }
 
+    public void setCart(Cart cart) {
+        this.cart = cart;
+        if (cart != null && cart.getCustomer() != this) {
+            cart.setCustomer(this);
+        }
+    }
 }
-

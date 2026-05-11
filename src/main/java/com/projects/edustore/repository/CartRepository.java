@@ -1,7 +1,7 @@
 package com.projects.edustore.repository;
 
 
-import com.projects.edustore.model.product.Cart;
+import com.projects.edustore.model.product.journey.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

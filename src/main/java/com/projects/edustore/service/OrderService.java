@@ -5,16 +5,17 @@ import com.projects.edustore.dto.order.OrderDetailsResponseDto;
 import com.projects.edustore.dto.order.OrderStudentRequestDto;
 import com.projects.edustore.exception.ForbiddenActionException;
 import com.projects.edustore.exception.ResourceNotFoundException;
-import com.projects.edustore.mapper.OrderMapper;
+import com.projects.edustore.mapper.product.journey.OrderMapper;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.User;
-import com.projects.edustore.model.product.Cart;
-import com.projects.edustore.model.product.Order;
-import com.projects.edustore.model.product.OrderStatus;
+import com.projects.edustore.model.product.journey.Cart;
+import com.projects.edustore.model.product.journey.Order;
+import com.projects.edustore.model.product.journey.OrderStatus;
 import com.projects.edustore.repository.CartRepository;
 import com.projects.edustore.repository.OrderRepository;
 import com.projects.edustore.security.AuthorisationService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class OrderService {
         this.authorizer = authorizer;
     }
 
+    @Transactional
     public OrderDetailsResponseDto cartToOrder() {
         User currentUser = authorizer.getCurrentUser();
         Long userId = currentUser.getId();
@@ -55,7 +57,7 @@ public class OrderService {
             // for customer
             Long ownId = currentUser.getId();
             if (customerId != null && !customerId.equals(ownId)) {
-                throw new ForbiddenActionException("You are not allowed to access or modify this resource");
+                throw new ForbiddenActionException();
             }
             orders = orderRepos.findByCustomerId(ownId);
         } else {
@@ -96,6 +98,7 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public OrderBasicResponseDto updateStatus(Long orderId, OrderStudentRequestDto dto) {
         Order order = findOrder(orderId);
 

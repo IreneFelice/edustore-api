@@ -1,4 +1,4 @@
-package com.projects.edustore.exception;
+package com.projects.edustore.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

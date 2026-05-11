@@ -1,7 +1,8 @@
-package com.projects.edustore.mapper;
+package com.projects.edustore.mapper.person;
 
 import com.projects.edustore.dto.profile.CustomerUserRequestDto;
 import com.projects.edustore.dto.profile.CustomerUserResponseDto;
+import com.projects.edustore.dto.profile.CustomerUserUpdateDto;
 import com.projects.edustore.model.User;
 import com.projects.edustore.model.person.CustomerProfile;
 import com.projects.edustore.model.person.Person;
@@ -20,7 +21,7 @@ public class CustomerMapper {
         return user;
     }
 
-    public static void updateEntity(User existing, CustomerUserRequestDto dto) {
+    public static void updateEntity(User existing, CustomerUserUpdateDto dto) {
         Person person = existing.getPerson();
         //user
         if (dto.getUserName() != null) existing.setUserName(dto.getUserName());

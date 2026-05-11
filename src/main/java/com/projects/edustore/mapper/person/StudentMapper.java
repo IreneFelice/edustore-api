@@ -1,7 +1,8 @@
-package com.projects.edustore.mapper;
+package com.projects.edustore.mapper.person;
 
 import com.projects.edustore.dto.profile.StudentUserRequestDto;
 import com.projects.edustore.dto.profile.StudentUserResponseDto;
+import com.projects.edustore.dto.profile.StudentUserUpdateDto;
 import com.projects.edustore.model.Role;
 import com.projects.edustore.model.person.Person;
 import com.projects.edustore.model.person.StudentProfile;
@@ -16,13 +17,15 @@ public class StudentMapper {
         user.setUserName(dto.getUserName());
 
         Person person = Person.create(user, dto.getFirstName(), dto.getLastName(), dto.getEmail());
-        StudentProfile.create(person, dto.getTeam());
+        String team = dto.getTeam().trim().toLowerCase();
+        StudentProfile.create(person, team);
 
         return user;
     }
 
-    public static void updateEntity(User existing, StudentUserRequestDto dto) {
+    public static void updateEntity(User existing, StudentUserUpdateDto dto) {
         Person person = existing.getPerson();
+
         //user
         if (dto.getUserName() != null) existing.setUserName(dto.getUserName());
         //person
@@ -31,7 +34,8 @@ public class StudentMapper {
         if (dto.getEmail() != null) person.setEmail(dto.getEmail());
         //profile
         if (dto.getTeam() != null && person.getStudentProfile() != null) {
-            person.getStudentProfile().setTeam(dto.getTeam());
+            String team = dto.getTeam().trim().toLowerCase();
+            person.getStudentProfile().setTeam(team);
         }
     }
 

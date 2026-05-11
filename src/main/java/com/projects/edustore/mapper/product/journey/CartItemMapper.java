@@ -1,8 +1,8 @@
-package com.projects.edustore.mapper;
+package com.projects.edustore.mapper.product.journey;
 
 import com.projects.edustore.dto.cart.CartItemResponseDto;
-import com.projects.edustore.model.product.CartItem;
-import com.projects.edustore.model.product.Product;
+import com.projects.edustore.model.product.journey.CartItem;
+import com.projects.edustore.model.product.journey.Product;
 
 public class CartItemMapper {
 

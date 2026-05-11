@@ -1,4 +1,4 @@
-package com.projects.edustore.dto;
+package com.projects.edustore.dto.user;
 
 public class AuthResponseDto {
     private String jwtToken;

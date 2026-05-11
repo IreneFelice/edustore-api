@@ -4,15 +4,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class UpdateProductMakerDto {
-    @NotNull
+    @NotNull(message = "id of new maker is required")
     @Positive
-    private Long makerId;
+    private Long newMakerId;
 
-    public Long getMakerId() {
-        return makerId;
+    public Long getNewMakerId() {
+        return newMakerId;
     }
 
-    public void setMakerId(Long makerId) {
-        this.makerId = makerId;
+    public void setNewMakerId(Long newMakerId) {
+        this.newMakerId = newMakerId;
     }
 }

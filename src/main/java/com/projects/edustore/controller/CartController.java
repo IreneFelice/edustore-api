@@ -1,9 +1,6 @@
 package com.projects.edustore.controller;
 
-import com.projects.edustore.dto.cart.CartItemDeleteDto;
-import com.projects.edustore.dto.cart.CartItemRequestDto;
-import com.projects.edustore.dto.cart.CartItemResponseDto;
-import com.projects.edustore.dto.cart.CartResponseDto;
+import com.projects.edustore.dto.cart.*;
 import com.projects.edustore.service.CartService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -19,24 +16,29 @@ public class CartController {
         this.cartService = cartService;
     }
 
-
-    @PutMapping()
-    public ResponseEntity<CartItemResponseDto> addItemToCart(
-            @PathVariable Long id,
-            @Valid @RequestBody CartItemRequestDto dto) {
-        return ResponseEntity.ok(cartService.addItemToCart(id, dto));
-    }
-
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<CartResponseDto> getCart(@PathVariable Long id) {
         return ResponseEntity.ok(cartService.getCart(id));
     }
 
-    @DeleteMapping()
+    @GetMapping("/items")
+    public ResponseEntity<CartDetailsResponseDto> getCartDetails(@PathVariable Long id) {
+        return ResponseEntity.ok(cartService.getCartDetails(id));
+    }
+
+    @PutMapping("/items/{productId}")
+    public ResponseEntity<CartItemResponseDto> setCartItemQuantity(
+            @PathVariable Long id,
+            @PathVariable Long productId,
+            @Valid @RequestBody CartItemRequestDto dto) {
+        return ResponseEntity.ok(cartService.setCartItemQuantity(id, productId, dto.getQuantity()));
+    }
+
+    @DeleteMapping("/items/{productId}")
     public ResponseEntity<Void> deleteItem(
             @PathVariable Long id,
-            @Valid @RequestBody CartItemDeleteDto dto) {
-        cartService.deleteItem(id, dto);
+            @PathVariable Long productId) {
+        cartService.deleteItem(id, productId);
         return ResponseEntity.noContent().build();
     }
 

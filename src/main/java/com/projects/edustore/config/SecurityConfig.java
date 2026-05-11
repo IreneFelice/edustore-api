@@ -1,7 +1,7 @@
 package com.projects.edustore.config;
 
-import com.projects.edustore.exception.AuthenticationFailedException;
-import com.projects.edustore.exception.CustomAccessDeniedHandler;
+import com.projects.edustore.security.CustomAccessDeniedHandler;
+import com.projects.edustore.security.CustomAuthEntryPoint;
 import com.projects.edustore.security.CustomUserDetailService;
 import com.projects.edustore.security.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
@@ -24,14 +24,14 @@ public class SecurityConfig {
 
     public final CustomUserDetailService customUserDetailService;
     private final JwtRequestFilter jwtRequestFilter;
-    private final AuthenticationFailedException.CustomJwtAuthEntryPoint jwtAuthEntryPoint;
-    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomAuthEntryPoint authEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
-    public SecurityConfig(CustomUserDetailService customUserDetailService, JwtRequestFilter jwtRequestFilter, AuthenticationFailedException.CustomJwtAuthEntryPoint jwtAuthEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler) {
+    public SecurityConfig(CustomUserDetailService customUserDetailService, JwtRequestFilter jwtRequestFilter, CustomAuthEntryPoint authEntryPoint, CustomAccessDeniedHandler accessDeniedHandler) {
         this.customUserDetailService = customUserDetailService;
         this.jwtRequestFilter = jwtRequestFilter;
-        this.jwtAuthEntryPoint = jwtAuthEntryPoint;
-        this.customAccessDeniedHandler = customAccessDeniedHandler;
+        this.authEntryPoint = authEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -55,8 +55,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults()) // use CorsConfig
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(jwtAuthEntryPoint) // not allowed by personal rights
-                        .accessDeniedHandler(customAccessDeniedHandler)) // no valid token
+                        .authenticationEntryPoint(authEntryPoint) // no valid token
+                        .accessDeniedHandler(accessDeniedHandler)) // access by personal rights
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/authenticate", "/customers/register","/students/register").permitAll()

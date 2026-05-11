@@ -1,6 +1,6 @@
 package com.projects.edustore.dto.order;
 
-import com.projects.edustore.model.product.OrderStatus;
+import com.projects.edustore.model.product.journey.OrderStatus;
 import jakarta.validation.constraints.NotNull;
 
 public class OrderStudentRequestDto {

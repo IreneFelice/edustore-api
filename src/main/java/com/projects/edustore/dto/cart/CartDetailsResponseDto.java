@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CartResponseDto {
+public class CartDetailsResponseDto {
+
     private Long cartId;
+
+    private List<CartItemResponseDto> items = new ArrayList<>();
 
     private BigDecimal totalPrice;
 
@@ -20,6 +23,14 @@ public class CartResponseDto {
 
     public void setCartId(Long cartId) {
         this.cartId = cartId;
+    }
+
+    public void addItemDto(CartItemResponseDto itemDto) {
+        items.add(itemDto);
+    }
+
+    public List<CartItemResponseDto> getItems() {
+        return items;
     }
 
     public BigDecimal getTotalPrice() {

@@ -1,10 +1,7 @@
-package com.projects.edustore.mapper;
+package com.projects.edustore.mapper.product.journey;
 
 import com.projects.edustore.dto.order.*;
-import com.projects.edustore.model.product.Cart;
-import com.projects.edustore.model.product.CartItem;
-import com.projects.edustore.model.product.Order;
-import com.projects.edustore.model.product.OrderItem;
+import com.projects.edustore.model.product.journey.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,10 +14,13 @@ public class OrderMapper {
         BigDecimal totalPrice = BigDecimal.ZERO;
 
         for (CartItem item : cart.getCartItems()) {
-
+            Product product = item.getProduct();
             OrderItem orderItem = new OrderItem(
                     item.getProduct(),
-                    item.getQuantity()
+                    item.getQuantity(),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))
             );
             order.addItem(orderItem);
             totalPrice = totalPrice.add(orderItem.getSubtotal());
@@ -31,6 +31,7 @@ public class OrderMapper {
         return order;
     }
 
+    // Response
     private static void mapBasicFields(Order order, OrderBasicResponseDto dto) {
         dto.setOrderId(order.getId());
         dto.setOrderDate(order.getOrderDate());

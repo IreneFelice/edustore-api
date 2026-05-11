@@ -3,9 +3,11 @@ package com.projects.edustore.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,7 +26,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-
     @ExceptionHandler(value = OutOfStockException.class)
     public ResponseEntity<Object> outOfStockException(OutOfStockException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
@@ -35,9 +36,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 
-    @ExceptionHandler(value = AuthenticationFailedException.class)
-    public ResponseEntity<Object> authenticationFailedException(AuthenticationFailedException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    @ExceptionHandler(value = AuthenticationException.class)
+    public ResponseEntity<Object> authenticationException(AuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -95,7 +96,14 @@ public class GlobalExceptionHandler {
                 .body(errorMessage);
     }
 
-    @ExceptionHandler(EmailAlreadyExistsException.class)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDuplicateKey(DataIntegrityViolationException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body("Unique value required");
+    }
+
+        @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<String> handleEmailExists(EmailAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }

@@ -1,4 +1,4 @@
-package com.projects.edustore.model.product;
+package com.projects.edustore.model.product.journey;
 
 import com.projects.edustore.model.person.StudentProfile;
 import jakarta.persistence.*;
@@ -11,6 +11,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String name;
 
     @Column(columnDefinition = "TEXT")
